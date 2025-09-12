@@ -54,12 +54,23 @@ const PRICING = {
     stairsNoLift: 10,
     outerArea: 10,
     bundleCarpetWithEoTDiscountPct: 0.10
+  },
+  property: {
+    includedBathrooms: 1,
+    extraBathroom: { price: 20, hours: 0.5 },
+    kitchen: {
+      small: { price: -10, hours: -0.3 },
+      standard: { price: 0, hours: 0 },
+      large: { price: 25, hours: 0.7 }
+    }
   }
 };
 
 export interface QuoteInput {
   service: "endOfTenancy" | "deep" | "commercial" | "carpets";
   bedrooms?: "studio" | "1" | "2" | "3" | "4" | "5plus" | "5+";
+  bathrooms?: number;
+  kitchenSize?: "small" | "standard" | "large";
   area_m2?: number; // commercial
   items?: {
     carpetRooms?: number;
@@ -129,6 +140,22 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     if (base) {
       add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : key === "1" ? "bed" : "beds"})`, base.price);
       baseHours = base.hours;
+    }
+
+    // Extra bathrooms
+    if (input.bathrooms && input.bathrooms > cfg.property.includedBathrooms) {
+      const extraBaths = input.bathrooms - cfg.property.includedBathrooms;
+      add(`Extra bathrooms x${extraBaths}`, extraBaths * cfg.property.extraBathroom.price);
+      baseHours += extraBaths * cfg.property.extraBathroom.hours;
+    }
+
+    // Kitchen size adjustment
+    if (input.kitchenSize && cfg.property.kitchen[input.kitchenSize]) {
+      const kitchenAdj = cfg.property.kitchen[input.kitchenSize];
+      if (kitchenAdj.price !== 0) {
+        add(`${input.kitchenSize.charAt(0).toUpperCase() + input.kitchenSize.slice(1)} kitchen`, kitchenAdj.price);
+      }
+      baseHours += kitchenAdj.hours;
     }
 
     // Add-ons

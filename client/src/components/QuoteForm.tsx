@@ -26,6 +26,8 @@ interface QuoteFormData {
   // Service details
   service: "endOfTenancy" | "deep" | "commercial" | "carpets" | "";
   bedrooms: "studio" | "1" | "2" | "3" | "4" | "5plus" | "";
+  bathrooms: number;
+  kitchenSize: "small" | "standard" | "large" | "";
   area_m2: number;
   
   // Carpet items
@@ -64,6 +66,8 @@ export default function QuoteForm() {
     city: '',
     service: '',
     bedrooms: '',
+    bathrooms: 1,
+    kitchenSize: '',
     area_m2: 0,
     carpetRooms: 0,
     stairs: 0,
@@ -167,6 +171,8 @@ export default function QuoteForm() {
       const quoteInput: QuoteInput = {
         service: formData.service,
         bedrooms: formData.bedrooms || undefined,
+        bathrooms: formData.bathrooms,
+        kitchenSize: formData.kitchenSize || undefined,
         area_m2: formData.area_m2 || undefined,
         items: formData.service === 'carpets' ? {
           carpetRooms: formData.carpetRooms,
@@ -337,18 +343,48 @@ export default function QuoteForm() {
 
                   {/* Conditional Fields Based on Service Type */}
                   {formData.service && formData.service !== 'commercial' && formData.service !== 'carpets' && (
-                    <div>
-                      <Label htmlFor="bedrooms">Property Size *</Label>
-                      <Select value={formData.bedrooms} onValueChange={(value) => handleInputChange('bedrooms', value)}>
-                        <SelectTrigger data-testid="select-bedrooms">
-                          <SelectValue placeholder="Select property size" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {bedroomOptions.map(option => (
-                            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="bedrooms">Number of Bedrooms *</Label>
+                        <Select value={formData.bedrooms} onValueChange={(value) => handleInputChange('bedrooms', value)}>
+                          <SelectTrigger data-testid="numberOfBedrooms_input">
+                            <SelectValue placeholder="Select number of bedrooms" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {bedroomOptions.map(option => (
+                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="bathrooms">Number of Bathrooms *</Label>
+                        <Input
+                          id="bathrooms"
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={formData.bathrooms || ''}
+                          onChange={(e) => handleNumberChange('bathrooms', e.target.value)}
+                          placeholder="Enter number of bathrooms"
+                          data-testid="numberOfBathrooms_input"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="kitchenSize">Kitchen Size *</Label>
+                        <Select value={formData.kitchenSize} onValueChange={(value) => handleInputChange('kitchenSize', value)}>
+                          <SelectTrigger data-testid="kitchenSize">
+                            <SelectValue placeholder="Select kitchen size" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="small">Small Kitchen</SelectItem>
+                            <SelectItem value="standard">Standard Kitchen</SelectItem>
+                            <SelectItem value="large">Large Kitchen</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   )}
 
