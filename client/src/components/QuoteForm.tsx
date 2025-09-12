@@ -320,81 +320,292 @@ export default function QuoteForm() {
                 </form>
               ) : step === 2 ? (
                 <form onSubmit={handleStep2Submit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="propertyType">Property Type *</Label>
-                      <Select value={formData.propertyType} onValueChange={(value) => handleInputChange('propertyType', value)}>
-                        <SelectTrigger data-testid="select-property-type">
-                          <SelectValue placeholder="Select property type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {propertyTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="bedrooms">Number of Bedrooms</Label>
-                      <Input
-                        id="bedrooms"
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={formData.bedrooms}
-                        onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                        data-testid="input-bedrooms"
-                      />
-                    </div>
-                  </div>
-
+                  {/* Service Type Selection */}
                   <div>
-                    <Label htmlFor="service">Primary Service *</Label>
+                    <Label htmlFor="service">Service Type *</Label>
                     <Select value={formData.service} onValueChange={(value) => handleInputChange('service', value)}>
                       <SelectTrigger data-testid="select-service">
-                        <SelectValue placeholder="Select service type" />
+                        <SelectValue placeholder="Select cleaning service" />
                       </SelectTrigger>
                       <SelectContent>
-                        {SERVICES.map((service) => (
-                          <SelectItem key={service} value={service}>
-                            {service}
-                          </SelectItem>
+                        {serviceTypes.map(service => (
+                          <SelectItem key={service.value} value={service.value}>{service.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div>
-                    <Label>Additional Services (optional)</Label>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                      {extraServices.map((extra) => (
-                        <div key={extra} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={extra}
-                            checked={formData.extras.includes(extra)}
-                            onCheckedChange={() => handleExtraToggle(extra)}
-                            data-testid={`checkbox-${extra.toLowerCase().replace(/ /g, '-')}`}
-                          />
-                          <Label htmlFor={extra} className="text-sm">
-                            {extra}
-                          </Label>
-                        </div>
-                      ))}
+                  {/* Conditional Fields Based on Service Type */}
+                  {formData.service && formData.service !== 'commercial' && formData.service !== 'carpets' && (
+                    <div>
+                      <Label htmlFor="bedrooms">Property Size *</Label>
+                      <Select value={formData.bedrooms} onValueChange={(value) => handleInputChange('bedrooms', value)}>
+                        <SelectTrigger data-testid="select-bedrooms">
+                          <SelectValue placeholder="Select property size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {bedroomOptions.map(option => (
+                            <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  </div>
+                  )}
 
-                  {estimatedPrice && (
-                    <div className="bg-chart-2/10 border border-chart-2/20 rounded-lg p-4 text-center">
-                      <p className="text-sm text-muted-foreground mb-1">Estimated Price</p>
-                      <p className="text-2xl font-bold text-chart-2" data-testid="text-estimated-price">
-                        £{estimatedPrice}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Final price confirmed after property assessment
-                      </p>
+                  {/* Commercial Area Input */}
+                  {formData.service === 'commercial' && (
+                    <div>
+                      <Label htmlFor="area">Office/Commercial Area (m²) *</Label>
+                      <Input
+                        id="area"
+                        type="number"
+                        min="1"
+                        value={formData.area_m2 || ''}
+                        onChange={(e) => handleNumberChange('area_m2', e.target.value)}
+                        placeholder="Enter area in square meters"
+                        data-testid="input-area"
+                      />
                     </div>
+                  )}
+
+                  {/* Carpet Items */}
+                  {formData.service === 'carpets' && (
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Carpet & Upholstery Items</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="carpetRooms">Carpet Rooms</Label>
+                          <Input
+                            id="carpetRooms"
+                            type="number"
+                            min="0"
+                            value={formData.carpetRooms || ''}
+                            onChange={(e) => handleNumberChange('carpetRooms', e.target.value)}
+                            data-testid="input-carpet-rooms"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="stairs">Stairs</Label>
+                          <Input
+                            id="stairs"
+                            type="number"
+                            min="0"
+                            value={formData.stairs || ''}
+                            onChange={(e) => handleNumberChange('stairs', e.target.value)}
+                            data-testid="input-stairs"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="rugs">Rugs</Label>
+                          <Input
+                            id="rugs"
+                            type="number"
+                            min="0"
+                            value={formData.rugs || ''}
+                            onChange={(e) => handleNumberChange('rugs', e.target.value)}
+                            data-testid="input-rugs"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="sofa2">2-Seater Sofas</Label>
+                          <Input
+                            id="sofa2"
+                            type="number"
+                            min="0"
+                            value={formData.sofa2 || ''}
+                            onChange={(e) => handleNumberChange('sofa2', e.target.value)}
+                            data-testid="input-sofa2"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="sofa3">3-Seater Sofas</Label>
+                          <Input
+                            id="sofa3"
+                            type="number"
+                            min="0"
+                            value={formData.sofa3 || ''}
+                            onChange={(e) => handleNumberChange('sofa3', e.target.value)}
+                            data-testid="input-sofa3"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="armchair">Armchairs</Label>
+                          <Input
+                            id="armchair"
+                            type="number"
+                            min="0"
+                            value={formData.armchair || ''}
+                            onChange={(e) => handleNumberChange('armchair', e.target.value)}
+                            data-testid="input-armchair"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="mattress">Mattresses</Label>
+                          <Input
+                            id="mattress"
+                            type="number"
+                            min="0"
+                            value={formData.mattress || ''}
+                            onChange={(e) => handleNumberChange('mattress', e.target.value)}
+                            data-testid="input-mattress"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Add-ons Section */}
+                  {formData.service && formData.service !== 'carpets' && (
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Additional Services</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="oven"
+                            checked={formData.oven}
+                            onCheckedChange={(checked) => handleCheckboxChange('oven', checked as boolean)}
+                            data-testid="checkbox-oven"
+                          />
+                          <Label htmlFor="oven" className="text-sm">Oven Deep Clean (+£25)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="fridge"
+                            checked={formData.fridge}
+                            onCheckedChange={(checked) => handleCheckboxChange('fridge', checked as boolean)}
+                            data-testid="checkbox-fridge"
+                          />
+                          <Label htmlFor="fridge" className="text-sm">Refrigerator Deep Clean (+£20)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="cabinets"
+                            checked={formData.cabinets}
+                            onCheckedChange={(checked) => handleCheckboxChange('cabinets', checked as boolean)}
+                            data-testid="checkbox-cabinets"
+                          />
+                          <Label htmlFor="cabinets" className="text-sm">Inside Cabinets (+£30)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="limescale"
+                            checked={formData.limescale}
+                            onCheckedChange={(checked) => handleCheckboxChange('limescale', checked as boolean)}
+                            data-testid="checkbox-limescale"
+                          />
+                          <Label htmlFor="limescale" className="text-sm">Heavy Limescale Treatment (+£35)</Label>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="windows">Interior Windows</Label>
+                          <Input
+                            id="windows"
+                            type="number"
+                            min="0"
+                            value={formData.windows || ''}
+                            onChange={(e) => handleNumberChange('windows', e.target.value)}
+                            placeholder="Number of windows (£3 each, min £15)"
+                            data-testid="input-windows"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Modifiers Section */}
+                  {formData.service && (
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Special Requirements</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="urgent"
+                            checked={formData.urgent}
+                            onCheckedChange={(checked) => handleCheckboxChange('urgent', checked as boolean)}
+                            data-testid="checkbox-urgent"
+                          />
+                          <Label htmlFor="urgent" className="text-sm">Urgent Service (within 24h) (+25%)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="weekend"
+                            checked={formData.weekend}
+                            onCheckedChange={(checked) => handleCheckboxChange('weekend', checked as boolean)}
+                            data-testid="checkbox-weekend"
+                          />
+                          <Label htmlFor="weekend" className="text-sm">Weekend Service (+20%)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="stairsNoLift"
+                            checked={formData.stairsNoLift}
+                            onCheckedChange={(checked) => handleCheckboxChange('stairsNoLift', checked as boolean)}
+                            data-testid="checkbox-stairs"
+                          />
+                          <Label htmlFor="stairsNoLift" className="text-sm">Property above 2nd floor (no lift) (+£15)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="outerArea"
+                            checked={formData.outerArea}
+                            onCheckedChange={(checked) => handleCheckboxChange('outerArea', checked as boolean)}
+                            data-testid="checkbox-outer-area"
+                          />
+                          <Label htmlFor="outerArea" className="text-sm">Outer London/Area surcharge (+£20)</Label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Price Display */}
+                  {quoteResult && (
+                    <Card className="mt-6 border-primary/20">
+                      <CardContent className="pt-6">
+                        <div className="text-center space-y-4">
+                          <div className="space-y-2">
+                            <div className="text-3xl font-bold text-primary">
+                              £{quoteResult.priceRange[0]} - £{quoteResult.priceRange[1]}
+                            </div>
+                            <div className="text-sm text-muted-foreground">Estimated Price Range</div>
+                          </div>
+                          
+                          <Separator />
+                          
+                          <div className="grid grid-cols-2 gap-4 text-center">
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-center space-x-1">
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">{quoteResult.crew}</span>
+                              </div>
+                              <div className="text-xs text-muted-foreground">Crew Size</div>
+                            </div>
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-center space-x-1">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">{quoteResult.duration}h</span>
+                              </div>
+                              <div className="text-xs text-muted-foreground">Duration</div>
+                            </div>
+                          </div>
+                          
+                          {quoteResult.breakdown.length > 0 && (
+                            <>
+                              <Separator />
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium text-left">Price Breakdown:</h4>
+                                <div className="space-y-1 text-sm text-left">
+                                  {quoteResult.breakdown.map((item, index) => (
+                                    <div key={index} className="flex justify-between">
+                                      <span className="text-muted-foreground">{item.item}</span>
+                                      <span>£{item.price}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
                   )}
 
                   <div className="flex space-x-3">
@@ -412,7 +623,7 @@ export default function QuoteForm() {
                       type="submit" 
                       className="flex-1" 
                       data-testid="button-get-quote"
-                      disabled={submitQuoteMutation.isPending}
+                      disabled={submitQuoteMutation.isPending || !quoteResult}
                     >
                       {submitQuoteMutation.isPending ? 'Submitting...' : 'Get Quote'}
                     </Button>
