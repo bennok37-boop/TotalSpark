@@ -21,8 +21,10 @@ export const quoteRequests = pgTable("quote_requests", {
   // Service details
   service: text("service").notNull(), // 'endOfTenancy' | 'deep' | 'commercial' | 'carpets'
   bedrooms: text("bedrooms"), // 'studio' | '1' | '2' | '3' | '4' | '5plus'
-  area_m2: integer("area_m2"), // For commercial cleaning
-  commercialRooms: integer("commercial_rooms"), // Alternative to area for commercial
+  area_m2: integer("area_m2"), // For commercial cleaning (legacy)
+  commercialType: text("commercial_type"), // Type of commercial property
+  commercialRooms: integer("commercial_rooms"), // Alternative to area for commercial (legacy)
+  commercialHours: integer("commercial_hours"), // Estimated hours needed for commercial job
   commercialToilets: integer("commercial_toilets").default(0), // Toilets for commercial
   
   // Carpet items (for carpet service)
