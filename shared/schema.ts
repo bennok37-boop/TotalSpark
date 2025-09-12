@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -11,15 +11,47 @@ export const users = pgTable("users", {
 
 export const quoteRequests = pgTable("quote_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Contact details
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   city: text("city").notNull(),
-  propertyType: text("property_type"),
-  bedrooms: integer("bedrooms"),
-  service: text("service"),
-  extras: text("extras").array(),
-  estimatedPrice: integer("estimated_price"),
+  
+  // Service details
+  service: text("service").notNull(), // 'endOfTenancy' | 'deep' | 'commercial' | 'carpets'
+  bedrooms: text("bedrooms"), // 'studio' | '1' | '2' | '3' | '4' | '5plus'
+  area_m2: integer("area_m2"), // For commercial cleaning
+  
+  // Carpet items (for carpet service)
+  carpetRooms: integer("carpet_rooms").default(0),
+  stairs: integer("stairs").default(0),
+  rugs: integer("rugs").default(0),
+  sofa2: integer("sofa2").default(0),
+  sofa3: integer("sofa3").default(0),
+  armchair: integer("armchair").default(0),
+  mattress: integer("mattress").default(0),
+  
+  // Add-ons
+  oven: boolean("oven").default(false),
+  fridge: boolean("fridge").default(false),
+  windows: integer("windows").default(0),
+  cabinets: boolean("cabinets").default(false),
+  limescale: boolean("limescale").default(false),
+  
+  // Modifiers
+  urgent: boolean("urgent").default(false),
+  weekend: boolean("weekend").default(false),
+  stairsNoLift: boolean("stairs_no_lift").default(false),
+  outerArea: boolean("outer_area").default(false),
+  
+  // Pricing options
+  bundleCarpetsWithEoT: boolean("bundle_carpets_with_eot").default(false),
+  vat: boolean("vat").default(false),
+  
+  // Quote result (stored as JSON)
+  quoteResult: jsonb("quote_result"), // Stores the complete QuoteResult object
+  
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -40,7 +72,22 @@ export type QuoteRequest = typeof quoteRequests.$inferSelect;
 
 // City and service types
 export const CITIES = ['Newcastle', 'Sunderland', 'York', 'Middlesbrough', 'Leeds'] as const;
-export const SERVICES = ['End of Tenancy Cleaning', 'Commercial Cleaning', 'Deep Cleaning', 'Carpet & Upholstery Cleaning'] as const;
+export const SERVICE_TYPES = ['endOfTenancy', 'deep', 'commercial', 'carpets'] as const;
+export const BEDROOM_OPTIONS = ['studio', '1', '2', '3', '4', '5plus'] as const;
 
 export type City = typeof CITIES[number];
-export type Service = typeof SERVICES[number];
+export type ServiceType = typeof SERVICE_TYPES[number];
+export type BedroomOption = typeof BEDROOM_OPTIONS[number];
+
+// Quote result type for JSON storage
+export type QuoteResultBreakdown = {
+  item: string;
+  price: number;
+};
+
+export type StoredQuoteResult = {
+  priceRange: [number, number];
+  crew: number;
+  duration: number;
+  breakdown: QuoteResultBreakdown[];
+};

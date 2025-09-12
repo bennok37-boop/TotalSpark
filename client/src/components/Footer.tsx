@@ -1,9 +1,10 @@
 import { Link } from 'wouter';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
-import { CITIES, SERVICES } from '@shared/schema';
+import { CITIES } from '@shared/schema';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
 
   return (
     <footer className="bg-foreground text-background" data-testid="footer">
@@ -40,7 +41,7 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Our Services</h3>
             <ul className="space-y-2 text-sm">
-              {SERVICES.map((service) => (
+              {services.map((service) => (
                 <li key={service}>
                   <Link
                     href={`/${service.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Phone, Menu, X } from 'lucide-react';
-import { CITIES, SERVICES } from '@shared/schema';
+import { CITIES } from '@shared/schema';
 import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function Header() {
@@ -13,6 +13,8 @@ export default function Header() {
 
   const phoneNumber = "0191 123 4567"; // Todo: remove mock functionality
   const whatsappNumber = "447123456789"; // Todo: remove mock functionality
+
+  const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
 
   const isActive = (path: string) => location === path || location.startsWith(path);
 
@@ -57,7 +59,7 @@ export default function Header() {
               </span>
               <div className="absolute top-full left-0 mt-2 w-56 bg-popover border border-popover-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="p-2">
-                  {SERVICES.map((service) => (
+                  {services.map((service) => (
                     <Link
                       key={service}
                       href={`/${service.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
@@ -142,7 +144,7 @@ export default function Header() {
               <div className="space-y-2">
                 <span className="text-sm font-medium text-muted-foreground">Services</span>
                 <div className="pl-4 space-y-2">
-                  {SERVICES.map((service) => (
+                  {services.map((service) => (
                     <Link
                       key={service}
                       href={`/${service.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
