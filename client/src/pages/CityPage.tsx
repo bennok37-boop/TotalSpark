@@ -26,27 +26,31 @@ const cityData = {
     whatsapp: '447123456789',
     heroTitle: 'Professional Cleaning Services in Newcastle',
     heroSubhead: 'End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.',
-    rating: '4.9/5 from 120+ Newcastle customers',
-    areas: ['Jesmond', 'Gosforth', 'Heaton', 'Walker', 'Byker', 'Fenham', 'Gateshead', 'Wallsend'],
+    rating: 'Rated 4.9/5 by local tenants & landlords',
+    proofText: 'DBS-checked professional cleaners | Fully insured & COSHH-compliant | Deposit-Back Guarantee or free re-clean within 48 hours',
+    serviceIntro: 'We provide reliable cleaning services across Newcastle for tenants, landlords, businesses, and homeowners. Choose from:',
+    pricingText: 'We believe in clear, upfront pricing',
+    galleryIntro: 'See the difference our expert cleaners deliver:',
+    areas: ['Jesmond', 'Sandyford', 'Heaton', 'Gosforth', 'City Centre', 'Quayside'],
     galleryItems: [
-      { title: 'Jesmond Student Flat', subtitle: 'End of tenancy clean' },
-      { title: 'City Centre Office', subtitle: 'Deep clean' },
-      { title: 'Heaton Family Home', subtitle: 'Carpet restoration' }
+      { title: 'Jesmond student flat', subtitle: 'spotless after end of tenancy clean' },
+      { title: 'Newcastle city centre office', subtitle: 'polished and ready for clients' },
+      { title: 'Heaton family home', subtitle: 'carpets restored to like-new condition' }
     ],
     trustSignals: [
-      'Helped 40+ landlords in Newcastle get deposit returns in 2025',
-      'Approved cleaning partner for local student housing agencies',
-      'Regular office cleans for Newcastle SMEs'
+      'Worked with 40+ landlords in Newcastle to secure deposit returns in 2025',
+      'Approved cleaning partner for student accommodation providers',
+      'Ongoing office cleaning for local SMEs around Quayside & Sandyford'
     ],
-    miniAbout: 'Proudly serving Newcastle since 2025, CleanPro has helped hundreds of tenants, landlords, and businesses with reliable, professional cleaning. From Jesmond to Gosforth and the Quayside, we\'re the trusted choice for hassle-free cleaning in Newcastle.',
+    miniAbout: 'Proudly serving Newcastle since 2025, TotalSpark Solutions has built a reputation for reliable, professional cleaning. Whether it\'s student flats in Jesmond, family homes in Gosforth, or offices in the city centre, we provide cleaning services you can trust to get the job done right — the first time.',
     faqs: [
-      { q: 'Do you cover student flats in Jesmond and Heaton?', a: 'Yes, we specialize in student accommodation cleaning throughout Jesmond, Heaton, and all Newcastle University areas. We understand the specific requirements for end-of-tenancy cleans in student properties.' },
-      { q: 'Can you provide cleaning for Newcastle city centre offices?', a: 'Absolutely. We provide regular and one-off office cleaning services throughout Newcastle city centre, including the Quayside, Grainger Town, and business districts.' },
-      { q: 'How quickly can you arrange an end of tenancy clean?', a: 'We can usually arrange end-of-tenancy cleaning within 24-48 hours. For urgent bookings, we offer same-day service subject to availability.' },
-      { q: 'Are your cleaners DBS-checked and insured?', a: 'Yes, all our cleaning staff are DBS-checked and we carry £2 million public liability insurance. We can provide certificates upon request.' },
-      { q: 'Can you provide receipts for letting agents/landlords?', a: 'Yes, we provide detailed invoices and receipts that meet letting agent and landlord requirements. We work with many Newcastle letting agencies.' },
-      { q: 'Do you bring your own cleaning supplies and equipment?', a: 'Yes, we bring all professional cleaning supplies and equipment. We use eco-friendly products that are safe for children and pets.' },
-      { q: 'What areas around Newcastle do you cover?', a: 'We cover all Newcastle areas including Jesmond, Gosforth, Heaton, plus surrounding areas like Gateshead, Wallsend, and North Tyneside.' }
+      { q: 'Do you cover student flats in Jesmond, Heaton, and Sandyford?', a: 'Yes — we regularly clean student accommodation across these areas, including full end of tenancy cleans.' },
+      { q: 'Can you clean city centre offices in Newcastle?', a: 'Absolutely. We cover everything from small offices to full business premises, with flexible daily, weekly, or one-off cleans.' },
+      { q: 'How quickly can I book a clean?', a: 'In most cases we can arrange a team within 24–48 hours.' },
+      { q: 'Are your cleaners insured and DBS-checked?', a: 'Yes — all staff are background-checked, fully insured, and trained to COSHH standards.' },
+      { q: 'Do you bring your own supplies and equipment?', a: 'Yes — we provide all professional-grade cleaning materials, eco-friendly where possible.' },
+      { q: 'Can you provide receipts for landlords or letting agents?', a: 'Yes — we issue detailed invoices accepted by agents and landlords across Newcastle.' },
+      { q: 'Do you cover Gateshead, Wallsend, and other nearby areas?', a: 'Yes — we serve the wider Tyne & Wear area, including Gateshead, Wallsend, and North Shields.' }
     ]
   },
   leeds: {
@@ -55,27 +59,31 @@ const cityData = {
     whatsapp: '447113123456',
     heroTitle: 'Professional Cleaning Services in Leeds',
     heroSubhead: 'End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.',
-    rating: '4.9/5 from 180+ Leeds customers',
-    areas: ['Headingley', 'Hyde Park', 'Kirkstall', 'Roundhay', 'Chapel Allerton', 'City Centre', 'Burley', 'Woodhouse'],
+    rating: 'Rated 4.9/5 by local tenants & landlords',
+    proofText: 'DBS-checked professional cleaners | Fully insured & COSHH-compliant | Deposit-Back Guarantee or free re-clean within 48 hours',
+    serviceIntro: 'We provide reliable cleaning services across Leeds for tenants, landlords, businesses, and homeowners. Choose from:',
+    pricingText: 'We believe in clear, upfront pricing',
+    galleryIntro: 'See the difference our expert cleaners deliver:',
+    areas: ['Headingley', 'Hyde Park', 'Kirkstall', 'City Centre', 'Roundhay', 'Chapel Allerton'],
     galleryItems: [
-      { title: 'Headingley Student House', subtitle: 'End of tenancy clean' },
-      { title: 'Leeds City Centre Office', subtitle: 'Commercial clean' },
-      { title: 'Roundhay Family Home', subtitle: 'Deep clean service' }
+      { title: 'Headingley student house', subtitle: 'spotless after end of tenancy clean' },
+      { title: 'Leeds city centre office', subtitle: 'polished and ready for clients' },
+      { title: 'Roundhay family home', subtitle: 'carpets restored to like-new condition' }
     ],
     trustSignals: [
       'Cleaned 500+ student properties across Leeds University area',
       'Maintained corporate offices in Leeds financial district',
-      'Specialized end-of-tenancy cleans for young professionals'
+      'Ongoing cleaning contracts with businesses around Call Lane & Park Row'
     ],
-    miniAbout: 'Proudly serving Leeds since 2025, CleanPro has become the go-to choice for students, professionals, and businesses across the city. From Headingley student accommodations to city centre corporate offices, we deliver exceptional cleaning services throughout Leeds.',
+    miniAbout: 'Proudly serving Leeds since 2025, TotalSpark Solutions has become the go-to choice for students, professionals, and businesses across the city. Whether it\'s student houses in Headingley, family homes in Roundhay, or offices in the financial district, we provide cleaning services you can trust to get the job done right — the first time.',
     faqs: [
-      { q: 'Do you clean student houses in Headingley and Hyde Park?', a: 'Yes, we specialize in student accommodation cleaning throughout Headingley, Hyde Park, and all Leeds University areas. We understand student housing requirements and work with many local landlords.' },
-      { q: 'Can you provide cleaning for Leeds business district offices?', a: 'Absolutely. We provide comprehensive office cleaning services throughout Leeds city centre, including the financial district, Call Lane, and Park Row areas.' },
-      { q: 'Do you offer weekend cleaning services?', a: 'Yes, we offer flexible scheduling including weekends and evenings to accommodate your needs. This is especially popular with students and working professionals.' },
-      { q: 'What areas of Leeds do you cover?', a: 'We cover all Leeds areas including Headingley, Hyde Park, Kirkstall, Roundhay, Chapel Allerton, plus surrounding areas like Horsforth and Otley.' },
-      { q: 'Do you work with Leeds letting agencies?', a: 'Yes, we work with numerous letting agencies across Leeds and understand their specific cleaning standards and requirements.' },
-      { q: 'Can you handle large student house cleans?', a: 'Yes, we regularly clean large student houses with multiple bedrooms. We bring additional staff for larger properties to ensure efficient service.' },
-      { q: 'Are your cleaners available during university term time?', a: 'Yes, we maintain full availability during term time and are experienced in working around student schedules and university calendars.' }
+      { q: 'Do you cover student houses in Headingley, Hyde Park, and Kirkstall?', a: 'Yes — we regularly clean student accommodation across these areas, including full end of tenancy cleans for university students.' },
+      { q: 'Can you clean business district offices in Leeds?', a: 'Absolutely. We cover everything from small offices to full business premises, with flexible daily, weekly, or one-off cleans.' },
+      { q: 'How quickly can I book a clean?', a: 'In most cases we can arrange a team within 24–48 hours.' },
+      { q: 'Are your cleaners insured and DBS-checked?', a: 'Yes — all staff are background-checked, fully insured, and trained to COSHH standards.' },
+      { q: 'Do you bring your own supplies and equipment?', a: 'Yes — we provide all professional-grade cleaning materials, eco-friendly where possible.' },
+      { q: 'Can you provide receipts for landlords or letting agents?', a: 'Yes — we issue detailed invoices accepted by agents and landlords across Leeds.' },
+      { q: 'Do you cover Horsforth, Otley, and other nearby areas?', a: 'Yes — we serve the wider Leeds area, including Horsforth, Otley, and surrounding West Yorkshire areas.' }
     ]
   },
   york: {
@@ -84,27 +92,31 @@ const cityData = {
     whatsapp: '447904123456',
     heroTitle: 'Professional Cleaning Services in York',
     heroSubhead: 'End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.',
-    rating: '4.9/5 from 95+ York customers',
-    areas: ['City Centre', 'Clifton', 'Acomb', 'Bishopthorpe', 'Fulford', 'Heslington', 'Dringhouses', 'Tang Hall'],
+    rating: 'Rated 4.9/5 by local tenants & landlords',
+    proofText: 'DBS-checked professional cleaners | Fully insured & COSHH-compliant | Deposit-Back Guarantee or free re-clean within 48 hours',
+    serviceIntro: 'We provide reliable cleaning services across York for tenants, landlords, businesses, and homeowners. Choose from:',
+    pricingText: 'We believe in clear, upfront pricing',
+    galleryIntro: 'See the difference our expert cleaners deliver:',
+    areas: ['City Centre', 'Clifton', 'Acomb', 'Fulford', 'Heslington', 'Bishopthorpe'],
     galleryItems: [
-      { title: 'Historic York Property', subtitle: 'Specialist period clean' },
-      { title: 'Clifton Modern Apartment', subtitle: 'End of tenancy clean' },
-      { title: 'City Centre Office', subtitle: 'Commercial cleaning' }
+      { title: 'Historic York property', subtitle: 'carefully cleaned period features' },
+      { title: 'Clifton modern apartment', subtitle: 'spotless after end of tenancy clean' },
+      { title: 'City centre office', subtitle: 'polished and ready for clients' }
     ],
     trustSignals: [
       'Specialized cleaning for historic properties and period homes',
-      'Maintained luxury serviced apartments in York city center',
-      'Deep cleaned 300+ rental properties for landlords and letting agents'
+      'Maintained luxury serviced apartments in York city centre',
+      'Ongoing cleaning contracts for businesses around York Minster & The Shambles'
     ],
-    miniAbout: 'Proudly serving York since 2025, CleanPro combines modern cleaning techniques with respect for the city\'s historic character. From medieval properties within the city walls to modern developments in Clifton, we provide specialized cleaning services throughout York.',
+    miniAbout: 'Proudly serving York since 2025, TotalSpark Solutions combines modern cleaning techniques with respect for the city\'s historic character. Whether it\'s medieval properties within the city walls, student accommodation near the University, or modern homes in Clifton, we provide cleaning services you can trust to get the job done right — the first time.',
     faqs: [
-      { q: 'Do you have experience cleaning historic York properties?', a: 'Yes, we specialize in cleaning historic and period properties throughout York. We use appropriate techniques and products that respect the character of older buildings.' },
-      { q: 'Can you clean properties within York city walls?', a: 'Absolutely. We regularly clean properties within the historic city centre, including apartments and offices near York Minster and in the Shambles area.' },
-      { q: 'Do you provide cleaning for York University accommodation?', a: 'Yes, we clean student accommodation near the University of York, including properties in Heslington and surrounding areas.' },
-      { q: 'What areas around York do you serve?', a: 'We cover all York areas including the city centre, Clifton, Acomb, Fulford, plus surrounding villages like Bishopthorpe and Dringhouses.' },
-      { q: 'Do you work with York tourist accommodation?', a: 'Yes, we provide cleaning services for holiday lets, B&Bs, and serviced apartments throughout York, especially in the tourist areas.' },
-      { q: 'Can you handle listed building cleaning requirements?', a: 'Yes, we understand the special requirements for listed buildings and use appropriate cleaning methods and products for sensitive surfaces.' },
-      { q: 'Are you familiar with York\'s narrow streets and parking restrictions?', a: 'Yes, our team is experienced with York\'s unique layout and parking challenges. We plan our visits to minimize disruption and comply with local restrictions.' }
+      { q: 'Do you cover historic properties within York city walls?', a: 'Yes — we specialize in cleaning historic and period properties, using appropriate techniques that respect older buildings.' },
+      { q: 'Can you clean near York Minster and The Shambles?', a: 'Absolutely. We cover everything from small city centre apartments to full business premises, navigating York\'s unique streets with care.' },
+      { q: 'How quickly can I book a clean?', a: 'In most cases we can arrange a team within 24–48 hours.' },
+      { q: 'Are your cleaners insured and DBS-checked?', a: 'Yes — all staff are background-checked, fully insured, and trained to COSHH standards.' },
+      { q: 'Do you bring your own supplies and equipment?', a: 'Yes — we provide all professional-grade cleaning materials, eco-friendly where possible.' },
+      { q: 'Can you provide receipts for landlords or letting agents?', a: 'Yes — we issue detailed invoices accepted by agents and landlords across York.' },
+      { q: 'Do you cover Heslington, Bishopthorpe, and other nearby areas?', a: 'Yes — we serve the wider York area, including surrounding villages and University of York accommodation.' }
     ]
   },
   sunderland: {
@@ -113,27 +125,31 @@ const cityData = {
     whatsapp: '447456789012',
     heroTitle: 'Professional Cleaning Services in Sunderland',
     heroSubhead: 'End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.',
-    rating: '4.9/5 from 85+ Sunderland customers',
-    areas: ['City Centre', 'Roker', 'Southwick', 'Hendon', 'Millfield', 'Barnes', 'Pennywell', 'Grindon'],
+    rating: 'Rated 4.9/5 by local tenants & landlords',
+    proofText: 'DBS-checked professional cleaners | Fully insured & COSHH-compliant | Deposit-Back Guarantee or free re-clean within 48 hours',
+    serviceIntro: 'We provide reliable cleaning services across Sunderland for tenants, landlords, businesses, and homeowners. Choose from:',
+    pricingText: 'We believe in clear, upfront pricing',
+    galleryIntro: 'See the difference our expert cleaners deliver:',
+    areas: ['City Centre', 'Roker', 'Southwick', 'Hendon', 'Millfield', 'Barnes'],
     galleryItems: [
-      { title: 'Roker Seafront Apartment', subtitle: 'Deep clean service' },
-      { title: 'City Centre Student Flat', subtitle: 'End of tenancy clean' },
-      { title: 'Southwick Family Home', subtitle: 'Weekly cleaning service' }
+      { title: 'Roker seafront apartment', subtitle: 'spotless after deep clean' },
+      { title: 'City centre student flat', subtitle: 'ready for deposit return' },
+      { title: 'Southwick family home', subtitle: 'carpets restored to like-new condition' }
     ],
     trustSignals: [
       'Successfully cleaned 100+ student properties near University of Sunderland',
-      'Maintained shopping centers and retail spaces for 5+ years',
-      'Helped families prepare homes for sale with deep cleaning services'
+      'Maintained shopping centres and retail spaces across the city',
+      'Ongoing cleaning contracts for businesses around Roker & city centre'
     ],
-    miniAbout: 'Proudly serving Sunderland since 2025, CleanPro has built strong relationships with residents, students, and businesses across the city. From seafront properties in Roker to student accommodations near the university, we provide reliable cleaning services throughout Sunderland.',
+    miniAbout: 'Proudly serving Sunderland since 2025, TotalSpark Solutions has built strong relationships with residents, students, and businesses across the city. Whether it\'s seafront properties in Roker, student accommodations near the university, or family homes in Southwick, we provide cleaning services you can trust to get the job done right — the first time.',
     faqs: [
-      { q: 'Do you clean University of Sunderland student accommodation?', a: 'Yes, we specialize in cleaning student properties near the University of Sunderland, including city centre accommodations and surrounding areas.' },
-      { q: 'Can you provide cleaning for Sunderland seafront properties?', a: 'Absolutely. We regularly clean properties along the Roker and Seaburn seafront, understanding the specific challenges of coastal properties.' },
-      { q: 'Do you work with Sunderland letting agencies?', a: 'Yes, we work with several letting agencies across Sunderland and understand local rental market requirements and standards.' },
-      { q: 'What areas of Sunderland do you cover?', a: 'We cover all Sunderland areas including the city centre, Roker, Southwick, Hendon, Millfield, plus surrounding areas like Washington and Houghton-le-Spring.' },
-      { q: 'Can you handle industrial and commercial cleaning?', a: 'Yes, we provide commercial cleaning services for offices, retail spaces, and light industrial premises throughout Sunderland.' },
-      { q: 'Do you offer end-of-tenancy cleaning guarantees?', a: 'Yes, we offer a deposit-back guarantee for all end-of-tenancy cleans. If your landlord deducts money for cleaning issues we were hired to address, we\'ll refund the amount.' },
-      { q: 'Are you available for emergency cleaning services?', a: 'Yes, we provide emergency cleaning services for insurance claims, flood damage cleanup, and urgent situations throughout Sunderland.' }
+      { q: 'Do you cover University of Sunderland student accommodation?', a: 'Yes — we regularly clean student properties near the University, including city centre flats and surrounding areas.' },
+      { q: 'Can you clean seafront properties in Roker and Seaburn?', a: 'Absolutely. We cover everything from seafront apartments to family homes, understanding coastal property cleaning challenges.' },
+      { q: 'How quickly can I book a clean?', a: 'In most cases we can arrange a team within 24–48 hours.' },
+      { q: 'Are your cleaners insured and DBS-checked?', a: 'Yes — all staff are background-checked, fully insured, and trained to COSHH standards.' },
+      { q: 'Do you bring your own supplies and equipment?', a: 'Yes — we provide all professional-grade cleaning materials, eco-friendly where possible.' },
+      { q: 'Can you provide receipts for landlords or letting agents?', a: 'Yes — we issue detailed invoices accepted by agents and landlords across Sunderland.' },
+      { q: 'Do you cover Washington, Houghton-le-Spring, and other nearby areas?', a: 'Yes — we serve the wider Sunderland area, including Washington, Houghton-le-Spring, and surrounding areas.' }
     ]
   },
   middlesbrough: {
@@ -142,27 +158,31 @@ const cityData = {
     whatsapp: '447642123456',
     heroTitle: 'Professional Cleaning Services in Middlesbrough',
     heroSubhead: 'End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.',
-    rating: '4.9/5 from 75+ Middlesbrough customers',
-    areas: ['Town Centre', 'Linthorpe', 'Acklam', 'Marton', 'Nunthorpe', 'Ormesby', 'Park End', 'Brambles Farm'],
+    rating: 'Rated 4.9/5 by local tenants & landlords',
+    proofText: 'DBS-checked professional cleaners | Fully insured & COSHH-compliant | Deposit-Back Guarantee or free re-clean within 48 hours',
+    serviceIntro: 'We provide reliable cleaning services across Middlesbrough for tenants, landlords, businesses, and homeowners. Choose from:',
+    pricingText: 'We believe in clear, upfront pricing',
+    galleryIntro: 'See the difference our expert cleaners deliver:',
+    areas: ['Town Centre', 'Linthorpe', 'Acklam', 'Marton', 'Nunthorpe', 'Ormesby'],
     galleryItems: [
-      { title: 'Linthorpe Victorian House', subtitle: 'End of tenancy clean' },
-      { title: 'Town Centre Office', subtitle: 'Commercial cleaning' },
-      { title: 'Acklam Family Home', subtitle: 'Deep clean service' }
+      { title: 'Linthorpe Victorian house', subtitle: 'beautifully restored period features' },
+      { title: 'Town centre office', subtitle: 'polished and ready for clients' },
+      { title: 'Acklam family home', subtitle: 'spotless after deep clean' }
     ],
     trustSignals: [
       'Cleaned industrial offices and commercial spaces across Teesside',
       'Maintained residential properties for major letting agencies',
-      'Provided emergency cleaning services for insurance claims'
+      'Ongoing cleaning contracts for businesses around town centre & Linthorpe'
     ],
-    miniAbout: 'Proudly serving Middlesbrough since 2025, CleanPro understands the unique needs of Teesside properties and businesses. From Victorian terraces in Linthorpe to modern developments in Nunthorpe, we provide comprehensive cleaning services throughout Middlesbrough.',
+    miniAbout: 'Proudly serving Middlesbrough since 2025, TotalSpark Solutions understands the unique needs of Teesside properties and businesses. Whether it\'s Victorian terraces in Linthorpe, modern developments in Nunthorpe, or offices in the town centre, we provide cleaning services you can trust to get the job done right — the first time.',
     faqs: [
-      { q: 'Do you clean properties across all Middlesbrough areas?', a: 'Yes, we provide cleaning services throughout Middlesbrough including the town centre, Linthorpe, Acklam, Marton, Nunthorpe, and surrounding Teesside areas.' },
-      { q: 'Can you handle industrial and commercial cleaning?', a: 'Yes, we specialize in cleaning industrial offices, commercial premises, and retail spaces across Teesside, understanding the unique requirements of industrial areas.' },
-      { q: 'Do you work with Middlesbrough Council properties?', a: 'We work with various housing associations and can accommodate council property cleaning requirements and standards.' },
-      { q: 'What about cleaning for Teesside University accommodation?', a: 'Yes, we provide cleaning services for student properties near Teesside University and understand student housing requirements.' },
-      { q: 'Can you provide emergency cleaning for insurance claims?', a: 'Yes, we offer emergency cleaning services for flood damage, fire damage, and other insurance-related cleaning requirements throughout Middlesbrough.' },
-      { q: 'Do you clean Victorian and period properties?', a: 'Yes, we have experience cleaning Victorian terraces and period properties throughout Linthorpe and other historic areas of Middlesbrough.' },
-      { q: 'Are you available for weekend and evening cleans?', a: 'Yes, we offer flexible scheduling including weekends and evenings to accommodate working schedules and minimize disruption.' }
+      { q: 'Do you cover all Middlesbrough areas including Linthorpe and Acklam?', a: 'Yes — we regularly clean properties across Middlesbrough including town centre, Linthorpe, Acklam, and surrounding Teesside areas.' },
+      { q: 'Can you handle industrial and commercial cleaning across Teesside?', a: 'Absolutely. We cover everything from small offices to industrial premises, understanding Teesside\'s unique business requirements.' },
+      { q: 'How quickly can I book a clean?', a: 'In most cases we can arrange a team within 24–48 hours.' },
+      { q: 'Are your cleaners insured and DBS-checked?', a: 'Yes — all staff are background-checked, fully insured, and trained to COSHH standards.' },
+      { q: 'Do you bring your own supplies and equipment?', a: 'Yes — we provide all professional-grade cleaning materials, eco-friendly where possible.' },
+      { q: 'Can you provide receipts for landlords or letting agents?', a: 'Yes — we issue detailed invoices accepted by agents and landlords across Middlesbrough.' },
+      { q: 'Do you cover Stockton, Redcar, and other nearby areas?', a: 'Yes — we serve the wider Teesside area, including Stockton, Redcar, and surrounding Cleveland areas.' }
     ]
   }
 };
@@ -330,7 +350,7 @@ export default function CityPage() {
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">About CleanPro {city.name}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">About TotalSpark Solutions {city.name}</h2>
               <p className="text-muted-foreground text-lg leading-relaxed mb-8">
                 {city.miniAbout}
               </p>

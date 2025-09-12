@@ -15,7 +15,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">C</span>
               </div>
-              <span className="font-bold text-xl">CleanPro</span>
+              <span className="font-bold text-xl">TotalSpark Solutions</span>
             </div>
             <p className="text-background/80 mb-4 text-sm leading-relaxed">
               Professional cleaning services across North East England. DBS-checked, fully insured, with our deposit-back guarantee.
@@ -27,7 +27,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-primary" />
-                <span>info@cleanpro.co.uk</span>
+                <span>info@totalspark.co.uk</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-primary" />
@@ -61,7 +61,7 @@ export default function Footer() {
               {CITIES.map((city) => (
                 <li key={city}>
                   <Link
-                    href={`/cleaning-${city.toLowerCase()}`}
+                    href={`/cleaning/${city.toLowerCase()}`}
                     className="text-background/80 hover:text-background transition-colors"
                     data-testid={`footer-link-${city.toLowerCase()}`}
                   >
@@ -113,7 +113,7 @@ export default function Footer() {
         <div className="border-t border-background/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-background/80">
-              © {currentYear} CleanPro. All rights reserved.
+              © {currentYear} TotalSpark Solutions. All rights reserved.
             </div>
             <div className="flex space-x-6 text-sm">
               <Link href="/privacy" className="text-background/80 hover:text-background transition-colors">

@@ -1,0 +1,110 @@
+internal linking is the glue that makes your site rank well and convert better. Here’s a clear linking structure for your 5 city pages + 4 service pages.
+
+🔗 Internal Linking Strategy for TotalSpark Solutions
+1. City Pages → Service Pages
+
+Each city page should link to all 4 service pages using service cards/blocks + contextual mentions in text.
+
+Example (from /cleaning-newcastle):
+
+End of Tenancy Cleaning in Newcastle → /end-of-tenancy-cleaning
+
+Office Cleaning in Newcastle city centre → /commercial-cleaning
+
+Deep Cleaning for Jesmond flats → /deep-cleaning
+
+Carpet & Upholstery Cleaning for Heaton homes → /carpet-upholstery-cleaning
+
+👉 Do this on every city page (Leeds, Sunderland, York, Middlesbrough).
+This ensures each service page receives local SEO link juice.
+
+2. Service Pages → City Pages
+
+Each service page should include a “Areas We Cover” section at the bottom with city-specific links.
+
+Example (from /end-of-tenancy-cleaning):
+Areas we cover:
+
+End of Tenancy Cleaning Newcastle
+
+End of Tenancy Cleaning Leeds
+
+End of Tenancy Cleaning Sunderland
+
+End of Tenancy Cleaning York
+
+End of Tenancy Cleaning Middlesbrough
+
+👉 Repeat for all service pages, swapping in “Deep Cleaning” or “Commercial Cleaning” etc.
+
+3. Cross-Link Between Services
+
+Add “Related Services” at the bottom of each service page:
+
+Example (on /deep-cleaning):
+
+Need a move-out clean? → End of Tenancy Cleaning
+
+Looking for workplace cleaning? → Commercial Cleaning
+
+Restore carpets & sofas → Carpet & Upholstery Cleaning
+
+👉 This improves session length (Google likes it) and catches users who clicked the “wrong” service.
+
+4. Blog / Resources (Phase 2)
+
+Later, when you add a blog, link from articles → service pages. Example:
+
+Blog post: “Student End of Tenancy Checklist in Leeds” → links to /end-of-tenancy-cleaning.
+
+Blog post: “Why Offices in Newcastle Need Weekly Cleaning” → links to /commercial-cleaning.
+
+5. Navigation & Footer Links
+
+Top Menu:
+
+Home
+
+Services (dropdown: End of Tenancy, Commercial, Deep, Carpet & Upholstery)
+
+Locations (dropdown: Newcastle, Leeds, Sunderland, York, Middlesbrough)
+
+About
+
+Contact / Get a Quote
+
+Footer Links:
+
+Quick Links: All 4 service pages
+
+Locations: All 5 city pages
+
+Trust: DBS Check, Insurance, Guarantee, COSHH compliance
+
+6. Linking Rules to Follow
+
+Every city page → links to all 4 service pages.
+
+Every service page → links back to all 5 city pages (Areas We Cover).
+
+Service pages also link to each other (“related services”).
+
+Navigation & footer ensure no orphan pages.
+
+7. SEO Benefits
+
+City pages rank for “[service] + [city]” searches.
+
+Service pages rank for “[service] near me / generic UK searches.”
+
+Cross-links help Google understand relevance → boosts rankings faster.
+
+More internal links = higher conversion opportunities (user can always find what they need).
+
+👉 With this, your site becomes a tight local SEO silo:
+
+City pages capture geo-intent traffic.
+
+Service pages capture service-intent traffic.
+
+Cross-linking maximises authority & conversions.

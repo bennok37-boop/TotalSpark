@@ -11,7 +11,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
-      <Route path="/cleaning-:city" component={CityPage} />
+      <Route path="/cleaning/:city" component={CityPage} />
       {/* Service pages - todo: implement service page layouts */}
       {/* <Route path="/end-of-tenancy-cleaning" component={ServicePage} /> */}
       {/* <Route path="/commercial-cleaning" component={ServicePage} /> */}
