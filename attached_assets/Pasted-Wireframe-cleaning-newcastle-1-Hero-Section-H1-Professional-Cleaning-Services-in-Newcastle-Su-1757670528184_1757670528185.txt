@@ -1,0 +1,122 @@
+Wireframe — /cleaning-newcastle
+1. Hero Section
+
+H1: Professional Cleaning Services in Newcastle
+
+Subhead: End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.
+
+CTA Button: “Get Instant Quote” → scrolls to form
+
+Local Phone Number: 0191 XXX XXXX (dynamic tracking number)
+
+2. Proof Strip (Trust at a glance)
+
+⭐⭐⭐⭐⭐ Rated 4.9/5 from 120+ Newcastle customers
+
+Badges/Icons: DBS-checked | Fully Insured | Deposit-Back Guarantee
+
+3. Service Blocks (cards linking to service pages)
+
+Grid of 4 cards:
+
+End of Tenancy Cleaning → /end-of-tenancy-cleaning
+
+Commercial/Office Cleaning → /commercial-cleaning
+
+Deep Cleaning → /deep-cleaning
+
+Carpet & Upholstery Cleaning → /carpet-upholstery-cleaning
+
+4. Pricing Snapshot
+
+Headline: Transparent Pricing — From Just £120
+
+Example bullets:
+
+1-bed flat cleans from £120
+
+3-bed house deep cleans from £220
+
+Office cleaning from £20/hr
+
+Subtext: “Get your exact price in 60 seconds with our instant quote form.”
+
+CTA: “Calculate My Price”
+
+5. Before/After Gallery
+
+Grid of 3–4 photos:
+
+Jesmond student flat — before/after end of tenancy clean
+
+City centre office deep clean
+
+Heaton family home carpet restoration
+
+6. Local Trust Signals
+
+Logos: Local letting agents or property managers (placeholder if not ready yet).
+
+Mini Case Study Bullets:
+
+Helped 40+ landlords in Newcastle get deposit returns in 2025.
+
+Approved cleaning partner for local student housing agencies.
+
+Regular office cleans for Newcastle SMEs.
+
+7. FAQs (tuned for Newcastle)
+
+Do you cover student flats in Jesmond and Heaton?
+
+Can you provide cleaning for Newcastle city centre offices?
+
+How quickly can you arrange an end of tenancy clean?
+
+Are your cleaners DBS-checked and insured?
+
+Can you provide receipts for letting agents/landlords?
+
+Do you bring your own cleaning supplies and equipment?
+
+What areas around Newcastle do you cover (e.g., Gateshead, Wallsend)?
+
+8. Mini About (geo-specific)
+
+“Proudly serving Newcastle since 2025, TotalSpark Solutions has helped hundreds of tenants, landlords, and businesses with reliable, professional cleaning. From Jesmond to Gosforth and the Quayside, we’re the trusted choice for hassle-free cleaning in Newcastle.”
+
+9. Final CTA (Lead Capture)
+
+Headline: “Ready for a Spotless Newcastle Property?”
+
+Form:
+
+Step 1: Name, Email, Phone, City (lead saved here).
+
+Step 2: Property type, number of rooms, extras.
+
+Buttons:
+
+“Get My Instant Quote”
+
+Phone number (click-to-call)
+
+WhatsApp chat
+
+Word Count Target
+
+800–1,200 words → achieved by:
+
+Expanding service descriptions (unique to Newcastle).
+
+Adding 2–3 local case study blurbs.
+
+Writing fuller FAQ answers.
+
+👉 This page = your template. Just swap out:
+
+City-specific landmarks & neighborhoods (e.g., Leeds → Headingley, Hyde Park; Sunderland → city centre, student housing).
+
+Local case studies/testimonials per city.
+
+Phone number (dynamic tracking).
