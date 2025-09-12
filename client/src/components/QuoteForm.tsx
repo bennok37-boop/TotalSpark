@@ -5,23 +5,54 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle } from 'lucide-react';
-import { CITIES, SERVICES } from '@shared/schema';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users } from 'lucide-react';
+import { CITIES } from '@shared/schema';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
 
 type FormStep = 1 | 2 | 3;
 
 interface QuoteFormData {
+  // Contact details
   name: string;
   email: string;
   phone: string;
   city: string;
-  propertyType: string;
-  bedrooms: string;
-  service: string;
-  extras: string[];
+  
+  // Service details
+  service: "endOfTenancy" | "deep" | "commercial" | "carpets" | "";
+  bedrooms: "studio" | "1" | "2" | "3" | "4" | "5plus" | "";
+  area_m2: number;
+  
+  // Carpet items
+  carpetRooms: number;
+  stairs: number;
+  rugs: number;
+  sofa2: number;
+  sofa3: number;
+  armchair: number;
+  mattress: number;
+  
+  // Add-ons
+  oven: boolean;
+  fridge: boolean;
+  windows: number;
+  cabinets: boolean;
+  limescale: boolean;
+  
+  // Modifiers
+  urgent: boolean;
+  weekend: boolean;
+  stairsNoLift: boolean;
+  outerArea: boolean;
+  
+  // Pricing
+  bundleCarpetsWithEoT: boolean;
+  vat: boolean;
 }
 
 export default function QuoteForm() {
@@ -31,12 +62,29 @@ export default function QuoteForm() {
     email: '',
     phone: '',
     city: '',
-    propertyType: '',
-    bedrooms: '',
     service: '',
-    extras: []
+    bedrooms: '',
+    area_m2: 0,
+    carpetRooms: 0,
+    stairs: 0,
+    rugs: 0,
+    sofa2: 0,
+    sofa3: 0,
+    armchair: 0,
+    mattress: 0,
+    oven: false,
+    fridge: false,
+    windows: 0,
+    cabinets: false,
+    limescale: false,
+    urgent: false,
+    weekend: false,
+    stairsNoLift: false,
+    outerArea: false,
+    bundleCarpetsWithEoT: false,
+    vat: false
   });
-  const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
   const { toast } = useToast();
 
   // Handle auto-scroll when page loads with #quote-form hash
@@ -67,17 +115,16 @@ export default function QuoteForm() {
   }, []);
 
   const submitQuoteMutation = useMutation({
-    mutationFn: async (data: QuoteFormData) => {
+    mutationFn: async (data: QuoteFormData & { quoteResult?: QuoteResult }) => {
       const submitData = {
         name: data.name,
         email: data.email,
         phone: data.phone,
         city: data.city,
-        propertyType: data.propertyType || null,
-        bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
-        service: data.service || null,
-        extras: data.extras.length > 0 ? data.extras : null,
-        estimatedPrice: estimatedPrice
+        service: data.service,
+        bedrooms: data.bedrooms || null,
+        area_m2: data.area_m2 || null,
+        quoteResult: data.quoteResult || null
       };
       return apiRequest('POST', '/api/quotes', submitData);
     },
@@ -98,33 +145,66 @@ export default function QuoteForm() {
     }
   });
 
-  const handleInputChange = (field: keyof QuoteFormData, value: string) => {
+  const handleInputChange = (field: keyof QuoteFormData, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleExtraToggle = (extra: string) => {
-    setFormData(prev => ({
-      ...prev,
-      extras: prev.extras.includes(extra)
-        ? prev.extras.filter(e => e !== extra)
-        : [...prev.extras, extra]
-    }));
+  const handleNumberChange = (field: keyof QuoteFormData, value: string) => {
+    const numValue = parseInt(value) || 0;
+    setFormData(prev => ({ ...prev, [field]: numValue }));
   };
 
-  const calculatePrice = () => {
-    // Todo: remove mock functionality
-    let basePrice = 120;
-    
-    if (formData.propertyType === 'house') basePrice += 40;
-    if (formData.propertyType === 'commercial') basePrice += 100;
-    
-    const bedroomCount = parseInt(formData.bedrooms) || 0;
-    basePrice += bedroomCount * 20;
-    
-    basePrice += formData.extras.length * 15;
-    
-    setEstimatedPrice(basePrice);
+  const handleCheckboxChange = (field: keyof QuoteFormData, checked: boolean) => {
+    setFormData(prev => ({ ...prev, [field]: checked }));
   };
+
+  // Real-time price calculation using the pricing engine
+  useEffect(() => {
+    if (formData.service && 
+        ((formData.service === 'commercial' && formData.area_m2 > 0) ||
+         (formData.service !== 'commercial' && formData.bedrooms))) {
+      
+      const quoteInput: QuoteInput = {
+        service: formData.service,
+        bedrooms: formData.bedrooms || undefined,
+        area_m2: formData.area_m2 || undefined,
+        items: formData.service === 'carpets' ? {
+          carpetRooms: formData.carpetRooms,
+          stairs: formData.stairs,
+          rugs: formData.rugs,
+          sofa2: formData.sofa2,
+          sofa3: formData.sofa3,
+          armchair: formData.armchair,
+          mattress: formData.mattress
+        } : undefined,
+        addons: {
+          oven: formData.oven,
+          fridge: formData.fridge,
+          windows: formData.windows,
+          cabinets: formData.cabinets,
+          limescale: formData.limescale
+        },
+        modifiers: {
+          urgent: formData.urgent,
+          weekend: formData.weekend,
+          stairsNoLift: formData.stairsNoLift,
+          outerArea: formData.outerArea
+        },
+        bundleCarpetsWithEoT: formData.bundleCarpetsWithEoT,
+        vat: formData.vat
+      };
+      
+      try {
+        const result = computeQuote(quoteInput);
+        setQuoteResult(result);
+      } catch (error) {
+        console.error('Price calculation error:', error);
+        setQuoteResult(null);
+      }
+    } else {
+      setQuoteResult(null);
+    }
+  }, [formData]);
 
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,24 +214,25 @@ export default function QuoteForm() {
 
   const handleStep2Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    calculatePrice();
-    submitQuoteMutation.mutate(formData);
+    if (quoteResult) {
+      submitQuoteMutation.mutate({ ...formData, quoteResult });
+    }
   };
 
-  const propertyTypes = [
-    { value: 'flat', label: '1-bed Flat' },
-    { value: 'apartment', label: '2-3 bed Apartment' },
-    { value: 'house', label: 'House (3+ bedrooms)' },
-    { value: 'commercial', label: 'Commercial Space' }
+  const serviceTypes = [
+    { value: 'endOfTenancy', label: 'End of Tenancy Cleaning' },
+    { value: 'deep', label: 'Deep Cleaning' },
+    { value: 'commercial', label: 'Commercial/Office Cleaning' },
+    { value: 'carpets', label: 'Carpet & Upholstery Cleaning' }
   ];
 
-  const extraServices = [
-    'Oven cleaning',
-    'Refrigerator cleaning',
-    'Window cleaning (interior)',
-    'Carpet steam cleaning',
-    'Garage cleaning',
-    'Garden tidy up'
+  const bedroomOptions = [
+    { value: 'studio', label: 'Studio' },
+    { value: '1', label: '1 Bedroom' },
+    { value: '2', label: '2 Bedrooms' },
+    { value: '3', label: '3 Bedrooms' },
+    { value: '4', label: '4 Bedrooms' },
+    { value: '5plus', label: '5+ Bedrooms' }
   ];
 
   return (
