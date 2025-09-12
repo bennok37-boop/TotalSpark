@@ -8,7 +8,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users } from 'lucide-react';
-import { CITIES } from '@shared/schema';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -21,7 +20,7 @@ interface QuoteFormData {
   name: string;
   email: string;
   phone: string;
-  city: string;
+  address: string;
   
   // Service details
   service: "endOfTenancy" | "deep" | "commercial" | "carpets" | "";
@@ -80,7 +79,7 @@ export default function QuoteForm() {
     name: '',
     email: '',
     phone: '',
-    city: '',
+    address: '',
     service: '',
     bedrooms: '',
     bathrooms: 1,
@@ -160,7 +159,7 @@ export default function QuoteForm() {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        city: data.city,
+        address: data.address,
         service: data.service,
         bedrooms: data.bedrooms || null,
         area_m2: data.area_m2 || null,
@@ -272,7 +271,7 @@ export default function QuoteForm() {
 
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, city: formData.city }); // Todo: remove mock functionality
+    console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address }); // Todo: remove mock functionality
     setStep(2);
   };
 
@@ -362,19 +361,16 @@ export default function QuoteForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="city">City *</Label>
-                    <Select value={formData.city} onValueChange={(value) => handleInputChange('city', value)}>
-                      <SelectTrigger data-testid="select-city-quote">
-                        <SelectValue placeholder="Select your city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CITIES.map((city) => (
-                          <SelectItem key={city} value={city}>
-                            {city}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="address">Address *</Label>
+                    <Input
+                      id="address"
+                      type="text"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange('address', e.target.value)}
+                      placeholder="Enter your full address"
+                      required
+                      data-testid="input-address"
+                    />
                   </div>
 
                   <Button type="submit" className="w-full" data-testid="button-next-step">
@@ -973,7 +969,7 @@ export default function QuoteForm() {
                           name: '',
                           email: '',
                           phone: '',
-                          city: '',
+                          address: '',
                           service: '',
                           bedrooms: '',
                           bathrooms: 1,
