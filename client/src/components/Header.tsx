@@ -61,7 +61,7 @@ export default function Header() {
                       key={service}
                       href={`/${service.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
                       className="block px-3 py-2 text-sm text-popover-foreground hover:bg-accent rounded-sm"
-                      data-testid={`link-service-${service.toLowerCase().replace(/ /g, '-')}`}
+                      data-testid={`link-service-${service.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
                     >
                       {service}
                     </Link>

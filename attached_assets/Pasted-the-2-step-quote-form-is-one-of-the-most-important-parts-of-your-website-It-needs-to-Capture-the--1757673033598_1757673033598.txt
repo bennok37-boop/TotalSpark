@@ -1,0 +1,96 @@
+the 2-step quote form is one of the most important parts of your website.
+It needs to:
+
+Capture the lead as early as possible (so you don’t lose abandoned forms).
+
+Be simple and frictionless, while still collecting the details you need to give an accurate quote.
+
+Use conversion-optimised copy (not just bland “Name/Email” fields).
+
+Here’s the copy & flow:
+
+📝 2-Step Quote Form — TotalSpark Solutions
+Step 1: Quick Contact (Lead Capture – Required)
+
+Headline: “Start Your 60-Second Quote”
+Subhead: “Tell us a few basics and we’ll give you an instant estimate.”
+
+Full Name (Input)
+Placeholder: “Enter your name”
+
+Email Address (Input)
+Placeholder: “Where should we send your quote?”
+
+Phone Number (Input – mobile-friendly keypad)
+Placeholder: “Best number for updates”
+
+City/Area (Dropdown)
+Options: Newcastle, Leeds, Sunderland, York, Middlesbrough, Other North East
+
+CTA Button: → “Next Step: Property Details”
+
+👉 Lead should be saved here — even if they abandon Step 2.
+
+Step 2: Property & Service Details
+
+Headline: “Almost Done – Tell Us About Your Clean”
+Subhead: “This helps us give you the most accurate price.”
+
+Property Type (Dropdown)
+Options: Flat/Apartment, House, Office/Commercial, Other
+
+Number of Bedrooms (Dropdown)
+Options: Studio, 1, 2, 3, 4, 5+
+
+Bathrooms (Dropdown)
+Options: 1, 2, 3+
+
+Service Required (Checkbox – multiple select)
+
+End of Tenancy Cleaning
+
+Deep Cleaning
+
+Commercial/Office Cleaning
+
+Carpet & Upholstery Cleaning
+
+Add-Ons (Checkbox – optional upsells)
+
+Carpet steam cleaning
+
+Upholstery cleaning
+
+Fridge/oven deep clean
+
+Windows (interior)
+
+Preferred Date (Date picker)
+
+Special Notes (Textarea – optional)
+Placeholder: “Anything else we should know?”
+
+CTA Button: → “Get My Instant Quote”
+
+Thank You Page (After Form)
+
+Headline: “Thanks – Your Quote Is Ready!”
+Subhead: “Check your inbox for details. Want to fast-track?”
+
+📅 Book a Cleaning Slot Now → Calendar/booking link
+
+💬 Chat on WhatsApp → Pre-filled message like “Hi, I just requested a quote for [service] in [city].”
+
+📞 Call Us Direct
+
+⚡ Conversion Copywriting Tips
+
+Keep CTAs action-oriented:
+
+Step 1: “Next Step: Property Details” (not just “Next”)
+
+Step 2: “Get My Instant Quote”
+
+Use progress bar (Step 1 of 2 → Step 2 of 2) so users know it’s quick.
+
+Save partial leads at Step 1 — you can follow up by phone/email even if Step 2 is abandoned.
