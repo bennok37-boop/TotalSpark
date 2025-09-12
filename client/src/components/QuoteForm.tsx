@@ -599,7 +599,7 @@ export default function QuoteForm() {
                         <div className="text-center space-y-4">
                           <div className="space-y-2">
                             <div className="text-3xl font-bold text-primary">
-                              £{quoteResult.priceRange[0]} - £{quoteResult.priceRange[1]}
+                              £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
                             </div>
                             <div className="text-sm text-muted-foreground">Estimated Price Range</div>
                           </div>
@@ -610,29 +610,29 @@ export default function QuoteForm() {
                             <div className="space-y-1">
                               <div className="flex items-center justify-center space-x-1">
                                 <Users className="h-4 w-4 text-muted-foreground" />
-                                <span className="font-medium">{quoteResult.crew}</span>
+                                <span className="font-medium">{quoteResult.scheduling.crew}</span>
                               </div>
                               <div className="text-xs text-muted-foreground">Crew Size</div>
                             </div>
                             <div className="space-y-1">
                               <div className="flex items-center justify-center space-x-1">
                                 <Clock className="h-4 w-4 text-muted-foreground" />
-                                <span className="font-medium">{quoteResult.duration}h</span>
+                                <span className="font-medium">{quoteResult.scheduling.durationHours}h</span>
                               </div>
                               <div className="text-xs text-muted-foreground">Duration</div>
                             </div>
                           </div>
                           
-                          {quoteResult.breakdown.length > 0 && (
+                          {quoteResult.lineItems.length > 0 && (
                             <>
                               <Separator />
                               <div className="space-y-2">
                                 <h4 className="text-sm font-medium text-left">Price Breakdown:</h4>
                                 <div className="space-y-1 text-sm text-left">
-                                  {quoteResult.breakdown.map((item, index) => (
+                                  {quoteResult.lineItems.map((item: any, index: number) => (
                                     <div key={index} className="flex justify-between">
-                                      <span className="text-muted-foreground">{item.item}</span>
-                                      <span>£{item.price}</span>
+                                      <span className="text-muted-foreground">{item.description}</span>
+                                      <span>£{item.amount.toFixed(2)}</span>
                                     </div>
                                   ))}
                                 </div>
@@ -676,11 +676,11 @@ export default function QuoteForm() {
                     <p className="text-muted-foreground mb-4">
                       Check your inbox for details. Want to fast-track your booking?
                     </p>
-                    {estimatedPrice && (
+                    {quoteResult && (
                       <div className="bg-chart-2/10 border border-chart-2/20 rounded-lg p-4 mb-6">
                         <p className="text-sm text-muted-foreground mb-1">Your Estimated Quote</p>
                         <p className="text-3xl font-bold text-chart-2" data-testid="text-final-price">
-                          £{estimatedPrice}
+                          £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Final price confirmed after property assessment
@@ -714,12 +714,31 @@ export default function QuoteForm() {
                           email: '',
                           phone: '',
                           city: '',
-                          propertyType: '',
-                          bedrooms: '',
                           service: '',
-                          extras: []
+                          bedrooms: '',
+                          bathrooms: 1,
+                          kitchenSize: '',
+                          area_m2: 0,
+                          carpetRooms: 0,
+                          stairs: 0,
+                          rugs: 0,
+                          sofa2: 0,
+                          sofa3: 0,
+                          armchair: 0,
+                          mattress: 0,
+                          oven: false,
+                          fridge: false,
+                          windows: 0,
+                          cabinets: false,
+                          limescale: false,
+                          urgent: false,
+                          weekend: false,
+                          stairsNoLift: false,
+                          outerArea: false,
+                          bundleCarpetsWithEoT: false,
+                          vat: false
                         });
-                        setEstimatedPrice(null);
+                        setQuoteResult(null);
                       }}
                       className="w-full"
                       data-testid="button-new-quote"
