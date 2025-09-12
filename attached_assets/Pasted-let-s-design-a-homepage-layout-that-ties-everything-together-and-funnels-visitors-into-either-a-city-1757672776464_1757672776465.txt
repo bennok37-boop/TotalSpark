@@ -1,0 +1,136 @@
+let’s design a homepage layout that ties everything together and funnels visitors into either a city page (geo intent) or a service page (service intent).
+
+Here’s a conversion-focused homepage wireframe for TotalSpark Solutions:
+
+🏠 Homepage Layout — TotalSpark Solutions
+1. Hero Section (Above the Fold)
+
+H1: “Professional Cleaning Services in Newcastle, Leeds, Sunderland, York & Middlesbrough”
+
+Subhead: “End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.”
+
+Primary CTA: “Get Instant Quote” → scroll to form
+
+Secondary CTA: “Call Us Now – 0800 XXX XXXX”
+
+Background image: spotless home/office (not stocky, clean & modern).
+
+2. Proof Strip (Trust Signals)
+
+⭐⭐⭐⭐⭐ “Rated 4.9/5 by 500+ tenants, landlords & businesses”
+
+DBS-checked | Fully Insured | Deposit-Back Guarantee | COSHH Compliant
+
+Small logos of partner letting agents, landlords, or case study clients.
+
+3. Services Overview (4 Cards → Service Pages)
+
+Grid of 4 clickable cards linking to service pages:
+
+🏠 End of Tenancy Cleaning
+
+🏢 Commercial & Office Cleaning
+
+🧼 Deep Cleaning
+
+🪑 Carpet & Upholstery Cleaning
+
+4. Locations We Cover (5 Cards → City Pages)
+
+Headline: “Trusted Across the North East”
+Cards linking to city landing pages:
+
+Newcastle
+
+Leeds
+
+Sunderland
+
+York
+
+Middlesbrough
+
+5. Why Choose Us (E-E-A-T + Differentiators)
+
+✅ Deposit-Back Guarantee (or free re-clean in 48h)
+
+✅ Transparent Pricing – instant quote calculator
+
+✅ Local, DBS-checked cleaners
+
+✅ Insurance & compliance documentation available
+
+✅ Real case studies from local clients
+
+6. Pricing Snapshot (Quick Wins)
+
+Example pricing table:
+
+1-bed flat clean: from £120
+
+3-bed house deep clean: from £220
+
+Office cleaning: from £20/hr
+
+CTA: “Calculate My Price Now”
+
+7. Before & After Gallery (Proof of Work)
+
+Carousel/slideshow of real results:
+
+Student flats (Jesmond, Headingley)
+
+Offices (Newcastle, Leeds city centre)
+
+Homes (Middlesbrough, Sunderland)
+
+8. Testimonials & Reviews
+
+Pull in Google reviews / Trustpilot if available.
+If not, write case-study style quotes (e.g., “TotalSpark Solutions helped us secure our full deposit in Leeds. Fantastic service!”).
+
+9. About Us (Mini Story + CTA)
+
+Short intro: “Founded in 2025, TotalSpark Solutions has grown to serve tenants, landlords, and businesses across the North East. We combine local expertise with professional standards to deliver spotless results.”
+
+Link to full “About” page.
+
+CTA: “Download our Landlord/Agent Pack (Free PDF)” (email gated).
+
+10. Final CTA (Lead Capture)
+
+Big, bold section with form + phone + WhatsApp:
+
+Headline: “Ready for a Spotless Clean?”
+
+2-step form (lead captured on step 1).
+
+Phone button (click-to-call).
+
+WhatsApp chat button.
+
+11. Footer (SEO + Trust + Navigation)
+
+Quick Links: Service pages
+
+Locations: City pages
+
+Trust: DBS, insurance, COSHH, guarantee
+
+Contact info: phone, email, office address
+
+⚡ Conversion Hack: Add a sticky mobile footer bar with:
+
+📞 Call Now
+
+💬 WhatsApp
+
+📝 Get Quote
+
+👉 This homepage acts as your “hub” → it pushes visitors either to:
+
+City Pages (geo-local search intent)
+
+Service Pages (service-specific search intent)
+
+Or directly into the quote funnel.
