@@ -43,6 +43,8 @@ interface QuoteFormData {
   
   // Commercial enhancements
   commercialType: "office" | "retail" | "education" | "healthcare" | "hospitality" | "afterbuilders" | "";
+  commercialRooms: number;
+  commercialToilets: number;
   
   // Carpet items
   carpetRooms: number;
@@ -59,12 +61,13 @@ interface QuoteFormData {
   windows: number;
   cabinets: boolean;
   limescale: boolean;
+  addOnCarpets: boolean;
+  addOnUpholstery: boolean;
   
   // Modifiers
   urgent: boolean;
   weekend: boolean;
   stairsNoLift: boolean;
-  outerArea: boolean;
   
   // Pricing
   bundleCarpetsWithEoT: boolean;
@@ -97,6 +100,8 @@ export default function QuoteForm() {
     
     // Commercial enhancements
     commercialType: '',
+    commercialRooms: 0,
+    commercialToilets: 0,
     
     carpetRooms: 0,
     stairs: 0,
@@ -110,10 +115,12 @@ export default function QuoteForm() {
     windows: 0,
     cabinets: false,
     limescale: false,
+    addOnCarpets: false,
+    addOnUpholstery: false,
     urgent: false,
     weekend: false,
     stairsNoLift: false,
-    outerArea: false,
+
     bundleCarpetsWithEoT: false,
     vat: false
   });
@@ -193,9 +200,13 @@ export default function QuoteForm() {
 
   // Real-time price calculation using the pricing engine
   useEffect(() => {
+    const hasCarpetItems = formData.carpetRooms > 0 || formData.stairs > 0 || formData.rugs > 0 || 
+                          formData.sofa2 > 0 || formData.sofa3 > 0 || formData.armchair > 0 || formData.mattress > 0;
+    
     if (formData.service && 
-        ((formData.service === 'commercial' && formData.area_m2 > 0) ||
-         (formData.service !== 'commercial' && formData.bedrooms))) {
+        ((formData.service === 'commercial' && (formData.area_m2 > 0 || formData.commercialRooms > 0)) ||
+         (formData.service === 'carpets' && hasCarpetItems) ||
+         (formData.service !== 'commercial' && formData.service !== 'carpets' && formData.bedrooms))) {
       
       const quoteInput: QuoteInput = {
         service: formData.service,
@@ -217,6 +228,8 @@ export default function QuoteForm() {
         
         // Commercial enhancements
         commercialType: formData.commercialType || undefined,
+        commercialRooms: formData.commercialRooms || undefined,
+        commercialToilets: formData.commercialToilets || undefined,
         
         items: formData.service === 'carpets' ? {
           carpetRooms: formData.carpetRooms,
@@ -232,13 +245,14 @@ export default function QuoteForm() {
           fridge: formData.fridge,
           windows: formData.windows,
           cabinets: formData.cabinets,
-          limescale: formData.limescale
+          limescale: formData.limescale,
+          carpets: formData.addOnCarpets,
+          upholstery: formData.addOnUpholstery
         },
         modifiers: {
           urgent: formData.urgent,
           weekend: formData.weekend,
           stairsNoLift: formData.stairsNoLift,
-          outerArea: formData.outerArea
         },
         bundleCarpetsWithEoT: formData.bundleCarpetsWithEoT,
         vat: formData.vat
@@ -592,17 +606,51 @@ export default function QuoteForm() {
                         </div>
                       </div>
                       
-                      <div>
-                        <Label htmlFor="area">Office/Commercial Area (m²) *</Label>
-                        <Input
-                          id="area"
-                          type="number"
-                          min="1"
-                          value={formData.area_m2 || ''}
-                          onChange={(e) => handleNumberChange('area_m2', e.target.value)}
-                          placeholder="Enter area in square meters"
-                          data-testid="input-area"
-                        />
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="area">Area (m²)</Label>
+                            <Input
+                              id="area"
+                              type="number"
+                              min="1"
+                              value={formData.area_m2 || ''}
+                              onChange={(e) => handleNumberChange('area_m2', e.target.value)}
+                              placeholder="Area in square meters"
+                              data-testid="input-area"
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="commercialRooms">OR Number of Rooms</Label>
+                            <Input
+                              id="commercialRooms"
+                              type="number"
+                              min="1"
+                              value={formData.commercialRooms || ''}
+                              onChange={(e) => handleNumberChange('commercialRooms', e.target.value)}
+                              placeholder="Number of rooms"
+                              data-testid="input-commercial-rooms"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="commercialToilets">Number of Toilets</Label>
+                          <Input
+                            id="commercialToilets"
+                            type="number"
+                            min="0"
+                            value={formData.commercialToilets || ''}
+                            onChange={(e) => handleNumberChange('commercialToilets', e.target.value)}
+                            placeholder="Number of toilets"
+                            data-testid="input-commercial-toilets"
+                          />
+                        </div>
+                        
+                        <p className="text-sm text-muted-foreground">
+                          Please provide either the area in square meters OR the number of rooms. We'll add a quote for additional toilets if specified.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -734,6 +782,24 @@ export default function QuoteForm() {
                           />
                           <Label htmlFor="limescale" className="text-sm">Heavy Limescale Treatment (+£35)</Label>
                         </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="addOnCarpets"
+                            checked={formData.addOnCarpets}
+                            onCheckedChange={(checked) => handleCheckboxChange('addOnCarpets', checked as boolean)}
+                            data-testid="checkbox-add-on-carpets"
+                          />
+                          <Label htmlFor="addOnCarpets" className="text-sm">Carpet Cleaning Add-on (+£80)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="addOnUpholstery"
+                            checked={formData.addOnUpholstery}
+                            onCheckedChange={(checked) => handleCheckboxChange('addOnUpholstery', checked as boolean)}
+                            data-testid="checkbox-add-on-upholstery"
+                          />
+                          <Label htmlFor="addOnUpholstery" className="text-sm">Upholstery Cleaning Add-on (+£60)</Label>
+                        </div>
                         <div className="space-y-2">
                           <Label htmlFor="windows">Interior Windows</Label>
                           <Input
@@ -781,15 +847,6 @@ export default function QuoteForm() {
                             data-testid="checkbox-stairs"
                           />
                           <Label htmlFor="stairsNoLift" className="text-sm">Property above 2nd floor (no lift) (+£15)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox 
-                            id="outerArea"
-                            checked={formData.outerArea}
-                            onCheckedChange={(checked) => handleCheckboxChange('outerArea', checked as boolean)}
-                            data-testid="checkbox-outer-area"
-                          />
-                          <Label htmlFor="outerArea" className="text-sm">Outer London/Area surcharge (+£20)</Label>
                         </div>
                       </div>
                     </div>
@@ -936,6 +993,8 @@ export default function QuoteForm() {
                           
                           // Commercial enhancements
                           commercialType: '',
+                          commercialRooms: 0,
+                          commercialToilets: 0,
                           
                           carpetRooms: 0,
                           stairs: 0,
@@ -949,10 +1008,12 @@ export default function QuoteForm() {
                           windows: 0,
                           cabinets: false,
                           limescale: false,
+                          addOnCarpets: false,
+                          addOnUpholstery: false,
                           urgent: false,
                           weekend: false,
                           stairsNoLift: false,
-                          outerArea: false,
+                      
                           bundleCarpetsWithEoT: false,
                           vat: false
                         });

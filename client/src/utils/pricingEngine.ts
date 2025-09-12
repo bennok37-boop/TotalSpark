@@ -77,13 +77,14 @@ const PRICING = {
     cabinetsInside: 20, 
     limescalePack: 15,
     windowsPerUnit: 3, 
-    windowsMin: 15
+    windowsMin: 15,
+    carpetClean: 80,
+    upholsteryClean: 60
   },
   modifiers: {
     urgentPct: 0.20,
     weekendPct: 0.10,
     stairsNoLift: 10,
-    outerArea: 10,
     bundleCarpetWithEoTDiscountPct: 0.10
   }
 };
@@ -108,6 +109,8 @@ export interface QuoteInput {
   // Commercial enhancements
   commercialType?: "office" | "retail" | "education" | "healthcare" | "hospitality" | "afterbuilders";
   area_m2?: number; // commercial
+  commercialRooms?: number; // alternative to area_m2
+  commercialToilets?: number; // toilets for commercial
   
   items?: {
     carpetRooms?: number;
@@ -124,12 +127,13 @@ export interface QuoteInput {
     windows?: number;
     cabinets?: boolean;
     limescale?: boolean;
+    carpets?: boolean;
+    upholstery?: boolean;
   };
   modifiers?: {
     urgent?: boolean;
     weekend?: boolean;
     stairsNoLift?: boolean;
-    outerArea?: boolean;
   };
   vat?: boolean; // true if VAT-registered
   bundleCarpetsWithEoT?: boolean;
@@ -210,6 +214,8 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     if (input.addons?.fridge) add("Fridge/Freezer clean", cfg.addons.fridgeFreezer);
     if (input.addons?.cabinets) add("Inside kitchen cabinets", cfg.addons.cabinetsInside);
     if (input.addons?.limescale) add("Bathroom limescale pack", cfg.addons.limescalePack);
+    if (input.addons?.carpets) add("Carpet cleaning add-on", cfg.addons.carpetClean);
+    if (input.addons?.upholstery) add("Upholstery cleaning add-on", cfg.addons.upholsteryClean);
     if (input.addons && Number(input.addons.windows) > 0) {
       const win = Math.max(cfg.addons.windowsMin, (input.addons.windows || 0) * cfg.addons.windowsPerUnit);
       add(`Interior windows x${input.addons.windows}`, win);
@@ -230,20 +236,50 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     const catKey = input.commercialType || "office";
     const cat = cfg.commercial.categories[catKey] || cfg.commercial.categories.office;
     const m2ph = cat.m2PerHour;
-    const area = Math.max(0, Number(input.area_m2 || 0));
-
-    let hours = Math.max(cfg.commercial.minHours, area / m2ph);
-
-    // Apply condition multiplier to hours
+    
+    let area = 0;
+    let hours = cfg.commercial.minHours;
+    
+    // Apply condition multiplier
     const cond = cfg.conditionFactor[input.condition || "standard"] ?? 1.00;
-    hours *= cond;
+    
+    // Calculate area from rooms if provided, otherwise use area_m2
+    if (Number(input.commercialRooms) > 0) {
+      // Estimate area based on room count (average 15m² per room)
+      area = Number(input.commercialRooms) * 15;
+      hours = Math.max(cfg.commercial.minHours, area / m2ph);
+      // Apply condition factor to hours and price calculation
+      hours *= cond;
+      add(`Commercial cleaning – ${catKey} (${input.commercialRooms} rooms ≈ ${area}m²)`, hours * cfg.commercial.ratePerHour);
+    } else {
+      area = Math.max(0, Number(input.area_m2 || 0));
+      hours = Math.max(cfg.commercial.minHours, area / m2ph);
+      // Apply condition factor to hours and price calculation
+      hours *= cond;
+      add(`Commercial cleaning – ${catKey} (${area}m² @ ${hours.toFixed(1)} hrs)`, hours * cfg.commercial.ratePerHour);
+    }
 
-    const baseCost = hours * cfg.commercial.ratePerHour;
-    add(`Commercial cleaning – ${catKey} (${hours.toFixed(1)} hrs @ £${cfg.commercial.ratePerHour}/hr)`, baseCost);
+    // Add toilet cleaning if specified
+    if (Number(input.commercialToilets) > 0) {
+      add(`Additional toilet cleaning x${input.commercialToilets}`, Number(input.commercialToilets) * 15);
+    }
+    
     baseHours = hours;
 
     // After builders consumables surcharge
-    if (cat.consumablesPct) add("After builders consumables surcharge", baseCost * cat.consumablesPct);
+    if (cat.consumablesPct) add("After builders consumables surcharge", hours * cfg.commercial.ratePerHour * cat.consumablesPct);
+    
+    // Add-ons for commercial services
+    if (input.addons?.oven) add("Oven deep clean", cfg.addons.oven);
+    if (input.addons?.fridge) add("Fridge/Freezer clean", cfg.addons.fridgeFreezer);
+    if (input.addons?.cabinets) add("Inside kitchen cabinets", cfg.addons.cabinetsInside);
+    if (input.addons?.limescale) add("Bathroom limescale pack", cfg.addons.limescalePack);
+    if (input.addons?.carpets) add("Carpet cleaning add-on", cfg.addons.carpetClean);
+    if (input.addons?.upholstery) add("Upholstery cleaning add-on", cfg.addons.upholsteryClean);
+    if (input.addons && Number(input.addons.windows) > 0) {
+      const win = Math.max(cfg.addons.windowsMin, (input.addons.windows || 0) * cfg.addons.windowsPerUnit);
+      add(`Interior windows x${input.addons.windows}`, win);
+    }
 
   } else if (input.service === "carpets") {
     const it = input.items || {}, c = cfg.carpets;
@@ -258,7 +294,6 @@ export function computeQuote(input: QuoteInput): QuoteResult {
 
   // Flat surcharges
   if (input.modifiers?.stairsNoLift) add("Access surcharge (no lift, 3rd+ floor)", cfg.modifiers.stairsNoLift);
-  if (input.modifiers?.outerArea) add("Outer area call-out", cfg.modifiers.outerArea);
 
   // Percentage surcharges
   let percentMult = 1;

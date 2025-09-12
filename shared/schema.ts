@@ -22,6 +22,8 @@ export const quoteRequests = pgTable("quote_requests", {
   service: text("service").notNull(), // 'endOfTenancy' | 'deep' | 'commercial' | 'carpets'
   bedrooms: text("bedrooms"), // 'studio' | '1' | '2' | '3' | '4' | '5plus'
   area_m2: integer("area_m2"), // For commercial cleaning
+  commercialRooms: integer("commercial_rooms"), // Alternative to area for commercial
+  commercialToilets: integer("commercial_toilets").default(0), // Toilets for commercial
   
   // Carpet items (for carpet service)
   carpetRooms: integer("carpet_rooms").default(0),
@@ -38,12 +40,13 @@ export const quoteRequests = pgTable("quote_requests", {
   windows: integer("windows").default(0),
   cabinets: boolean("cabinets").default(false),
   limescale: boolean("limescale").default(false),
+  addOnCarpets: boolean("add_on_carpets").default(false),
+  addOnUpholstery: boolean("add_on_upholstery").default(false),
   
   // Modifiers
   urgent: boolean("urgent").default(false),
   weekend: boolean("weekend").default(false),
   stairsNoLift: boolean("stairs_no_lift").default(false),
-  outerArea: boolean("outer_area").default(false),
   
   // Pricing options
   bundleCarpetsWithEoT: boolean("bundle_carpets_with_eot").default(false),
