@@ -7,6 +7,10 @@ import BeforeAfterGallery from '@/components/BeforeAfterGallery';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { MapPin } from 'lucide-react';
+import { Link } from 'wouter';
 
 export default function HomePage() {
   return (
@@ -15,11 +19,87 @@ export default function HomePage() {
       <main>
         <HeroSection 
           city="North East England"
-          title="Professional Cleaning Services Across North East England"
-          subtitle="Trusted by over 1,000 customers across Newcastle, Leeds, York, Sunderland & Middlesbrough. DBS-checked, fully insured cleaners with our deposit-back guarantee."
+          title="Professional Cleaning Services in Newcastle, Leeds, Sunderland, York & Middlesbrough"
+          subtitle="End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds. Serving all surrounding areas including Jesmond, Headingley, Ashbrooke & more."
         />
         <ProofStrip />
         <ServiceCards />
+        
+        {/* Locations We Cover Section */}
+        <section className="py-16 bg-muted" data-testid="section-locations">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Trusted Across the North East</h2>
+              <p className="text-xl text-muted-foreground mb-8">Professional cleaning services covering major cities and surrounding areas</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <Card className="hover-elevate">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Newcastle</h3>
+                  <p className="text-muted-foreground text-sm mb-4">including Jesmond, Heaton, Gosforth & city centre</p>
+                  <Link href="/cleaning/newcastle">
+                    <Button variant="outline" size="sm" data-testid="button-newcastle-location">Get Local Quote</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Leeds</h3>
+                  <p className="text-muted-foreground text-sm mb-4">Headingley, Hyde Park, Burley & suburbs</p>
+                  <Link href="/cleaning/leeds">
+                    <Button variant="outline" size="sm" data-testid="button-leeds-location">Get Local Quote</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Sunderland</h3>
+                  <p className="text-muted-foreground text-sm mb-4">Ashbrooke, city centre & University areas</p>
+                  <Link href="/cleaning/sunderland">
+                    <Button variant="outline" size="sm" data-testid="button-sunderland-location">Get Local Quote</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">York</h3>
+                  <p className="text-muted-foreground text-sm mb-4">Heslington, Clifton, York city centre</p>
+                  <Link href="/cleaning/york">
+                    <Button variant="outline" size="sm" data-testid="button-york-location">Get Local Quote</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Middlesbrough</h3>
+                  <p className="text-muted-foreground text-sm mb-4">Teesside University, Linthorpe & surrounding areas</p>
+                  <Link href="/cleaning/middlesbrough">
+                    <Button variant="outline" size="sm" data-testid="button-middlesbrough-location">Get Local Quote</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
         <BeforeAfterGallery />
         <QuoteForm />
         <FAQSection />
