@@ -108,9 +108,8 @@ export interface QuoteInput {
   
   // Commercial enhancements
   commercialType?: "office" | "retail" | "education" | "healthcare" | "hospitality" | "afterbuilders";
-  area_m2?: number; // commercial (legacy)
-  commercialRooms?: number; // alternative to area_m2 (legacy)
-  commercialHours?: number; // estimated hours needed for commercial job
+  area_m2?: number; // commercial
+  commercialRooms?: number; // alternative to area_m2
   commercialToilets?: number; // toilets for commercial
   
   items?: {
@@ -236,15 +235,29 @@ export function computeQuote(input: QuoteInput): QuoteResult {
   } else if (input.service === "commercial") {
     const catKey = input.commercialType || "office";
     const cat = cfg.commercial.categories[catKey] || cfg.commercial.categories.office;
+    const m2ph = cat.m2PerHour;
     
-    // Use provided hours directly, with minimum enforcement
-    let hours = Math.max(cfg.commercial.minHours, Number(input.commercialHours || 0));
+    let area = 0;
+    let hours = cfg.commercial.minHours;
     
-    // Apply condition multiplier to hours
+    // Apply condition multiplier
     const cond = cfg.conditionFactor[input.condition || "standard"] ?? 1.00;
-    hours *= cond;
     
-    add(`Commercial cleaning – ${catKey} (${(input.commercialHours || 0)} hrs @ £${cfg.commercial.ratePerHour}/hr)`, hours * cfg.commercial.ratePerHour);
+    // Calculate area from rooms if provided, otherwise use area_m2
+    if (Number(input.commercialRooms) > 0) {
+      // Estimate area based on room count (average 15m² per room)
+      area = Number(input.commercialRooms) * 15;
+      hours = Math.max(cfg.commercial.minHours, area / m2ph);
+      // Apply condition factor to hours and price calculation
+      hours *= cond;
+      add(`Commercial cleaning – ${catKey} (${input.commercialRooms} rooms ≈ ${area}m²)`, hours * cfg.commercial.ratePerHour);
+    } else {
+      area = Math.max(0, Number(input.area_m2 || 0));
+      hours = Math.max(cfg.commercial.minHours, area / m2ph);
+      // Apply condition factor to hours and price calculation
+      hours *= cond;
+      add(`Commercial cleaning – ${catKey} (${area}m² @ ${hours.toFixed(1)} hrs)`, hours * cfg.commercial.ratePerHour);
+    }
 
     // Add toilet cleaning if specified
     if (Number(input.commercialToilets) > 0) {

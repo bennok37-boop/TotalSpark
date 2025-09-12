@@ -43,8 +43,7 @@ interface QuoteFormData {
   
   // Commercial enhancements
   commercialType: "office" | "retail" | "education" | "healthcare" | "hospitality" | "afterbuilders" | "";
-  commercialRooms: number; // legacy
-  commercialHours: number; // estimated hours for commercial job
+  commercialRooms: number;
   commercialToilets: number;
   
   // Carpet items
@@ -102,7 +101,6 @@ export default function QuoteForm() {
     // Commercial enhancements
     commercialType: '',
     commercialRooms: 0,
-    commercialHours: 0,
     commercialToilets: 0,
     
     carpetRooms: 0,
@@ -206,7 +204,7 @@ export default function QuoteForm() {
                           formData.sofa2 > 0 || formData.sofa3 > 0 || formData.armchair > 0 || formData.mattress > 0;
     
     if (formData.service && 
-        ((formData.service === 'commercial' && formData.commercialHours > 0) ||
+        ((formData.service === 'commercial' && (formData.area_m2 > 0 || formData.commercialRooms > 0)) ||
          (formData.service === 'carpets' && hasCarpetItems) ||
          (formData.service !== 'commercial' && formData.service !== 'carpets' && formData.bedrooms))) {
       
@@ -230,7 +228,7 @@ export default function QuoteForm() {
         
         // Commercial enhancements
         commercialType: formData.commercialType || undefined,
-        commercialHours: formData.commercialHours || undefined,
+        commercialRooms: formData.commercialRooms || undefined,
         commercialToilets: formData.commercialToilets || undefined,
         
         items: formData.service === 'carpets' ? {
@@ -611,34 +609,47 @@ export default function QuoteForm() {
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor="commercialHours">Estimated Hours Required *</Label>
+                            <Label htmlFor="area">Area (m²)</Label>
                             <Input
-                              id="commercialHours"
+                              id="area"
                               type="number"
-                              min="2"
-                              value={formData.commercialHours || ''}
-                              onChange={(e) => handleNumberChange('commercialHours', e.target.value)}
-                              placeholder="Hours needed (minimum 2)"
-                              data-testid="input-commercial-hours"
+                              min="1"
+                              value={formData.area_m2 || ''}
+                              onChange={(e) => handleNumberChange('area_m2', e.target.value)}
+                              placeholder="Area in square meters"
+                              data-testid="input-area"
                             />
                           </div>
                           
                           <div>
-                            <Label htmlFor="commercialToilets">Additional Toilets</Label>
+                            <Label htmlFor="commercialRooms">OR Number of Rooms</Label>
                             <Input
-                              id="commercialToilets"
+                              id="commercialRooms"
                               type="number"
-                              min="0"
-                              value={formData.commercialToilets || ''}
-                              onChange={(e) => handleNumberChange('commercialToilets', e.target.value)}
-                              placeholder="Extra toilets (£15 each)"
-                              data-testid="input-commercial-toilets"
+                              min="1"
+                              value={formData.commercialRooms || ''}
+                              onChange={(e) => handleNumberChange('commercialRooms', e.target.value)}
+                              placeholder="Number of rooms"
+                              data-testid="input-commercial-rooms"
                             />
                           </div>
                         </div>
                         
+                        <div>
+                          <Label htmlFor="commercialToilets">Number of Toilets</Label>
+                          <Input
+                            id="commercialToilets"
+                            type="number"
+                            min="0"
+                            value={formData.commercialToilets || ''}
+                            onChange={(e) => handleNumberChange('commercialToilets', e.target.value)}
+                            placeholder="Number of toilets"
+                            data-testid="input-commercial-toilets"
+                          />
+                        </div>
+                        
                         <p className="text-sm text-muted-foreground">
-                          Commercial cleaning is charged at £20 per hour. Please estimate how many hours your space will require. The condition level will adjust the final quote accordingly.
+                          Please provide either the area in square meters OR the number of rooms. We'll add a quote for additional toilets if specified.
                         </p>
                       </div>
                     </div>
@@ -983,7 +994,6 @@ export default function QuoteForm() {
                           // Commercial enhancements
                           commercialType: '',
                           commercialRooms: 0,
-                          commercialHours: 0,
                           commercialToilets: 0,
                           
                           carpetRooms: 0,
