@@ -1,0 +1,109 @@
+Phase 1 — Website Foundation (Day 1–5)
+
+Objective: Build a high-converting, SEO-friendly site targeting the North East cleaning market (Leeds, Newcastle, Sunderland, Middlesbrough, York).
+
+1. City + Service Structure
+City Pages (5 total)
+
+/cleaning-newcastle
+
+/cleaning-sunderland
+
+/cleaning-york
+
+/cleaning-middlesbrough
+
+/cleaning-leeds
+
+👉 Each = conversion-focused landing page (800–1,200 words).
+
+Structure per City Page:
+
+Hero → H1, subhead, quote button, local phone number.
+
+Proof Strip → ⭐⭐⭐⭐⭐ + “DBS-checked | Fully Insured | Deposit-Back Guarantee.”
+
+Service Blocks → Cards linking to service pages.
+
+Pricing Snapshot → “From £120 for 1-bed flats — get your exact price in 60 seconds.”
+
+Before/After Gallery → Geo-relevant images.
+
+Local Trust Signals → Agent logos, local case studies.
+
+FAQs (5–8, tuned per city).
+
+Mini About → “Proudly serving [City] since 2025…”
+
+Final CTA → Form + Phone + WhatsApp.
+
+Core Service Pages (4 total)
+
+/end-of-tenancy-cleaning
+
+/commercial-cleaning
+
+/deep-cleaning
+
+/carpet-upholstery-cleaning
+
+👉 Each should be a standalone “money page” with:
+
+Strong CTAs
+
+Pricing ranges
+
+Testimonials
+
+FAQs
+
+Combo Pages (later)
+
+/end-of-tenancy-cleaning-newcastle (or other high-intent services)
+
+👉 Capture hyper-local + service keywords.
+
+2. Conversion Plumbing
+
+✅ Sticky click-to-call button (mobile).
+
+✅ WhatsApp click-to-chat.
+
+✅ Live chat (optional).
+
+✅ 2-Step Quote Form:
+
+Step 1: name, email, phone, city (lead saved).
+
+Step 2: property type, rooms, extras.
+
+✅ Instant Quote Calculator (ranges → refine later).
+
+✅ Thank You Page → Calendar booking + WhatsApp follow-up.
+
+Pro Hack: Use dynamic city numbers (CallRail/Infinity) to track call leads per location page.
+
+3. Trust & E-E-A-T
+
+Upload: insurance certificates, DBS mention, COSHH compliance page.
+
+About Us page → real photos, no stock.
+
+Guarantee badge → “Deposit-Back Guarantee” or “Reclean Free Within 48 Hours.”
+
+Landlord/Agent Pack (PDF):
+
+Services checklist
+
+Insurance proof
+
+DBS mention
+
+Example scope of work
+→ Gated behind email for lead capture.
+
+🔥 Execution Tip
+
+Build city + service pages together → run Google Ads on [service + city] queries.
+
+Use insights from conversions + click data to inform SEO.
