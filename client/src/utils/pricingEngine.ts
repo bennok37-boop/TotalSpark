@@ -1,4 +1,4 @@
-// Instant Quote Calculator - Pricing Engine
+// Instant Quote Calculator - Pricing Engine  
 // Based on CleanPro pricing matrix and business rules
 
 const PRICING = {
@@ -8,22 +8,22 @@ const PRICING = {
   estimateBand: 0.10,
   endOfTenancy: {
     base: { 
-      studio: {price: 100, hours: 3}, 
-      "1": {price: 120, hours: 4}, 
-      "2": {price: 160, hours: 6}, 
-      "3": {price: 220, hours: 8}, 
-      "4": {price: 280, hours: 10}, 
-      "5plus": {price: 340, hours: 12} 
+      studio: { price: 100, hours: 3 }, 
+      "1": { price: 120, hours: 4 }, 
+      "2": { price: 160, hours: 6 }, 
+      "3": { price: 220, hours: 8 }, 
+      "4": { price: 280, hours: 10 }, 
+      "5plus": { price: 340, hours: 12 } 
     }
   },
   deep: {
     base: { 
-      studio: {price: 100, hours: 3}, 
-      "1": {price: 100, hours: 4}, 
-      "2": {price: 150, hours: 6}, 
-      "3": {price: 200, hours: 8}, 
-      "4": {price: 260, hours: 10}, 
-      "5plus": {price: 320, hours: 12} 
+      studio: { price: 100, hours: 3 }, 
+      "1": { price: 100, hours: 4 }, 
+      "2": { price: 150, hours: 6 }, 
+      "3": { price: 200, hours: 8 }, 
+      "4": { price: 260, hours: 10 }, 
+      "5plus": { price: 320, hours: 12 } 
     }
   },
   commercial: {
@@ -54,15 +54,6 @@ const PRICING = {
     stairsNoLift: 10,
     outerArea: 10,
     bundleCarpetWithEoTDiscountPct: 0.10
-  },
-  property: {
-    includedBathrooms: 1,
-    extraBathroom: { price: 20, hours: 0.5 },
-    kitchen: {
-      small: { price: -10, hours: -0.3 },
-      standard: { price: 0, hours: 0 },
-      large: { price: 25, hours: 0.7 }
-    }
   }
 };
 
@@ -140,24 +131,8 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     const base = table[key as keyof typeof table];
     
     if (base) {
-      add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : key === "1" ? "bed" : "beds"})`, base.price);
+      add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"})`, base.price);
       baseHours = base.hours;
-    }
-
-    // Extra bathrooms
-    if (input.bathrooms && input.bathrooms > cfg.property.includedBathrooms) {
-      const extraBaths = input.bathrooms - cfg.property.includedBathrooms;
-      add(`Extra bathrooms x${extraBaths}`, extraBaths * cfg.property.extraBathroom.price);
-      baseHours += extraBaths * cfg.property.extraBathroom.hours;
-    }
-
-    // Kitchen size adjustment
-    if (input.kitchenSize && cfg.property.kitchen[input.kitchenSize]) {
-      const kitchenAdj = cfg.property.kitchen[input.kitchenSize];
-      if (kitchenAdj.price !== 0) {
-        add(`${input.kitchenSize.charAt(0).toUpperCase() + input.kitchenSize.slice(1)} kitchen`, kitchenAdj.price);
-      }
-      baseHours += kitchenAdj.hours;
     }
 
     // Add-ons
@@ -178,24 +153,24 @@ export function computeQuote(input: QuoteInput): QuoteResult {
 
   } else if (input.service === "carpets") {
     const it = input.items || {};
-    if (it.carpetRooms) add(`Carpet rooms x${it.carpetRooms}`, it.carpetRooms * cfg.carpets.room);
-    if (it.stairs) add(`Stairs & landing x${it.stairs}`, it.stairs * cfg.carpets.stairs);
-    if (it.rugs) add(`Rugs x${it.rugs}`, it.rugs * cfg.carpets.rug);
-    if (it.sofa2) add(`Sofa 2-seater x${it.sofa2}`, it.sofa2 * cfg.carpets.sofa2);
-    if (it.sofa3) add(`Sofa 3-seater x${it.sofa3}`, it.sofa3 * cfg.carpets.sofa3);
-    if (it.armchair) add(`Armchairs x${it.armchair}`, it.armchair * cfg.carpets.armchair);
-    if (it.mattress) add(`Mattresses x${it.mattress}`, it.mattress * cfg.carpets.mattress);
+    add(`Carpet rooms x${it.carpetRooms||0}`, (it.carpetRooms||0) * cfg.carpets.room);
+    add(`Stairs & landing x${it.stairs||0}`, (it.stairs||0) * cfg.carpets.stairs);
+    add(`Rugs x${it.rugs||0}`, (it.rugs||0) * cfg.carpets.rug);
+    add(`Sofa 2-seater x${it.sofa2||0}`, (it.sofa2||0) * cfg.carpets.sofa2);
+    add(`Sofa 3-seater x${it.sofa3||0}`, (it.sofa3||0) * cfg.carpets.sofa3);
+    add(`Armchairs x${it.armchair||0}`, (it.armchair||0) * cfg.carpets.armchair);
+    add(`Mattresses x${it.mattress||0}`, (it.mattress||0) * cfg.carpets.mattress);
   }
 
   // Bundle discount: carpets with EoT only (apply to carpet lines)
   if (input.bundleCarpetsWithEoT && input.service === "endOfTenancy" && input.items) {
-    const carpetTotal = (input.items.carpetRooms || 0) * cfg.carpets.room
-      + (input.items.stairs || 0) * cfg.carpets.stairs
-      + (input.items.rugs || 0) * cfg.carpets.rug
-      + (input.items.sofa2 || 0) * cfg.carpets.sofa2
-      + (input.items.sofa3 || 0) * cfg.carpets.sofa3
-      + (input.items.armchair || 0) * cfg.carpets.armchair
-      + (input.items.mattress || 0) * cfg.carpets.mattress;
+    const carpetTotal = (input.items.carpetRooms||0)*cfg.carpets.room
+      + (input.items.stairs||0)*cfg.carpets.stairs
+      + (input.items.rugs||0)*cfg.carpets.rug
+      + (input.items.sofa2||0)*cfg.carpets.sofa2
+      + (input.items.sofa3||0)*cfg.carpets.sofa3
+      + (input.items.armchair||0)*cfg.carpets.armchair
+      + (input.items.mattress||0)*cfg.carpets.mattress;
     if (carpetTotal > 0) {
       const disc = carpetTotal * cfg.modifiers.bundleCarpetWithEoTDiscountPct;
       add("Bundle discount (carpets with End of Tenancy)", -disc);
@@ -208,36 +183,13 @@ export function computeQuote(input: QuoteInput): QuoteResult {
 
   // Percentage surcharges (apply after flat items)
   let percentMultiplier = 1;
-  if (input.modifiers?.urgent) {
-    percentMultiplier *= (1 + cfg.modifiers.urgentPct);
-    add("Urgent service surcharge (<48h)", subtotal * cfg.modifiers.urgentPct);
-  }
-  if (input.modifiers?.weekend) {
-    percentMultiplier *= (1 + cfg.modifiers.weekendPct);
-    add("Weekend service surcharge", subtotal * cfg.modifiers.weekendPct);
-  }
-
-  // Apply percentage multiplier to existing items (but don't double-add the surcharges)
-  if (percentMultiplier > 1) {
-    // Remove the surcharge line items we just added to avoid double counting
-    const surchargeItems = lineItems.filter(item => 
-      item.label.includes("surcharge") && item.amount > 0
-    );
-    lineItems = lineItems.filter(item => 
-      !item.label.includes("surcharge") || item.amount <= 0
-    );
-    
-    // Apply multiplier to base subtotal
-    const baseSubtotal = subtotal - surchargeItems.reduce((sum, item) => sum + item.amount, 0);
-    subtotal = baseSubtotal * percentMultiplier;
-    
-    // Re-add surcharge items
-    surchargeItems.forEach(item => lineItems.push(item));
-    subtotal += surchargeItems.reduce((sum, item) => sum + item.amount, 0);
-  }
+  if (input.modifiers?.urgent) percentMultiplier *= (1 + cfg.modifiers.urgentPct);
+  if (input.modifiers?.weekend) percentMultiplier *= (1 + cfg.modifiers.weekendPct);
+  subtotal *= percentMultiplier;
 
   // Minimums
-  const min = (input.service === "commercial") ? cfg.commercialMin : cfg.domesticMin;
+  const min = (input.service === "commercial") ? cfg.commercialMin
+              : (input.service === "carpets" ? cfg.domesticMin : cfg.domesticMin);
   if (subtotal < min) {
     add(`Minimum job value adjustment`, (min - subtotal));
   }
