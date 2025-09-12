@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
+import { scrollToQuoteForm } from '@/utils/scroll';
 
 // Import gallery images
 import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
@@ -78,7 +79,13 @@ export default function EndOfTenancyPage() {
                   <MessageCircle className="w-5 h-5 mr-2" />
                   WhatsApp Chat
                 </Button>
-                <Button variant="secondary" size="lg" className="text-lg px-8" data-testid="button-quote">
+                <Button 
+                  variant="secondary" 
+                  size="lg" 
+                  className="text-lg px-8" 
+                  onClick={scrollToQuoteForm}
+                  data-testid="button-quote"
+                >
                   Get Instant Quote
                 </Button>
               </div>
@@ -221,7 +228,13 @@ export default function EndOfTenancyPage() {
               </Card>
             </div>
             <div className="text-center mt-8">
-              <Button size="lg" data-testid="button-quote-now">Get My Quote Now</Button>
+              <Button 
+                size="lg" 
+                onClick={scrollToQuoteForm}
+                data-testid="button-quote-now"
+              >
+                Get My Quote Now
+              </Button>
             </div>
           </div>
         </section>
@@ -368,13 +381,20 @@ export default function EndOfTenancyPage() {
                 <MessageCircle className="w-5 h-5 mr-2" />
                 WhatsApp
               </Button>
-              <Button size="lg" variant="secondary" className="text-lg px-8" data-testid="button-quote-final">
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="text-lg px-8" 
+                onClick={scrollToQuoteForm}
+                data-testid="button-quote-final"
+              >
                 Get Instant Quote
               </Button>
             </div>
           </div>
         </section>
       </main>
+      <QuoteForm />
       <Footer />
       <StickyCallButton 
         phoneNumber={phoneNumber}
