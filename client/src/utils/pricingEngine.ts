@@ -70,6 +70,8 @@ export interface QuoteInput {
   service: "endOfTenancy" | "deep" | "commercial" | "carpets";
   bedrooms?: "studio" | "1" | "2" | "3" | "4" | "5plus" | "5+";
   bathrooms?: number;
+  toilets?: number;
+  livingRooms?: number;
   kitchenSize?: "small" | "standard" | "large";
   area_m2?: number; // commercial
   items?: {

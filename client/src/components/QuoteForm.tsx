@@ -27,6 +27,8 @@ interface QuoteFormData {
   service: "endOfTenancy" | "deep" | "commercial" | "carpets" | "";
   bedrooms: "studio" | "1" | "2" | "3" | "4" | "5plus" | "";
   bathrooms: number;
+  toilets: number;
+  livingRooms: number;
   kitchenSize: "small" | "standard" | "large" | "";
   area_m2: number;
   
@@ -67,6 +69,8 @@ export default function QuoteForm() {
     service: '',
     bedrooms: '',
     bathrooms: 1,
+    toilets: 1,
+    livingRooms: 1,
     kitchenSize: '',
     area_m2: 0,
     carpetRooms: 0,
@@ -172,6 +176,8 @@ export default function QuoteForm() {
         service: formData.service,
         bedrooms: formData.bedrooms || undefined,
         bathrooms: formData.bathrooms,
+        toilets: formData.toilets,
+        livingRooms: formData.livingRooms,
         kitchenSize: formData.kitchenSize || undefined,
         area_m2: formData.area_m2 || undefined,
         items: formData.service === 'carpets' ? {
@@ -358,18 +364,46 @@ export default function QuoteForm() {
                         </Select>
                       </div>
                       
-                      <div>
-                        <Label htmlFor="bathrooms">Number of Bathrooms *</Label>
-                        <Input
-                          id="bathrooms"
-                          type="number"
-                          min="1"
-                          max="10"
-                          value={formData.bathrooms || ''}
-                          onChange={(e) => handleNumberChange('bathrooms', e.target.value)}
-                          placeholder="Enter number of bathrooms"
-                          data-testid="numberOfBathrooms_input"
-                        />
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="bathrooms">Number of Bathrooms *</Label>
+                          <Input
+                            id="bathrooms"
+                            type="number"
+                            min="1"
+                            max="10"
+                            value={formData.bathrooms || ''}
+                            onChange={(e) => handleNumberChange('bathrooms', e.target.value)}
+                            placeholder="Enter number of bathrooms"
+                            data-testid="numberOfBathrooms_input"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="toilets">Number of Toilets</Label>
+                          <Input
+                            id="toilets"
+                            type="number"
+                            min="0"
+                            max="10"
+                            value={formData.toilets || ''}
+                            onChange={(e) => handleNumberChange('toilets', e.target.value)}
+                            placeholder="Enter number of toilets"
+                            data-testid="input-toilets"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="livingRooms">Number of Living Rooms</Label>
+                          <Input
+                            id="livingRooms"
+                            type="number"
+                            min="0"
+                            max="10"
+                            value={formData.livingRooms || ''}
+                            onChange={(e) => handleNumberChange('livingRooms', e.target.value)}
+                            placeholder="Enter number of living rooms"
+                            data-testid="input-living-rooms"
+                          />
+                        </div>
                       </div>
                       
                       <div>
@@ -717,6 +751,8 @@ export default function QuoteForm() {
                           service: '',
                           bedrooms: '',
                           bathrooms: 1,
+                          toilets: 1,
+                          livingRooms: 1,
                           kitchenSize: '',
                           area_m2: 0,
                           carpetRooms: 0,
