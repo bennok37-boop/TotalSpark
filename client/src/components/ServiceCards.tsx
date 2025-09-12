@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Home, Building2, Sparkles, Sofa, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
+import { scrollToQuoteForm } from '@/utils/scroll';
 
 const services = [
   {
@@ -102,7 +103,11 @@ export default function ServiceCards() {
         </div>
 
         <div className="text-center mt-12">
-          <Button size="lg" data-testid="button-get-quote-services">
+          <Button 
+            size="lg" 
+            onClick={scrollToQuoteForm}
+            data-testid="button-get-quote-services"
+          >
             Get Free Quote for Any Service
           </Button>
         </div>

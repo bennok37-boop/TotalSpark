@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowRight, ArrowLeft, Calculator } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle } from 'lucide-react';
 import { CITIES, SERVICES } from '@shared/schema';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
-type FormStep = 1 | 2;
+type FormStep = 1 | 2 | 3;
 
 interface QuoteFormData {
   name: string;
@@ -34,6 +37,66 @@ export default function QuoteForm() {
     extras: []
   });
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const { toast } = useToast();
+
+  // Handle auto-scroll when page loads with #quote-form hash
+  useEffect(() => {
+    if (window.location.hash === '#quote-form') {
+      setTimeout(() => {
+        const quoteForm = document.getElementById('quote-form');
+        if (quoteForm) {
+          const headerHeight = 80;
+          const elementTop = quoteForm.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementTop - headerHeight;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+
+          // Focus the first input
+          setTimeout(() => {
+            const firstInput = quoteForm.querySelector('input[data-testid="input-name"]') as HTMLInputElement;
+            if (firstInput) {
+              firstInput.focus();
+            }
+          }, 800);
+        }
+      }, 100); // Small delay to ensure component is fully rendered
+    }
+  }, []);
+
+  const submitQuoteMutation = useMutation({
+    mutationFn: async (data: QuoteFormData) => {
+      const submitData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        city: data.city,
+        propertyType: data.propertyType || null,
+        bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
+        service: data.service || null,
+        extras: data.extras.length > 0 ? data.extras : null,
+        estimatedPrice: estimatedPrice
+      };
+      return apiRequest('POST', '/api/quotes', submitData);
+    },
+    onSuccess: () => {
+      setStep(3);
+      toast({
+        title: "Quote Submitted!",
+        description: "We'll contact you within 24 hours with your personalized quote."
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to submit quote. Please try again.",
+        variant: "destructive"
+      });
+      console.error('Quote submission error:', error);
+    }
+  });
 
   const handleInputChange = (field: keyof QuoteFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -72,7 +135,7 @@ export default function QuoteForm() {
   const handleStep2Submit = (e: React.FormEvent) => {
     e.preventDefault();
     calculatePrice();
-    console.log('Quote request submitted:', formData); // Todo: remove mock functionality
+    submitQuoteMutation.mutate(formData);
   };
 
   const propertyTypes = [
@@ -92,7 +155,7 @@ export default function QuoteForm() {
   ];
 
   return (
-    <section className="py-16 bg-muted" data-testid="section-quote-form">
+    <section id="quote-form" className="py-16 bg-muted scroll-mt-20" data-testid="section-quote-form">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <Card>
@@ -109,6 +172,7 @@ export default function QuoteForm() {
               <div className="flex justify-center space-x-2 mt-4">
                 <div className={`w-3 h-3 rounded-full ${step >= 1 ? 'bg-primary' : 'bg-muted'}`}></div>
                 <div className={`w-3 h-3 rounded-full ${step >= 2 ? 'bg-primary' : 'bg-muted'}`}></div>
+                <div className={`w-3 h-3 rounded-full ${step >= 3 ? 'bg-primary' : 'bg-muted'}`}></div>
               </div>
             </CardHeader>
 
@@ -173,7 +237,7 @@ export default function QuoteForm() {
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </form>
-              ) : (
+              ) : step === 2 ? (
                 <form onSubmit={handleStep2Submit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -263,12 +327,80 @@ export default function QuoteForm() {
                       <ArrowLeft className="w-4 h-4 mr-2" />
                       Back
                     </Button>
-                    <Button type="submit" className="flex-1" data-testid="button-get-quote">
-                      Get Quote
+                    <Button 
+                      type="submit" 
+                      className="flex-1" 
+                      data-testid="button-get-quote"
+                      disabled={submitQuoteMutation.isPending}
+                    >
+                      {submitQuoteMutation.isPending ? 'Submitting...' : 'Get Quote'}
                     </Button>
                   </div>
                 </form>
-              )}
+              ) : step === 3 ? (
+                // Thank You Step
+                <div className="text-center space-y-6">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle className="w-8 h-8 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">Thanks! Your Quote Is Ready</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Check your inbox for details. Want to fast-track your booking?
+                    </p>
+                    {estimatedPrice && (
+                      <div className="bg-chart-2/10 border border-chart-2/20 rounded-lg p-4 mb-6">
+                        <p className="text-sm text-muted-foreground mb-1">Your Estimated Quote</p>
+                        <p className="text-3xl font-bold text-chart-2" data-testid="text-final-price">
+                          £{estimatedPrice}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Final price confirmed after property assessment
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Button 
+                      variant="default" 
+                      className="w-full"
+                      data-testid="button-call-direct"
+                    >
+                      <Phone className="w-4 h-4 mr-2" />
+                      Call Us Direct
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      data-testid="button-whatsapp"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      WhatsApp Chat
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setStep(1);
+                        setFormData({
+                          name: '',
+                          email: '',
+                          phone: '',
+                          city: '',
+                          propertyType: '',
+                          bedrooms: '',
+                          service: '',
+                          extras: []
+                        });
+                        setEstimatedPrice(null);
+                      }}
+                      className="w-full"
+                      data-testid="button-new-quote"
+                    >
+                      New Quote
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
             </CardContent>
           </Card>
         </div>

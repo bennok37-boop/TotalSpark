@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Phone, Menu, X } from 'lucide-react';
 import { CITIES, SERVICES } from '@shared/schema';
+import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function Header() {
   const [location] = useLocation();
@@ -97,7 +98,12 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               <span className="font-semibold">{phoneNumber}</span>
             </a>
-            <Button data-testid="button-quote">Get Free Quote</Button>
+            <Button 
+              onClick={scrollToQuoteForm}
+              data-testid="button-quote"
+            >
+              Get Free Quote
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -165,7 +171,16 @@ export default function Header() {
                 <span className="font-semibold">{phoneNumber}</span>
               </a>
 
-              <Button className="w-full" data-testid="button-quote-mobile">Get Free Quote</Button>
+              <Button 
+                className="w-full" 
+                onClick={() => {
+                  scrollToQuoteForm();
+                  setIsMenuOpen(false);
+                }}
+                data-testid="button-quote-mobile"
+              >
+                Get Free Quote
+              </Button>
             </nav>
           </div>
         )}

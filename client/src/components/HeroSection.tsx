@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Phone, MessageCircle, Star } from 'lucide-react';
 import { useState } from 'react';
 import heroImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
+import { scrollToQuoteForm } from '@/utils/scroll';
 
 interface HeroSectionProps {
   city: string;
@@ -27,6 +28,7 @@ export default function HeroSection({
 
   const handleQuoteRequest = () => {
     console.log('Quote request started for:', email); // Todo: remove mock functionality
+    scrollToQuoteForm();
   };
 
   return (
