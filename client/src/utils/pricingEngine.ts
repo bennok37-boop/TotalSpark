@@ -247,7 +247,9 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     if (Number(input.commercialRooms) > 0) {
       // Estimate area based on room count (average 15m² per room)
       area = Number(input.commercialRooms) * 15;
-      hours = Math.max(cfg.commercial.minHours, area / m2ph);
+      // For room-based pricing, use a lower minimum to ensure room count influences quote
+      const roomBasedMinHours = Math.max(1, Number(input.commercialRooms) * 0.75); // 45min per room minimum
+      hours = Math.max(roomBasedMinHours, area / m2ph);
       // Apply condition factor to hours and price calculation
       hours *= cond;
       add(`Commercial cleaning – ${catKey} (${input.commercialRooms} rooms ≈ ${area}m²)`, hours * cfg.commercial.ratePerHour);
