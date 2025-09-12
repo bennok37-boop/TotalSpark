@@ -29,8 +29,20 @@ interface QuoteFormData {
   bathrooms: number;
   toilets: number;
   livingRooms: number;
-  kitchenSize: "small" | "standard" | "large" | "";
   area_m2: number;
+  
+  // Enhanced property factors
+  propertyType: "flat" | "terraced" | "semi" | "detached" | "maisonette" | "townhouse" | "";
+  condition: "light" | "standard" | "heavy" | "veryheavy" | "";
+  secondKitchen: boolean;
+  internalStairs: boolean;
+  furnished: boolean;
+  occupied: boolean;
+  hmoRooms: number;
+  wasteBags: number;
+  
+  // Commercial enhancements
+  commercialType: "office" | "retail" | "education" | "healthcare" | "hospitality" | "afterbuilders" | "";
   
   // Carpet items
   carpetRooms: number;
@@ -71,8 +83,21 @@ export default function QuoteForm() {
     bathrooms: 1,
     toilets: 1,
     livingRooms: 1,
-    kitchenSize: '',
     area_m2: 0,
+    
+    // Enhanced property factors
+    propertyType: '',
+    condition: '',
+    secondKitchen: false,
+    internalStairs: false,
+    furnished: false,
+    occupied: false,
+    hmoRooms: 0,
+    wasteBags: 0,
+    
+    // Commercial enhancements
+    commercialType: '',
+    
     carpetRooms: 0,
     stairs: 0,
     rugs: 0,
@@ -178,8 +203,21 @@ export default function QuoteForm() {
         bathrooms: formData.bathrooms,
         toilets: formData.toilets,
         livingRooms: formData.livingRooms,
-        kitchenSize: formData.kitchenSize || undefined,
         area_m2: formData.area_m2 || undefined,
+        
+        // Enhanced property factors
+        propertyType: formData.propertyType || undefined,
+        condition: formData.condition || undefined,
+        secondKitchen: formData.secondKitchen,
+        internalStairs: formData.internalStairs,
+        furnished: formData.furnished,
+        occupied: formData.occupied,
+        hmoRooms: formData.hmoRooms,
+        wasteBags: formData.wasteBags,
+        
+        // Commercial enhancements
+        commercialType: formData.commercialType || undefined,
+        
         items: formData.service === 'carpets' ? {
           carpetRooms: formData.carpetRooms,
           stairs: formData.stairs,
@@ -406,35 +444,166 @@ export default function QuoteForm() {
                         </div>
                       </div>
                       
-                      <div>
-                        <Label htmlFor="kitchenSize">Kitchen Size *</Label>
-                        <Select value={formData.kitchenSize} onValueChange={(value) => handleInputChange('kitchenSize', value)}>
-                          <SelectTrigger data-testid="kitchenSize">
-                            <SelectValue placeholder="Select kitchen size" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="small">Small Kitchen</SelectItem>
-                            <SelectItem value="standard">Standard Kitchen</SelectItem>
-                            <SelectItem value="large">Large Kitchen</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      {/* Enhanced Property Factors */}
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="propertyType">Property Type *</Label>
+                            <Select value={formData.propertyType} onValueChange={(value) => handleInputChange('propertyType', value)}>
+                              <SelectTrigger data-testid="select-property-type">
+                                <SelectValue placeholder="Select property type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="flat">Studio/Flat</SelectItem>
+                                <SelectItem value="terraced">Terraced House</SelectItem>
+                                <SelectItem value="semi">Semi-Detached</SelectItem>
+                                <SelectItem value="detached">Detached House</SelectItem>
+                                <SelectItem value="maisonette">Maisonette</SelectItem>
+                                <SelectItem value="townhouse">Townhouse</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="condition">Property Condition *</Label>
+                            <Select value={formData.condition} onValueChange={(value) => handleInputChange('condition', value)}>
+                              <SelectTrigger data-testid="select-condition">
+                                <SelectValue placeholder="Select condition level" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="light">Light (Well-maintained)</SelectItem>
+                                <SelectItem value="standard">Standard (Typical tenancy)</SelectItem>
+                                <SelectItem value="heavy">Heavy (Grease/scale buildup)</SelectItem>
+                                <SelectItem value="veryheavy">Very Heavy (Neglected/party house)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <Checkbox 
+                              id="secondKitchen" 
+                              checked={formData.secondKitchen}
+                              onCheckedChange={(checked) => handleCheckboxChange('secondKitchen', checked as boolean)}
+                              data-testid="checkbox-second-kitchen"
+                            />
+                            <Label htmlFor="secondKitchen">Second Kitchen (HMO/Annex)</Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Checkbox 
+                              id="internalStairs" 
+                              checked={formData.internalStairs}
+                              onCheckedChange={(checked) => handleCheckboxChange('internalStairs', checked as boolean)}
+                              data-testid="checkbox-internal-stairs"
+                            />
+                            <Label htmlFor="internalStairs">Internal Staircases (Townhouse/Maisonette)</Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Checkbox 
+                              id="furnished" 
+                              checked={formData.furnished}
+                              onCheckedChange={(checked) => handleCheckboxChange('furnished', checked as boolean)}
+                              data-testid="checkbox-furnished"
+                            />
+                            <Label htmlFor="furnished">Property is Furnished</Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Checkbox 
+                              id="occupied" 
+                              checked={formData.occupied}
+                              onCheckedChange={(checked) => handleCheckboxChange('occupied', checked as boolean)}
+                              data-testid="checkbox-occupied"
+                            />
+                            <Label htmlFor="occupied">Property Occupied During Cleaning</Label>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label htmlFor="hmoRooms">HMO Room Count (Optional)</Label>
+                            <Input
+                              id="hmoRooms"
+                              type="number"
+                              min="0"
+                              max="20"
+                              value={formData.hmoRooms || ''}
+                              onChange={(e) => handleNumberChange('hmoRooms', e.target.value)}
+                              placeholder="Number of HMO rooms"
+                              data-testid="input-hmo-rooms"
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="wasteBags">Waste Bag Removal (Optional)</Label>
+                            <Input
+                              id="wasteBags"
+                              type="number"
+                              min="0"
+                              max="10"
+                              value={formData.wasteBags || ''}
+                              onChange={(e) => handleNumberChange('wasteBags', e.target.value)}
+                              placeholder="Number of bags to remove"
+                              data-testid="input-waste-bags"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* Commercial Area Input */}
                   {formData.service === 'commercial' && (
-                    <div>
-                      <Label htmlFor="area">Office/Commercial Area (m²) *</Label>
-                      <Input
-                        id="area"
-                        type="number"
-                        min="1"
-                        value={formData.area_m2 || ''}
-                        onChange={(e) => handleNumberChange('area_m2', e.target.value)}
-                        placeholder="Enter area in square meters"
-                        data-testid="input-area"
-                      />
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="commercialType">Commercial Type *</Label>
+                          <Select value={formData.commercialType} onValueChange={(value) => handleInputChange('commercialType', value)}>
+                            <SelectTrigger data-testid="select-commercial-type">
+                              <SelectValue placeholder="Select commercial type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="office">Office (Standard)</SelectItem>
+                              <SelectItem value="retail">Retail / Showroom</SelectItem>
+                              <SelectItem value="education">Education (School/Classrooms)</SelectItem>
+                              <SelectItem value="healthcare">Healthcare (GP/Dental/Clinics)</SelectItem>
+                              <SelectItem value="hospitality">Hospitality (Café/Restaurant)</SelectItem>
+                              <SelectItem value="afterbuilders">After Builders (Dusty/Construction)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="condition">Property Condition *</Label>
+                          <Select value={formData.condition} onValueChange={(value) => handleInputChange('condition', value)}>
+                            <SelectTrigger data-testid="select-commercial-condition">
+                              <SelectValue placeholder="Select condition level" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="light">Light (Well-maintained)</SelectItem>
+                              <SelectItem value="standard">Standard (Typical use)</SelectItem>
+                              <SelectItem value="heavy">Heavy (High traffic/buildup)</SelectItem>
+                              <SelectItem value="veryheavy">Very Heavy (Neglected/heavy use)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="area">Office/Commercial Area (m²) *</Label>
+                        <Input
+                          id="area"
+                          type="number"
+                          min="1"
+                          value={formData.area_m2 || ''}
+                          onChange={(e) => handleNumberChange('area_m2', e.target.value)}
+                          placeholder="Enter area in square meters"
+                          data-testid="input-area"
+                        />
+                      </div>
                     </div>
                   )}
 
@@ -753,8 +922,21 @@ export default function QuoteForm() {
                           bathrooms: 1,
                           toilets: 1,
                           livingRooms: 1,
-                          kitchenSize: '',
                           area_m2: 0,
+                          
+                          // Enhanced property factors
+                          propertyType: '',
+                          condition: '',
+                          secondKitchen: false,
+                          internalStairs: false,
+                          furnished: false,
+                          occupied: false,
+                          hmoRooms: 0,
+                          wasteBags: 0,
+                          
+                          // Commercial enhancements
+                          commercialType: '',
+                          
                           carpetRooms: 0,
                           stairs: 0,
                           rugs: 0,

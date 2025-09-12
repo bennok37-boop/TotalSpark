@@ -1,5 +1,7 @@
 import { Link } from 'wouter';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { scrollToQuoteForm } from '@/utils/scroll';
 import { CITIES } from '@shared/schema';
 
 export default function Footer() {
@@ -83,9 +85,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-background/80 hover:text-background transition-colors">
+                <Button 
+                  variant="ghost"
+                  onClick={scrollToQuoteForm}
+                  className="text-background/80 hover:text-background transition-colors p-0 h-auto"
+                >
                   Contact
-                </Link>
+                </Button>
               </li>
               <li>
                 <Link href="/quote" className="text-background/80 hover:text-background transition-colors">

@@ -1,55 +1,86 @@
-// Instant Quote Calculator - Enhanced Pricing Engine  
-// Property type, condition, and commercial category factors
+Let’s bake size, property type, condition, and commercial sub-types into the calculator so estimates reflect real effort.
 
+Below is a compact, production-ready upgrade: new factors, commercial category productivity, and an updated quote engine that applies them cleanly.
+
+1) Domestic Sizing & Complexity
+A) Property Type Factor (applies to EoT/Deep base)
+Property Type	Factor
+Studio/Flat (default)	1.00
+Terraced House	1.05
+Semi-Detached	1.10
+Detached	1.20
+Maisonette / Townhouse	1.15
+B) Bathrooms & Extra Rooms
+
+Bathrooms: +5% per additional bathroom over 1 (cap +20%).
+
+Kitchens: if 2 kitchens (HMOs/annex): +10%.
+
+Staircases inside the dwelling (townhouses): +5%.
+
+C) Condition Level (applies to price and hours)
+Condition	Description	Multiplier
+Light	Regular/maintained	0.90
+Standard	Typical tenancy	1.00
+Heavy	Grease/scale, lots of build-up	1.20
+Very Heavy	Neglect/party house/smokers	1.40
+D) Occupancy / Furnishing
+
+Furnished: +5% (more surfaces/textiles).
+
+Property occupied while cleaning: +10% (work slow-down).
+
+2) Commercial Categories & Productivity
+A) Base Hourly Rate
+
+£20/hour per cleaner (keep configurable)
+
+B) Productivity (m² per cleaner-hour)
+Commercial Type	m² / cleaner-hour
+Office (standard)	60
+Retail / Showroom	55
+Education (school/classrooms)	50
+Healthcare (GP/Dental/Clinics)	45
+Hospitality (café/restaurant FOH)	50
+After Builders	30 (very dusty; multiple passes)
+
+For after builders, also apply a +20% consumables surcharge (dust cycles, filters, pads).
+
+C) Condition for Commercial
+
+Same condition multiplier table as domestic.
+
+D) Minimums
+
+One-off commercial minimum: £120 (before VAT)
+
+Recurring contracts: allow lower effective minimums after onboarding visit.
+
+3) Add-Ons (unchanged + a few useful adds)
+
+Oven £35, Fridge/Freezer £20, Inside cabinets £20, Limescale pack £15, Interior windows £3/window (min £15)
+
+HMO “room-by-room handover” pack: +£10/bedroom (covers wardrobe/desk wipes & checks)
+
+Waste bag removal (non-builder’s waste): £10 per standard bag (configurable)
+
+4) Updated Config (drop-in)
 const PRICING = {
   domesticMin: 80,
   commercialMin: 120,
   vatRate: 0.20,
   estimateBand: 0.10,
   endOfTenancy: {
-    base: { 
-      studio: { price: 100, hours: 3 }, 
-      "1": { price: 120, hours: 4 }, 
-      "2": { price: 160, hours: 6 }, 
-      "3": { price: 220, hours: 8 }, 
-      "4": { price: 280, hours: 10 }, 
-      "5plus": { price: 340, hours: 12 } 
-    }
+    base: { studio:{£:100,h:3}, 1:{£:120,h:4}, 2:{£:160,h:6}, 3:{£:220,h:8}, 4:{£:280,h:10}, "5plus":{£:340,h:12} }
   },
   deep: {
-    base: { 
-      studio: { price: 100, hours: 3 }, 
-      "1": { price: 100, hours: 4 }, 
-      "2": { price: 150, hours: 6 }, 
-      "3": { price: 200, hours: 8 }, 
-      "4": { price: 260, hours: 10 }, 
-      "5plus": { price: 320, hours: 12 } 
-    }
+    base: { studio:{£:100,h:3}, 1:{£:100,h:4}, 2:{£:150,h:6}, 3:{£:200,h:8}, 4:{£:260,h:10}, "5plus":{£:320,h:12} }
   },
   propertyTypeFactor: {
-    flat: 1.00, 
-    terraced: 1.05, 
-    semi: 1.10, 
-    detached: 1.20, 
-    maisonette: 1.15, 
-    townhouse: 1.15
+    flat: 1.00, terraced: 1.05, semi: 1.10, detached: 1.20, maisonette: 1.15, townhouse: 1.15
   },
-  conditionFactor: { 
-    light: 0.90, 
-    standard: 1.00, 
-    heavy: 1.20, 
-    veryheavy: 1.40 
-  },
-  domesticExtras: { 
-    extraBathroomPct: 0.05, 
-    extraBathroomCapPct: 0.20, 
-    secondKitchenPct: 0.10, 
-    internalStairsPct: 0.05, 
-    furnishedPct: 0.05, 
-    occupiedPct: 0.10, 
-    hmoRoomPackEach: 10, 
-    wasteBag: 10 
-  },
+  conditionFactor: { light: 0.90, standard: 1.00, heavy: 1.20, veryheavy: 1.40 },
+  domesticExtras: { extraBathroomPct: 0.05, extraBathroomCapPct: 0.20, secondKitchenPct: 0.10, internalStairsPct: 0.05, furnishedPct: 0.05, occupiedPct: 0.10, hmoRoomPackEach: 10, wasteBag: 10 },
   commercial: {
     ratePerHour: 20,
     categories: {
@@ -59,168 +90,86 @@ const PRICING = {
       healthcare: { m2PerHour: 45 },
       hospitality: { m2PerHour: 50 },
       afterbuilders: { m2PerHour: 30, consumablesPct: 0.20 }
-    } as Record<string, { m2PerHour: number; consumablesPct?: number }>,
+    },
     minHours: 2
   },
-  carpets: {
-    room: 25, 
-    stairs: 30, 
-    rug: 30, 
-    sofa2: 40, 
-    sofa3: 55, 
-    armchair: 20, 
-    mattress: 35
-  },
-  addons: {
-    oven: 35, 
-    fridgeFreezer: 20, 
-    cabinetsInside: 20, 
-    limescalePack: 15,
-    windowsPerUnit: 3, 
-    windowsMin: 15
-  },
-  modifiers: {
-    urgentPct: 0.20,
-    weekendPct: 0.10,
-    stairsNoLift: 10,
-    outerArea: 10,
-    bundleCarpetWithEoTDiscountPct: 0.10
-  }
+  carpets: { room: 25, stairs: 30, rug: 30, sofa2: 40, sofa3: 55, armchair: 20, mattress: 35 },
+  addons: { oven: 35, fridgeFreezer: 20, cabinetsInside: 20, limescalePack: 15, windowsPerUnit: 3, windowsMin: 15 },
+  modifiers: { urgentPct: 0.20, weekendPct: 0.10, stairsNoLift: 10, outerArea: 10, bundleCarpetWithEoTDiscountPct: 0.10 }
 };
 
-export interface QuoteInput {
-  service: "endOfTenancy" | "deep" | "commercial" | "carpets";
-  bedrooms?: "studio" | "1" | "2" | "3" | "4" | "5plus" | "5+";
-  bathrooms?: number;
-  toilets?: number;
-  livingRooms?: number;
-  
-  // Enhanced domestic factors
-  propertyType?: "flat" | "terraced" | "semi" | "detached" | "maisonette" | "townhouse";
-  condition?: "light" | "standard" | "heavy" | "veryheavy";
-  secondKitchen?: boolean;
-  internalStairs?: boolean;
-  furnished?: boolean;
-  occupied?: boolean;
-  hmoRooms?: number;
-  wasteBags?: number;
-  
-  // Commercial enhancements
-  commercialType?: "office" | "retail" | "education" | "healthcare" | "hospitality" | "afterbuilders";
-  area_m2?: number; // commercial
-  
-  items?: {
-    carpetRooms?: number;
-    stairs?: number;
-    rugs?: number;
-    sofa2?: number;
-    sofa3?: number;
-    armchair?: number;
-    mattress?: number;
-  }; // carpets
-  addons?: {
-    oven?: boolean;
-    fridge?: boolean;
-    windows?: number;
-    cabinets?: boolean;
-    limescale?: boolean;
-  };
-  modifiers?: {
-    urgent?: boolean;
-    weekend?: boolean;
-    stairsNoLift?: boolean;
-    outerArea?: boolean;
-  };
-  vat?: boolean; // true if VAT-registered
-  bundleCarpetsWithEoT?: boolean;
-}
+5) Updated Quote Engine (key changes highlighted)
+function computeQuote(input) {
+  // input (additions):
+  // domestic:
+  //  propertyType: "flat"|"terraced"|"semi"|"detached"|"maisonette"|"townhouse"
+  //  condition: "light"|"standard"|"heavy"|"veryheavy"
+  //  bathrooms: number (>=1), secondKitchen: bool, internalStairs: bool, furnished: bool, occupied: bool
+  //  hmoRooms: number, wasteBags: number
+  //
+  // commercial:
+  //  commercialType: "office"|"retail"|"education"|"healthcare"|"hospitality"|"afterbuilders"
+  //  area_m2: number
+  //
+  // other: (same as previous) items, addons, modifiers, vat, bundleCarpetsWithEoT
 
-export interface LineItem {
-  label: string;
-  amount: number;
-}
-
-export interface QuoteResult {
-  currency: string;
-  lineItems: LineItem[];
-  subtotal: number;
-  vat: number;
-  total: number;
-  estimateRange: { low: number; high: number };
-  scheduling: { 
-    baseHours: number | null; 
-    crew: number; 
-    durationHours: number | null; 
-  };
-  notes: string[];
-}
-
-export function computeQuote(input: QuoteInput): QuoteResult {
   const cfg = PRICING;
-  let lineItems: LineItem[] = [];
+  let lineItems = [];
   let baseHours = 0;
   let subtotal = 0;
 
-  const add = (label: string, amount: number) => { 
-    if (Math.abs(amount) > 0.0001) { 
-      lineItems.push({ label, amount: +amount.toFixed(2) }); 
-      subtotal += amount; 
-    }
-  };
+  const add = (label, amount) => { if (Math.abs(amount) > 0.0001) { lineItems.push({ label, amount: +amount.toFixed(2) }); subtotal += amount; } };
 
-  const applyDomesticScaling = (startPrice: number, startHours: number) => {
+  const applyDomesticScaling = (start£, startHrs) => {
     const pType = cfg.propertyTypeFactor[input.propertyType || "flat"] ?? 1.00;
     const cond = cfg.conditionFactor[input.condition || "standard"] ?? 1.00;
 
     let pct = 1.0 * pType * cond;
 
-    // Bathrooms scaling
+    // bathrooms
     const baths = Math.max(1, Number(input.bathrooms || 1));
     const extraBaths = Math.max(0, baths - 1);
     const bathPct = Math.min(cfg.domesticExtras.extraBathroomCapPct, extraBaths * cfg.domesticExtras.extraBathroomPct);
     pct *= (1 + bathPct);
 
-    // Additional property factors
     if (input.secondKitchen) pct *= (1 + cfg.domesticExtras.secondKitchenPct);
     if (input.internalStairs) pct *= (1 + cfg.domesticExtras.internalStairsPct);
     if (input.furnished) pct *= (1 + cfg.domesticExtras.furnishedPct);
     if (input.occupied) pct *= (1 + cfg.domesticExtras.occupiedPct);
 
-    const scaledPrice = startPrice * pct;
-    const scaledHours = startHours * pct;
-    return { scaledPrice, scaledHours };
+    const scaled£ = start£ * pct;
+    const scaledH = startHrs * pct;
+    return { scaled£, scaledH };
   };
 
-  // SERVICE LOGIC
+  // --- SERVICE LOGIC ---
   if (input.service === "endOfTenancy" || input.service === "deep") {
     const table = cfg[input.service].base;
-    const key = (input.bedrooms === "5plus" || input.bedrooms === "5+") ? "5plus"
-               : (input.bedrooms === "studio" ? "studio" : String(input.bedrooms || ""));
-    const base = table[key as keyof typeof table];
-    
-    if (base) {
-      // Apply domestic scaling factors
-      const scaled = applyDomesticScaling(base.price, base.hours);
-      add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"})`, scaled.scaledPrice);
-      baseHours = scaled.scaledHours;
-    }
+    const key = (input.bedrooms === 5 || input.bedrooms === "5plus") ? "5plus"
+               : (input.bedrooms === "studio" ? "studio" : String(input.bedrooms));
+    const base = table[key];
+
+    // scale by property type + condition + structure
+    const scaled = applyDomesticScaling(base.£, base.h);
+    add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key} beds)`, scaled.scaled£);
+    baseHours = scaled.scaledH;
 
     // Add-ons
     if (input.addons?.oven) add("Oven deep clean", cfg.addons.oven);
     if (input.addons?.fridge) add("Fridge/Freezer clean", cfg.addons.fridgeFreezer);
     if (input.addons?.cabinets) add("Inside kitchen cabinets", cfg.addons.cabinetsInside);
     if (input.addons?.limescale) add("Bathroom limescale pack", cfg.addons.limescalePack);
-    if (input.addons && Number(input.addons.windows) > 0) {
-      const win = Math.max(cfg.addons.windowsMin, (input.addons.windows || 0) * cfg.addons.windowsPerUnit);
+    if (Number(input.addons?.windows) > 0) {
+      const win = Math.max(cfg.addons.windowsMin, input.addons.windows * cfg.addons.windowsPerUnit);
       add(`Interior windows x${input.addons.windows}`, win);
     }
 
-    // HMO and waste removal
+    // HMO pack & waste
     if (Number(input.hmoRooms) > 0) add(`HMO handover pack x${input.hmoRooms}`, Number(input.hmoRooms) * cfg.domesticExtras.hmoRoomPackEach);
     if (Number(input.wasteBags) > 0) add(`Waste bag removal x${input.wasteBags}`, Number(input.wasteBags) * cfg.domesticExtras.wasteBag);
 
-    // Bundle discount logic
-    if (input.bundleCarpetsWithEoT && input.service === "endOfTenancy" && input.items) {
+    // Optional carpet bundle logic (same as before)
+    if (input.bundleCarpetsWithEoT && input.items) {
       const it = input.items, c = cfg.carpets;
       const carpetTotal = (it.carpetRooms||0)*c.room + (it.stairs||0)*c.stairs + (it.rugs||0)*c.rug + (it.sofa2||0)*c.sofa2 + (it.sofa3||0)*c.sofa3 + (it.armchair||0)*c.armchair + (it.mattress||0)*c.mattress;
       if (carpetTotal > 0) add("Bundle discount (carpets with End of Tenancy)", -carpetTotal * cfg.modifiers.bundleCarpetWithEoTDiscountPct);
@@ -234,7 +183,7 @@ export function computeQuote(input: QuoteInput): QuoteResult {
 
     let hours = Math.max(cfg.commercial.minHours, area / m2ph);
 
-    // Apply condition multiplier to hours
+    // Apply condition multiplier to hours (dusty sites, heavy traffic, etc.)
     const cond = cfg.conditionFactor[input.condition || "standard"] ?? 1.00;
     hours *= cond;
 
@@ -242,7 +191,6 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     add(`Commercial cleaning – ${catKey} (${hours.toFixed(1)} hrs @ £${cfg.commercial.ratePerHour}/hr)`, baseCost);
     baseHours = hours;
 
-    // After builders consumables surcharge
     if (cat.consumablesPct) add("After builders consumables surcharge", baseCost * cat.consumablesPct);
 
   } else if (input.service === "carpets") {
@@ -256,11 +204,10 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     add(`Mattresses x${it.mattress||0}`, (it.mattress||0) * c.mattress);
   }
 
-  // Flat surcharges
+  // Surcharges (flat then percent)
   if (input.modifiers?.stairsNoLift) add("Access surcharge (no lift, 3rd+ floor)", cfg.modifiers.stairsNoLift);
   if (input.modifiers?.outerArea) add("Outer area call-out", cfg.modifiers.outerArea);
 
-  // Percentage surcharges
   let percentMult = 1;
   if (input.modifiers?.urgent) percentMult *= (1 + cfg.modifiers.urgentPct);
   if (input.modifiers?.weekend) percentMult *= (1 + cfg.modifiers.weekendPct);
@@ -298,3 +245,27 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     ]
   };
 }
+
+6) UX: What to Ask in the Form (new fields)
+
+Domestic (EoT/Deep)
+
+Property type (Flat, Terraced, Semi, Detached, Maisonette/Townhouse)
+
+Bedrooms, Bathrooms (#), Second kitchen? (Y/N), Internal stairs? (Y/N)
+
+Condition (Light / Standard / Heavy / Very Heavy)
+
+Furnished? (Y/N), Occupied during clean? (Y/N)
+
+Optional: HMO bedrooms count; Waste bags count
+
+Commercial
+
+Commercial type (Office, Retail, Education, Healthcare, Hospitality, After Builders)
+
+Approx area (m²)
+
+Condition level (as above)
+
+Frequency (One-off / Weekly / Daily) → (for CRM, not priced here)

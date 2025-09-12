@@ -81,13 +81,14 @@ export default function Header() {
               About
             </Link>
 
-            <Link 
-              href="/contact" 
-              className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/contact') ? 'text-primary' : 'text-muted-foreground'}`}
+            <Button 
+              variant="ghost"
+              onClick={scrollToQuoteForm}
+              className={`text-sm font-medium hover:text-primary transition-colors p-0 h-auto ${location === '/' ? 'text-primary' : 'text-muted-foreground'}`}
               data-testid="link-contact"
             >
               Contact
-            </Link>
+            </Button>
           </nav>
 
           {/* Contact Info */}
@@ -160,9 +161,16 @@ export default function Header() {
                 About
               </Link>
 
-              <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              <Button 
+                variant="ghost"
+                onClick={() => {
+                  scrollToQuoteForm();
+                  setIsMenuOpen(false);
+                }}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors p-0 h-auto w-auto justify-start"
+              >
                 Contact
-              </Link>
+              </Button>
 
               <a 
                 href={`tel:${phoneNumber}`} 
