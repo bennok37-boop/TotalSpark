@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import Uppy from "@uppy/core";
-import { DashboardModal } from "@uppy/react";
+import Dashboard from "@uppy/dashboard";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
 import AwsS3 from "@uppy/aws-s3";
@@ -58,7 +58,6 @@ export function ObjectUploader({
   buttonClassName,
   children,
 }: ObjectUploaderProps) {
-  const [showModal, setShowModal] = useState(false);
   const [uppy] = useState(() =>
     new Uppy({
       restrictions: {
@@ -68,13 +67,21 @@ export function ObjectUploader({
       },
       autoProceed: false,
     })
+      .use(Dashboard, {
+        id: 'dashboard',
+        inline: false,
+        target: 'body',
+        closeAfterFinish: true,
+        proudlyDisplayPoweredByUppy: false,
+      })
       .use(AwsS3, {
         shouldUseMultipart: false,
         getUploadParameters: onGetUploadParameters,
       })
       .on("complete", (result) => {
         onComplete?.(result);
-        setShowModal(false);
+        const dashboardPlugin = uppy.getPlugin('dashboard') as any;
+        dashboardPlugin?.closeModal?.();
       })
   );
 
@@ -83,19 +90,15 @@ export function ObjectUploader({
       <Button 
         type="button"
         variant="outline" 
-        onClick={() => setShowModal(true)} 
+        onClick={() => {
+          const dashboardPlugin = uppy.getPlugin('dashboard') as any;
+          dashboardPlugin?.openModal?.();
+        }} 
         className={buttonClassName}
         data-testid="button-upload-images"
       >
         {children}
       </Button>
-
-      <DashboardModal
-        uppy={uppy}
-        open={showModal}
-        onRequestClose={() => setShowModal(false)}
-        proudlyDisplayPoweredByUppy={false}
-      />
     </div>
   );
 }
