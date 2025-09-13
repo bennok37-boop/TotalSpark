@@ -179,6 +179,7 @@ export default function QuoteForm() {
     bathrooms?: number;
     condition?: string;
     notes?: string;
+    images?: string[];
   }) => {
     try {
       const form = document.getElementById('ghl-form-quote') as HTMLFormElement;
@@ -206,6 +207,12 @@ export default function QuoteForm() {
       setField('custom_values[quote_url]', window.location.href);
       setField('custom_values[resume_url]', window.location.href + '?qid=' + encodeURIComponent(quoteData.quoteId));
       setField('custom_values[notes_optional]', quoteData.notes || '');
+      
+      // Include uploaded images URLs for reference
+      if (quoteData.images && quoteData.images.length > 0) {
+        setField('custom_values[photo_urls]', quoteData.images.join(', '));
+        setField('custom_values[photo_count]', quoteData.images.length);
+      }
       
       // Submit form in background - triggers instant SMS + Email
       form.submit();
@@ -475,7 +482,8 @@ export default function QuoteForm() {
             bedrooms: formData.bedrooms,
             bathrooms: formData.bathrooms,
             condition: formData.condition,
-            notes: formData.additionalDetails
+            notes: formData.additionalDetails,
+            images: uploadedImages
           });
         }
       } catch (error) {
@@ -549,6 +557,34 @@ export default function QuoteForm() {
 
   return (
     <section id="quote-form" className="py-16 bg-muted scroll-mt-20" data-testid="section-quote-form">
+      <div style={{ display: 'none' }}>
+        <form id="ghl-form-lead" action="https://YOUR_GHL_DOMAIN/forms/submit/LEAD_FORM_ID" method="POST">
+          <input type="hidden" name="first_name" />
+          <input type="hidden" name="email" />
+          <input type="hidden" name="phone" />
+          <input type="hidden" name="custom_values[region]" />
+          <input type="hidden" name="custom_values[city_town]" />
+        </form>
+
+        <form id="ghl-form-quote" action="https://YOUR_GHL_DOMAIN/forms/submit/QUOTE_FORM_ID" method="POST">
+          <input type="hidden" name="custom_values[quote_id]" />
+          <input type="hidden" name="custom_values[price_low]" />
+          <input type="hidden" name="custom_values[price_high]" />
+          <input type="hidden" name="custom_values[lock_until]" />
+          <input type="hidden" name="custom_values[service]" />
+          <input type="hidden" name="custom_values[region]" />
+          <input type="hidden" name="custom_values[city_town]" />
+          <input type="hidden" name="custom_values[property_type]" />
+          <input type="hidden" name="custom_values[bedrooms]" />
+          <input type="hidden" name="custom_values[bathrooms]" />
+          <input type="hidden" name="custom_values[condition]" />
+          <input type="hidden" name="custom_values[quote_url]" />
+          <input type="hidden" name="custom_values[resume_url]" />
+          <textarea name="custom_values[notes_optional]" style={{ display: 'none' }}></textarea>
+          <input type="hidden" name="custom_values[photo_urls]" />
+          <input type="hidden" name="custom_values[photo_count]" />
+        </form>
+      </div>
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <Card>
