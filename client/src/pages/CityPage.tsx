@@ -220,10 +220,28 @@ const cityData = {
   }
 };
 
+// Mapping from full location slugs to cityData keys
+const slugMapping: Record<string, string> = {
+  'newcastle-upon-tyne': 'newcastle',
+  'newcastle': 'newcastle',
+  'sunderland': 'sunderland',
+  'leeds': 'leeds',
+  'york': 'york',
+  'durham': 'durham',
+  'middlesbrough': 'middlesbrough'
+};
+
 export default function CityPage() {
   const params = useParams();
   const citySlug = params.city;
-  const city = cityData[citySlug as keyof typeof cityData];
+  
+  if (!citySlug) {
+    return <div>City not found</div>;
+  }
+  
+  // Map the incoming slug to the cityData key
+  const mappedSlug = slugMapping[citySlug] || citySlug;
+  const city = cityData[mappedSlug as keyof typeof cityData];
 
   if (!city) {
     return <div>City not found</div>;

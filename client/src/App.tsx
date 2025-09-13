@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import HomePage from "@/pages/HomePage";
 import CityPage from "@/pages/CityPage";
+import AreasPage from "@/pages/AreasPage";
 import EndOfTenancyPage from "@/pages/EndOfTenancyPage";
 import CommercialCleaningPage from "@/pages/CommercialCleaningPage";
 import DeepCleaningPage from "@/pages/DeepCleaningPage";
@@ -15,6 +16,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      <Route path="/areas" component={AreasPage} />
       <Route path="/cleaning/:city" component={CityPage} />
       {/* Service pages */}
       <Route path="/end-of-tenancy-cleaning" component={EndOfTenancyPage} />
