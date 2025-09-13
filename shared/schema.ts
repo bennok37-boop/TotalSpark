@@ -17,6 +17,8 @@ export const quoteRequests = pgTable("quote_requests", {
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   address: text("address").notNull(),
+  postcode: text("postcode"),
+  additionalDetails: text("additional_details"),
   
   // Service details
   service: text("service").notNull(), // 'endOfTenancy' | 'deep' | 'commercial' | 'carpets'

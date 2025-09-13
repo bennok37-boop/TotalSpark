@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
 import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
 
 type FormStep = 1 | 2 | 3;
@@ -21,6 +22,8 @@ interface QuoteFormData {
   email: string;
   phone: string;
   address: string;
+  postcode: string;
+  additionalDetails: string;
   
   // Service details
   service: "endOfTenancy" | "deep" | "commercial" | "carpets" | "";
@@ -75,11 +78,15 @@ interface QuoteFormData {
 
 export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
+  const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
+  const [postcodeResults, setPostcodeResults] = useState<any[]>([]);
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
     phone: '',
     address: '',
+    postcode: '',
+    additionalDetails: '',
     service: '',
     bedrooms: '',
     bathrooms: 1,
@@ -160,6 +167,8 @@ export default function QuoteForm() {
         email: data.email,
         phone: data.phone,
         address: data.address,
+        postcode: data.postcode,
+        additionalDetails: data.additionalDetails,
         service: data.service,
         bedrooms: data.bedrooms || null,
         area_m2: data.area_m2 || null,
@@ -191,6 +200,55 @@ export default function QuoteForm() {
   const handleNumberChange = (field: keyof QuoteFormData, value: string) => {
     const numValue = parseInt(value) || 0;
     setFormData(prev => ({ ...prev, [field]: numValue }));
+  };
+
+  // Postcode lookup functionality
+  const lookupPostcode = async (postcode: string) => {
+    if (!postcode || postcode.length < 5) return;
+    
+    setIsLookingUpPostcode(true);
+    try {
+      const response = await fetch(`https://api.postcodes.io/postcodes/${postcode.replace(/\s/g, '')}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.result) {
+          // Auto-fill address components
+          const result = data.result;
+          const addressParts = [];
+          
+          if (result.parliamentary_constituency) addressParts.push(result.parliamentary_constituency);
+          if (result.admin_ward) addressParts.push(result.admin_ward);
+          if (result.admin_district) addressParts.push(result.admin_district);
+          
+          const suggestedAddress = addressParts.join(', ');
+          
+          setFormData(prev => ({
+            ...prev,
+            address: suggestedAddress || prev.address,
+            postcode: postcode.toUpperCase()
+          }));
+          
+          toast({
+            title: "Postcode found!",
+            description: `Address details loaded for ${postcode.toUpperCase()}`
+          });
+        }
+      } else {
+        toast({
+          title: "Postcode not found",
+          description: "Please check the postcode and try again",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Lookup failed",
+        description: "Please enter address manually",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLookingUpPostcode(false);
+    }
   };
 
   const handleCheckboxChange = (field: keyof QuoteFormData, checked: boolean) => {
@@ -367,10 +425,64 @@ export default function QuoteForm() {
                       type="text"
                       value={formData.address}
                       onChange={(e) => handleInputChange('address', e.target.value)}
-                      placeholder="Enter your full address"
+                      placeholder="Enter your full address or use postcode lookup below"
                       required
                       data-testid="input-address"
                     />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="postcode">Postcode Lookup</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="postcode"
+                        type="text"
+                        value={formData.postcode}
+                        onChange={(e) => handleInputChange('postcode', e.target.value)}
+                        placeholder="Enter postcode (e.g. NE1 1AA)"
+                        data-testid="input-postcode"
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => lookupPostcode(formData.postcode)}
+                        disabled={isLookingUpPostcode || !formData.postcode}
+                        data-testid="button-lookup-postcode"
+                        className="min-w-[100px]"
+                      >
+                        {isLookingUpPostcode ? (
+                          <div className="flex items-center gap-1">
+                            <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                            <span className="text-xs">Looking up...</span>
+                          </div>
+                        ) : (
+                          <>
+                            <Search className="w-4 h-4 mr-1" />
+                            Lookup
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <MapPin className="w-3 h-3 inline mr-1" />
+                      Enter your postcode to auto-fill address details
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="additionalDetails">Additional Details (Optional)</Label>
+                    <Textarea
+                      id="additionalDetails"
+                      value={formData.additionalDetails}
+                      onChange={(e) => handleInputChange('additionalDetails', e.target.value)}
+                      placeholder="Any additional information about your cleaning requirements, special instructions, access details, or specific areas that need attention..."
+                      rows={3}
+                      data-testid="textarea-additional-details"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Help us provide the most accurate quote by sharing any special requirements
+                    </p>
                   </div>
 
                   <Button type="submit" className="w-full" data-testid="button-next-step">
@@ -970,6 +1082,8 @@ export default function QuoteForm() {
                           email: '',
                           phone: '',
                           address: '',
+                          postcode: '',
+                          additionalDetails: '',
                           service: '',
                           bedrooms: '',
                           bathrooms: 1,
