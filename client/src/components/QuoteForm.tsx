@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin, Camera, X } from 'lucide-react';
+import { ObjectUploader } from '@/components/ObjectUploader';
+import type { UploadResult } from "@uppy/core";
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -74,11 +76,15 @@ interface QuoteFormData {
   // Pricing
   bundleCarpetsWithEoT: boolean;
   vat: boolean;
+  
+  // Job Images
+  jobImages: string[];
 }
 
 export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -127,7 +133,10 @@ export default function QuoteForm() {
     stairsNoLift: false,
 
     bundleCarpetsWithEoT: false,
-    vat: false
+    vat: false,
+    
+    // Job Images
+    jobImages: []
   });
   const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
   const { toast } = useToast();
@@ -194,6 +203,51 @@ export default function QuoteForm() {
 
   const handleInputChange = (field: keyof QuoteFormData, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Image upload handlers
+  const handleGetUploadParameters = async () => {
+    const response = await fetch('/api/objects/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to get upload URL');
+    }
+    
+    const { uploadURL } = await response.json();
+    return {
+      method: 'PUT' as const,
+      url: uploadURL,
+    };
+  };
+
+  const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+    if (result.successful && result.successful.length > 0) {
+      const newImageUrls = result.successful.map(file => file.uploadURL || '').filter(Boolean);
+      setUploadedImages(prev => [...prev, ...newImageUrls]);
+      setFormData(prev => ({ 
+        ...prev, 
+        jobImages: [...prev.jobImages, ...newImageUrls] 
+      }));
+      
+      toast({
+        title: "Images uploaded successfully!",
+        description: `${newImageUrls.length} image(s) added to your quote request.`
+      });
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    const updatedImages = uploadedImages.filter((_, index) => index !== indexToRemove);
+    setUploadedImages(updatedImages);
+    setFormData(prev => ({ 
+      ...prev, 
+      jobImages: updatedImages 
+    }));
   };
 
   const handleNumberChange = (field: keyof QuoteFormData, value: string) => {
@@ -499,6 +553,66 @@ export default function QuoteForm() {
                     </p>
                   </div>
 
+                  {/* Job Images Upload Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Camera className="w-5 h-5 text-primary" />
+                      <div>
+                        <Label className="text-base font-medium">Upload Job Photos (Optional)</Label>
+                        <p className="text-sm text-muted-foreground">
+                          Help us provide a more accurate quote by sharing photos of the areas that need cleaning
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <ObjectUploader
+                        maxNumberOfFiles={5}
+                        maxFileSize={10485760} // 10MB
+                        onGetUploadParameters={handleGetUploadParameters}
+                        onComplete={handleImageUploadComplete}
+                        buttonClassName="w-full"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Camera className="w-4 h-4" />
+                          <span>Add Photos ({uploadedImages.length}/5)</span>
+                        </div>
+                      </ObjectUploader>
+                      
+                      {uploadedImages.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {uploadedImages.map((imageUrl, index) => (
+                            <div key={index} className="relative group">
+                              <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                                <img 
+                                  src={imageUrl} 
+                                  alt={`Job photo ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                  data-testid={`image-preview-${index}`}
+                                />
+                              </div>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => removeImage(index)}
+                                data-testid={`button-remove-image-${index}`}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <div className="text-xs text-muted-foreground">
+                        <p>• Upload up to 5 photos (max 10MB each)</p>
+                        <p>• Show us kitchens, bathrooms, carpets, or any areas needing special attention</p>
+                        <p>• This helps us provide the most accurate quote possible</p>
+                      </div>
+                    </div>
+                  </div>
 
                   <Button type="submit" className="w-full" data-testid="button-next-step">
                     Next Step
@@ -1156,8 +1270,12 @@ export default function QuoteForm() {
                           stairsNoLift: false,
                       
                           bundleCarpetsWithEoT: false,
-                          vat: false
+                          vat: false,
+                          
+                          // Job Images
+                          jobImages: []
                         });
+                        setUploadedImages([]);
                         setQuoteResult(null);
                       }}
                       className="w-full"
