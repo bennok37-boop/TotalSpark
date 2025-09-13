@@ -5,12 +5,66 @@ import { Phone, Menu, X, MapPin, ChevronDown } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
 import { scrollToQuoteForm } from '@/utils/scroll';
 
+// Helper function to find a location by slug across all regions
+function findLocationBySlug(slug: string) {
+  for (const region of Object.values(REGIONS)) {
+    const location = region.locations.find(loc => loc.slug === slug);
+    if (location) {
+      return { location, region };
+    }
+  }
+  return null;
+}
+
+// Helper function to get region-specific phone number
+function getRegionPhoneNumber(regionSlug: string): string {
+  const phoneMap: Record<string, string> = {
+    'tyne-and-wear': '0191 123 4567',
+    'county-durham': '0191 789 0123',
+    'northumberland': '01670 123 456',
+    'tees-valley': '01642 123 456'
+  };
+  return phoneMap[regionSlug] || '0191 123 4567';
+}
+
+// Helper function to get region-specific WhatsApp number
+function getRegionWhatsAppNumber(regionSlug: string): string {
+  const whatsappMap: Record<string, string> = {
+    'tyne-and-wear': '447123456789',
+    'county-durham': '447789012345',
+    'northumberland': '447670123456',
+    'tees-valley': '447642123456'
+  };
+  return whatsappMap[regionSlug] || '447123456789';
+}
+
 export default function Header() {
   const [location, navigate] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const phoneNumber = "0191 123 4567"; // Todo: remove mock functionality
-  const whatsappNumber = "447123456789"; // Todo: remove mock functionality
+  // Get location-aware contact details
+  const getCurrentLocationData = () => {
+    // Check if we're on a city page (/cleaning/slug)
+    const cityPageMatch = location.match(/^\/cleaning\/(.+)$/);
+    if (cityPageMatch) {
+      const locationSlug = cityPageMatch[1];
+      const locationData = findLocationBySlug(locationSlug);
+      if (locationData) {
+        return {
+          phone: getRegionPhoneNumber(locationData.region.slug),
+          whatsapp: getRegionWhatsAppNumber(locationData.region.slug)
+        };
+      }
+    }
+    
+    // Default for non-city pages
+    return {
+      phone: '0191 123 4567',
+      whatsapp: '447123456789'
+    };
+  };
+
+  const { phone: phoneNumber, whatsapp: whatsappNumber } = getCurrentLocationData();
 
   const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
 
