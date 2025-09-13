@@ -558,7 +558,10 @@ export default function QuoteForm() {
   return (
     <section id="quote-form" className="py-16 bg-muted scroll-mt-20" data-testid="section-quote-form">
       <div style={{ display: 'none' }}>
-        <form id="ghl-form-lead" action="https://YOUR_GHL_DOMAIN/forms/submit/LEAD_FORM_ID" method="POST">
+        {/* Hidden iframe to prevent page navigation when forms are submitted */}
+        <iframe name="ghl_iframe" style={{ display: 'none' }} title="HighLevel Form Submission"></iframe>
+        
+        <form id="ghl-form-lead" action="https://YOUR_GHL_DOMAIN/forms/submit/LEAD_FORM_ID" method="POST" target="ghl_iframe">
           <input type="hidden" name="first_name" />
           <input type="hidden" name="email" />
           <input type="hidden" name="phone" />
@@ -566,7 +569,7 @@ export default function QuoteForm() {
           <input type="hidden" name="custom_values[city_town]" />
         </form>
 
-        <form id="ghl-form-quote" action="https://YOUR_GHL_DOMAIN/forms/submit/QUOTE_FORM_ID" method="POST">
+        <form id="ghl-form-quote" action="https://YOUR_GHL_DOMAIN/forms/submit/QUOTE_FORM_ID" method="POST" target="ghl_iframe">
           <input type="hidden" name="custom_values[quote_id]" />
           <input type="hidden" name="custom_values[price_low]" />
           <input type="hidden" name="custom_values[price_high]" />
