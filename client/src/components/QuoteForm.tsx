@@ -374,7 +374,15 @@ export default function QuoteForm() {
     }
     
     // Validate postcode format (basic UK postcode pattern)
-    if (formData.postcode && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(formData.postcode.replace(/\s/g, ''))) {
+    const postcodePattern = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+    const cleanPostcode = formData.postcode?.replace(/\s/g, '') || '';
+    if (formData.postcode && !postcodePattern.test(cleanPostcode)) {
+      console.log('Postcode validation failed:', {
+        original: formData.postcode,
+        cleaned: cleanPostcode,
+        pattern: postcodePattern.toString(),
+        test: postcodePattern.test(cleanPostcode)
+      });
       toast({
         title: "Invalid Postcode",
         description: "Please enter a valid UK postcode (e.g. NE1 1AA)",

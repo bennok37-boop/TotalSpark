@@ -96,6 +96,7 @@ export function convertReactFormToPricingInput(formData: ReactFormData): QuoteIn
     add_limescale: formData.limescale,
     add_carpet: formData.addOnCarpets,
     add_upholstery: formData.addOnUpholstery,
+    bundle_carpet_with_eot: formData.bundleCarpetsWithEoT,
     windows_count: formData.windows,
     urgent: formData.urgent,
     weekend: formData.weekend,

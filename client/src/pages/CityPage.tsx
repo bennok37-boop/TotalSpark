@@ -31,8 +31,8 @@ type Location = {
 // Dynamic content generator for any location
 function generateCityPageContent(location: Location, region: typeof REGIONS[keyof typeof REGIONS]) {
   const nearbyLocations = getNearbyLocations(location, region);
-  const nearbyNames = nearbyLocations.slice(0, 6).map(loc => loc.name);
-  const nearbyAreas = nearbyLocations.slice(0, 8).map(loc => ({ name: loc.name, slug: loc.slug }));
+  const nearbyNames = nearbyLocations.slice(0, 6).map((loc: Location) => loc.name);
+  const nearbyAreas = nearbyLocations.slice(0, 8).map((loc: Location) => ({ name: loc.name, slug: loc.slug }));
   
   return {
     name: location.name,
@@ -167,7 +167,33 @@ export default function CityPage() {
                 </div>
               </div>
               <p className="text-muted-foreground mb-6">Get your exact price in 60 seconds with our instant quote form.</p>
-              <Button size="lg" data-testid="button-calculate-price">Calculate My Price</Button>
+              <Button 
+                size="lg" 
+                data-testid="button-calculate-price"
+                onClick={() => {
+                  const quoteForm = document.getElementById('quote-form');
+                  if (quoteForm) {
+                    const headerHeight = 80;
+                    const elementTop = quoteForm.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementTop - headerHeight;
+
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+
+                    // Focus the first input after scrolling
+                    setTimeout(() => {
+                      const firstInput = quoteForm.querySelector('input[data-testid="input-name"]') as HTMLInputElement;
+                      if (firstInput) {
+                        firstInput.focus();
+                      }
+                    }, 800);
+                  }
+                }}
+              >
+                Calculate My Price
+              </Button>
             </div>
           </div>
         </section>
@@ -262,7 +288,7 @@ export default function CityPage() {
                 {city.miniAbout}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {city.nearbyAreas.map((area) => (
+                {city.nearbyAreas.map((area: { name: string; slug: string }) => (
                   <Link 
                     key={area.slug} 
                     href={`/cleaning/${area.slug}`} 

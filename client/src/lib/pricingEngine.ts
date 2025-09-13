@@ -282,7 +282,7 @@ export function computeQuote(input: QuoteInput): QuoteResult {
 
   // Bundle discount for End of Tenancy + Carpet cleaning
   if (["End of Tenancy Cleaning", "Deep Cleaning"].includes(input.service) && 
-      (input.add_carpet || input.add_upholstery)) {
+      (input.add_carpet || input.add_upholstery) && input.bundle_carpet_with_eot) {
     const bundleDiscount = subtotal * cfg.modifiers.bundleCarpetWithEoT;
     add("Bundle discount (EoT + Carpet/Upholstery)", -bundleDiscount);
   }
