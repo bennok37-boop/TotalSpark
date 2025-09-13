@@ -8,8 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin, Camera, X } from 'lucide-react';
-import { ObjectUploader } from '@/components/ObjectUploader';
-import type { UploadResult } from "@uppy/core";
+// ObjectUploader removed - using GHL file input for photo uploads
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -82,14 +81,13 @@ interface QuoteFormData {
   bundleCarpetsWithEoT: boolean;
   vat: boolean;
   
-  // Job Images
-  jobImages: string[];
+  // Job Images - handled by GHL form
 }
 
 export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+// Removed uploadedImages state - using GHL file input instead
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -137,10 +135,7 @@ export default function QuoteForm() {
     stairsNoLift: false,
 
     bundleCarpetsWithEoT: false,
-    vat: false,
-    
-    // Job Images
-    jobImages: []
+    vat: false
   });
   const [quoteResult, setQuoteResult] = useState<EnhancedQuoteResult | null>(null);
   const { toast } = useToast();
@@ -228,49 +223,7 @@ export default function QuoteForm() {
   };
 
   // Image upload handlers
-  const handleGetUploadParameters = async () => {
-    const response = await fetch('/api/objects/upload', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to get upload URL');
-    }
-    
-    const { uploadURL } = await response.json();
-    return {
-      method: 'PUT' as const,
-      url: uploadURL,
-    };
-  };
-
-  const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
-    if (result.successful && result.successful.length > 0) {
-      const newImageUrls = result.successful.map(file => file.uploadURL || '').filter(Boolean);
-      setUploadedImages(prev => [...prev, ...newImageUrls]);
-      setFormData(prev => ({ 
-        ...prev, 
-        jobImages: [...prev.jobImages, ...newImageUrls] 
-      }));
-      
-      toast({
-        title: "Images uploaded successfully!",
-        description: `${newImageUrls.length} image(s) added to your quote request.`
-      });
-    }
-  };
-
-  const removeImage = (indexToRemove: number) => {
-    const updatedImages = uploadedImages.filter((_, index) => index !== indexToRemove);
-    setUploadedImages(updatedImages);
-    setFormData(prev => ({ 
-      ...prev, 
-      jobImages: updatedImages 
-    }));
-  };
+  // Old upload functions removed - using GHL file input for photos
 
   const handleNumberChange = (field: keyof QuoteFormData, value: string) => {
     const numValue = parseInt(value) || 0;
@@ -392,6 +345,19 @@ export default function QuoteForm() {
     }
     
     console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode });
+    
+    // Submit lead capture to GHL (Form A)
+    GHLIntegration.submitLeadForm({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      postcode: formData.postcode,
+      // TODO: Add region/city detection from postcode or user selection
+      region: '',
+      city: ''
+    });
+    
     setStep(2);
   };
 
@@ -1062,50 +1028,21 @@ export default function QuoteForm() {
                     </div>
                     
                     <div className="space-y-3">
-                      <ObjectUploader
-                        maxNumberOfFiles={5}
-                        maxFileSize={10485760} // 10MB
-                        onGetUploadParameters={handleGetUploadParameters}
-                        onComplete={handleImageUploadComplete}
-                        buttonClassName="w-full"
+                      {/* GHL Photo Upload - Using the actual GHL file input for proper form submission */}
+                      <label 
+                        htmlFor="ghlPhotosInput" 
+                        className="flex items-center justify-center gap-2 w-full h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer transition-colors"
+                        data-testid="button-add-photos"
                       >
-                        <div className="flex items-center gap-2">
-                          <Camera className="w-4 h-4" />
-                          <span>Add Photos ({uploadedImages.length}/5)</span>
-                        </div>
-                      </ObjectUploader>
-                      
-                      {uploadedImages.length > 0 && (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {uploadedImages.map((imageUrl, index) => (
-                            <div key={index} className="relative group">
-                              <div className="aspect-square rounded-lg overflow-hidden bg-muted">
-                                <img 
-                                  src={imageUrl} 
-                                  alt={`Job photo ${index + 1}`}
-                                  className="w-full h-full object-cover"
-                                  data-testid={`image-preview-${index}`}
-                                />
-                              </div>
-                              <Button
-                                type="button"
-                                variant="destructive"
-                                size="sm"
-                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => removeImage(index)}
-                                data-testid={`button-remove-image-${index}`}
-                              >
-                                <X className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                        <Camera className="w-4 h-4" />
+                        <span>Add Photos (up to 5 photos)</span>
+                      </label>
                       
                       <div className="text-xs text-muted-foreground">
                         <p>• Upload up to 5 photos (max 10MB each)</p>
                         <p>• Show us kitchens, bathrooms, carpets, or any areas needing special attention</p>
-                        <p>• This helps us provide the most accurate quote possible</p>
+                        <p>• Photos will be submitted directly with your quote for accurate pricing</p>
+                        <p>• <strong>Note:</strong> Photos are sent when you submit your quote, not immediately upon selection</p>
                       </div>
                     </div>
                   </div>
@@ -1188,6 +1125,26 @@ export default function QuoteForm() {
                       WhatsApp Chat
                     </Button>
                     <Button 
+                      variant="default" 
+                      className="w-full"
+                      onClick={() => {
+                        const calendarUrl = GHLIntegration.getCalendarUrl();
+                        if (calendarUrl && calendarUrl !== 'PASTE_YOUR_GHL_CALENDAR_LINK_HERE') {
+                          window.open(calendarUrl, '_blank');
+                        } else {
+                          toast({
+                            title: "Calendar Not Available",
+                            description: "Please contact us directly to book your appointment.",
+                            variant: "destructive"
+                          });
+                        }
+                      }}
+                      data-testid="button-book-now"
+                    >
+                      <Clock className="w-4 h-4 mr-2" />
+                      Book & Hold My Price
+                    </Button>
+                    <Button 
                       variant="outline" 
                       onClick={() => {
                         setStep(1);
@@ -1238,12 +1195,8 @@ export default function QuoteForm() {
                           stairsNoLift: false,
                       
                           bundleCarpetsWithEoT: false,
-                          vat: false,
-                          
-                          // Job Images
-                          jobImages: []
+                          vat: false
                         });
-                        setUploadedImages([]);
                         setQuoteResult(null);
                       }}
                       className="w-full"
@@ -1258,6 +1211,86 @@ export default function QuoteForm() {
           </Card>
         </div>
       </div>
+
+      {/* Hidden iframes to prevent form submissions from navigating away */}
+      <iframe name="ghl-lead-target" style={{display: 'none'}}></iframe>
+      <iframe name="ghl-quote-target" style={{display: 'none'}}></iframe>
+
+      {/* Hidden GHL Forms - Replace ACTION_URL_A and ACTION_URL_B with actual GHL form URLs */}
+      
+      {/* Hidden GHL Form A: Lead Capture */}
+      <form id="ghl-form-lead" action="ACTION_URL_A" method="POST" target="ghl-lead-target" style={{display: 'none'}}>
+        {/* GHL will provide hidden inputs here - keep ALL of them */}
+        <input type="text" name="first_name" />
+        <input type="email" name="email" />
+        <input type="tel" name="phone" />
+        <textarea name="custom_values[address_full]"></textarea>
+        <input type="text" name="custom_values[postcode]" />
+        <input type="text" name="custom_values[region]" />
+        <input type="text" name="custom_values[city_town]" />
+      </form>
+
+      {/* Hidden GHL Form B: Quote Push */}
+      <form id="ghl-form-quote" action="ACTION_URL_B" method="POST" target="ghl-quote-target" encType="multipart/form-data" style={{display: 'none'}}>
+        {/* GHL will provide hidden inputs here - keep ALL of them */}
+        <input type="text" name="custom_values[quote_id]" />
+        <input type="text" name="custom_values[price_low]" />
+        <input type="text" name="custom_values[price_high]" />
+        <input type="text" name="custom_values[lock_until]" />
+        <input type="text" name="custom_values[service]" />
+        <input type="text" name="custom_values[property_type]" />
+        <input type="number" name="custom_values[bedrooms]" />
+        <input type="number" name="custom_values[bathrooms]" />
+        <input type="number" name="custom_values[toilets]" />
+        <input type="text" name="custom_values[condition]" />
+        {/* commercial */}
+        <input type="text" name="custom_values[commercial_type]" />
+        <input type="number" name="custom_values[area_m2]" />
+        <input type="number" name="custom_values[rooms_count]" />
+        {/* carpets & upholstery */}
+        <input type="number" name="custom_values[cu_carpet_rooms]" />
+        <input type="number" name="custom_values[cu_stairs]" />
+        <input type="number" name="custom_values[cu_rugs]" />
+        <input type="number" name="custom_values[cu_sofa2]" />
+        <input type="number" name="custom_values[cu_sofa3]" />
+        <input type="number" name="custom_values[cu_armchairs]" />
+        <input type="number" name="custom_values[cu_mattresses]" />
+        {/* add-ons / requirements */}
+        <input type="checkbox" name="custom_values[second_kitchen]" />
+        <input type="checkbox" name="custom_values[internal_stairs]" />
+        <input type="checkbox" name="custom_values[furnished]" />
+        <input type="checkbox" name="custom_values[occupied]" />
+        <input type="number" name="custom_values[hmo_rooms]" />
+        <input type="number" name="custom_values[waste_bags]" />
+        <input type="checkbox" name="custom_values[add_oven]" />
+        <input type="checkbox" name="custom_values[add_fridge]" />
+        <input type="checkbox" name="custom_values[add_cabinets]" />
+        <input type="checkbox" name="custom_values[add_limescale]" />
+        <input type="checkbox" name="custom_values[add_carpet]" />
+        <input type="checkbox" name="custom_values[add_upholstery]" />
+        <input type="number" name="custom_values[windows_count]" />
+        <input type="checkbox" name="custom_values[urgent]" />
+        <input type="checkbox" name="custom_values[weekend]" />
+        <input type="checkbox" name="custom_values[above_2nd_no_lift]" />
+        {/* notes, address context and links */}
+        <textarea name="custom_values[notes_optional]"></textarea>
+        <input type="text" name="custom_values[address_full]" />
+        <input type="text" name="custom_values[postcode]" />
+        <input type="text" name="custom_values[region]" />
+        <input type="text" name="custom_values[city_town]" />
+        <input type="url" name="custom_values[quote_url]" />
+        <input type="url" name="custom_values[resume_url]" />
+        {/* IMPORTANT: This is the actual GHL file input that will be used for photo uploads */}
+        <input 
+          id="ghlPhotosInput" 
+          type="file" 
+          name="custom_values[photos_upload]" 
+          multiple 
+          accept="image/*"
+          style={{display: 'none'}} 
+          data-testid="input-ghl-photos"
+        />
+      </form>
     </section>
   );
 }

@@ -1,0 +1,250 @@
+let’s wire your Replit site → HighLevel (GHL) now. I’ll give you exact steps and the code to paste. We’ll:
+
+create the 2 GHL forms (lead + quote) and a calendar
+
+paste their Raw HTML into Replit (hidden)
+
+replace TS.pushToGHL() so the moment the estimate appears, GHL sends the email + SMS and your follow-ups run
+
+set your Book & hold my price button to the GHL calendar
+
+1) HighLevel setup (one time)
+
+Payments: Settings → Integrations → Connect Stripe.
+
+Calendar: Calendars → New → “Cleaning Bookings” → Collect payments ON (deposit £30 or 20%). Copy its Public Link.
+
+Custom Fields (group “Quotes”): at minimum create
+quote_id (Text), price_low (Currency), price_high (Currency), lock_until (Date),
+service (Dropdown), property_type (Dropdown), bedrooms (Number), bathrooms (Number), toilets (Number), condition (Dropdown),
+commercial_type (Dropdown), area_m2 (Number), rooms_count (Number),
+cu_carpet_rooms (Number), cu_stairs (Number), cu_rugs (Number), cu_sofa2 (Number), cu_sofa3 (Number), cu_armchairs (Number), cu_mattresses (Number),
+windows_count (Number), urgent (Checkbox), weekend (Checkbox), above_2nd_no_lift (Checkbox),
+second_kitchen (Checkbox), internal_stairs (Checkbox), furnished (Checkbox), occupied (Checkbox), hmo_rooms (Number), waste_bags (Number),
+notes_optional (Long Text), photos_upload (File Upload),
+address_full (Long Text), postcode (Text), region (Dropdown), city_town (Text),
+quote_url (Text), resume_url (Text), quote_sent (Checkbox).
+
+Pipeline: Lead → Quoted → Booked → Won → Lost.
+
+Forms
+
+Form A – Lead Capture (Name, Email, Phone, Address, Postcode, Region, City/Town). On Submit → Stage Lead, Tag Lead-Captured.
+
+Form B – Quote Push (all custom fields above, inc. photos_upload). On Submit → Stage Quoted, Tags Quote-Ready and Quoted.
+
+For both forms: Integrate → Raw HTML and copy the full <form …> blocks (we will paste them into Replit).
+
+Workflows
+
+Instant Send: Trigger Tag = Quote-Ready → (if quote_sent not true) Send SMS, Send Email, set quote_sent=true.
+
+Follow-ups: Trigger Tag = Quoted → IF Stage=Quoted → wait 5m (SMS) → 2h (Email) → 24h (SMS) → 48h (SMS). Goal: exit if Stage changes.
+
+Booking: Trigger Appointment Confirmed (your calendar) → set Stage Booked, send confirmation.
+
+That’s all in GHL. Now Replit.
+
+2) Replit: paste the two Raw HTML forms (hidden)
+
+Put these near the bottom of your quote page. Replace ACTION_URL_A/B with the exact action URLs from GHL and keep any extra hidden inputs GHL includes.
+
+<!-- Hidden GHL Form A: Lead Capture -->
+<form id="ghl-form-lead" action="ACTION_URL_A" method="POST" style="display:none">
+  <!-- keep ALL hidden inputs GHL included -->
+  <input type="text" name="first_name">
+  <input type="email" name="email">
+  <input type="tel"   name="phone">
+  <textarea name="custom_values[address_full]"></textarea>
+  <input type="text"  name="custom_values[postcode]">
+  <input type="text"  name="custom_values[region]">
+  <input type="text"  name="custom_values[city_town]">
+</form>
+
+<!-- Hidden GHL Form B: Quote Push -->
+<form id="ghl-form-quote" action="ACTION_URL_B" method="POST" enctype="multipart/form-data" style="display:none">
+  <!-- keep ALL hidden inputs GHL included -->
+  <input type="text"  name="custom_values[quote_id]">
+  <input type="text"  name="custom_values[price_low]">
+  <input type="text"  name="custom_values[price_high]">
+  <input type="text"  name="custom_values[lock_until]">
+  <input type="text"  name="custom_values[service]">
+  <input type="text"  name="custom_values[property_type]">
+  <input type="number" name="custom_values[bedrooms]">
+  <input type="number" name="custom_values[bathrooms]">
+  <input type="number" name="custom_values[toilets]">
+  <input type="text"  name="custom_values[condition]">
+  <!-- commercial -->
+  <input type="text"  name="custom_values[commercial_type]">
+  <input type="number" name="custom_values[area_m2]">
+  <input type="number" name="custom_values[rooms_count]">
+  <!-- carpets & upholstery -->
+  <input type="number" name="custom_values[cu_carpet_rooms]">
+  <input type="number" name="custom_values[cu_stairs]">
+  <input type="number" name="custom_values[cu_rugs]">
+  <input type="number" name="custom_values[cu_sofa2]">
+  <input type="number" name="custom_values[cu_sofa3]">
+  <input type="number" name="custom_values[cu_armchairs]">
+  <input type="number" name="custom_values[cu_mattresses]">
+  <!-- add-ons / requirements -->
+  <input type="checkbox" name="custom_values[second_kitchen]">
+  <input type="checkbox" name="custom_values[internal_stairs]">
+  <input type="checkbox" name="custom_values[furnished]">
+  <input type="checkbox" name="custom_values[occupied]">
+  <input type="number"  name="custom_values[hmo_rooms]">
+  <input type="number"  name="custom_values[waste_bags]">
+  <input type="checkbox" name="custom_values[add_oven]">
+  <input type="checkbox" name="custom_values[add_fridge]">
+  <input type="checkbox" name="custom_values[add_cabinets]">
+  <input type="checkbox" name="custom_values[add_limescale]">
+  <input type="checkbox" name="custom_values[add_carpet]">
+  <input type="checkbox" name="custom_values[add_upholstery]">
+  <input type="number"  name="custom_values[windows_count]">
+  <input type="checkbox" name="custom_values[urgent]">
+  <input type="checkbox" name="custom_values[weekend]">
+  <input type="checkbox" name="custom_values[above_2nd_no_lift]">
+  <!-- notes, address context and links -->
+  <textarea name="custom_values[notes_optional]"></textarea>
+  <input type="text" name="custom_values[address_full]">
+  <input type="text" name="custom_values[postcode]">
+  <input type="text" name="custom_values[region]">
+  <input type="text" name="custom_values[city_town]">
+  <input type="url"  name="custom_values[quote_url]">
+  <input type="url"  name="custom_values[resume_url]">
+  <!-- IMPORTANT: this is the actual GHL file input. Place it visibly in your UI (see note below) -->
+  <input id="ghlPhotosInput" type="file" name="custom_values[photos_upload]" multiple>
+</form>
+
+
+⚠️ Photos: browsers don’t let JS copy files between inputs. So use the GHL file input as your visible uploader. Move #ghlPhotosInput into your upload section and style it; or place a <label for="ghlPhotosInput">Add Photos</label> button.
+
+3) Replit: wire buttons → submit the GHL forms
+3.1 Submit Form A (Lead) on Step-1 “Next”
+
+Add this in your page JS (or keep if you already have):
+
+document.getElementById('nextStep1')?.addEventListener('click', () => {
+  const f = document.getElementById('ghl-form-lead');
+  f.querySelector('input[name="first_name"]').value = document.getElementById('fullName')?.value || "";
+  f.querySelector('input[name="email"]').value      = document.getElementById('email')?.value || "";
+  f.querySelector('input[name="phone"]').value      = document.getElementById('phone')?.value || "";
+  f.querySelector('textarea[name="custom_values[address_full]"]').value = document.getElementById('address')?.value || "";
+  f.querySelector('input[name="custom_values[postcode]"]').value       = document.getElementById('postcode')?.value || "";
+  // If you have region/city fields, map here (or leave blank)
+  f.submit(); // creates/updates contact at Stage=Lead
+});
+
+3.2 Replace TS.pushToGHL(quote) with this (Form-B submit)
+<script>
+TS.cfg.calendarUrl = "PASTE_YOUR_GHL_CALENDAR_LINK_HERE"; // used by Book button
+
+TS.pushToGHL = function(quote){
+  const g = document.getElementById('ghl-form-quote');
+  const S = (sel,val,isChk=false) => {
+    const el = g.querySelector(sel); if(!el) return;
+    if (el.type === "checkbox" || isChk) el.checked = !!val; else el.value = (val ?? "");
+  };
+  const V = (id) => document.getElementById(id)?.value || "";
+  const N = (id) => Number(document.getElementById(id)?.value || 0);
+  const C = (id) => !!document.getElementById(id)?.checked;
+
+  // REQUIRED core
+  S('input[name="custom_values[quote_id]"]', quote.id);
+  S('input[name="custom_values[price_low]"]', quote.estimate.low);
+  S('input[name="custom_values[price_high]"]', quote.estimate.high);
+
+  const lock = (()=>{const d=new Date(); d.setDate(d.getDate()+7); return d.toISOString().split('T')[0];})();
+  S('input[name="custom_values[lock_until]"]', lock);
+  S('input[name="custom_values[quote_url]"]', window.location.href);
+  S('input[name="custom_values[resume_url]"]', quote.resumeUrl);
+
+  // Service & common
+  S('input[name="custom_values[service]"]', V('serviceType'));
+  S('input[name="custom_values[property_type]"]', V('propertyType'));
+  S('input[name="custom_values[bedrooms]"]', V('bedrooms'));
+  S('input[name="custom_values[bathrooms]"]', V('bathrooms'));
+  S('input[name="custom_values[toilets]"]', V('toiletsCount') || V('toilets'));
+  S('input[name="custom_values[condition]"]', V('propertyCondition'));
+  S('textarea[name="custom_values[notes_optional]"]', V('notesOptional'));
+
+  // Address context
+  S('input[name="custom_values[address_full]"]', V('address'));
+  S('input[name="custom_values[postcode]"]', V('postcode'));
+  // If you have visible region/city selectors, map them:
+  // S('input[name="custom_values[region]"]', V('region'));
+  // S('input[name="custom_values[city_town]"]', V('city_town'));
+
+  // Add-ons / requirements (if present)
+  S('input[name="custom_values[second_kitchen]"]', C('secondKitchen'), true);
+  S('input[name="custom_values[internal_stairs]"]', C('internalStairs'), true);
+  S('input[name="custom_values[furnished]"]', C('furnished'), true);
+  S('input[name="custom_values[occupied]"]', C('occupied'), true);
+  S('input[name="custom_values[hmo_rooms]"]', N('hmoRooms'));
+  S('input[name="custom_values[waste_bags]"]', N('wasteBags'));
+  S('input[name="custom_values[add_oven]"]', C('addOven'), true);
+  S('input[name="custom_values[add_fridge]"]', C('addFridge'), true);
+  S('input[name="custom_values[add_cabinets]"]', C('addCabinets'), true);
+  S('input[name="custom_values[add_limescale]"]', C('addLimescale'), true);
+  S('input[name="custom_values[add_carpet]"]', C('addCarpet'), true);
+  S('input[name="custom_values[add_upholstery]"]', C('addUpholstery'), true);
+  S('input[name="custom_values[windows_count]"]', N('windowsCount'));
+  S('input[name="custom_values[urgent]"]', C('urgent'), true);
+  S('input[name="custom_values[weekend]"]', C('weekend'), true);
+  S('input[name="custom_values[above_2nd_no_lift]"]', C('above2NoLift'), true);
+
+  // Commercial branch
+  if (V('serviceType') === "Commercial/Office Cleaning") {
+    S('input[name="custom_values[commercial_type]"]', V('commercialType'));
+    S('input[name="custom_values[area_m2]"]', N('areaM2'));
+    S('input[name="custom_values[rooms_count]"]', N('roomsCount'));
+  }
+
+  // Carpets & Upholstery branch
+  if (V('serviceType') === "Carpet & Upholstery Cleaning") {
+    S('input[name="custom_values[cu_carpet_rooms]"]', N('c_carpetRooms'));
+    S('input[name="custom_values[cu_stairs]"]',       N('c_stairs'));
+    S('input[name="custom_values[cu_rugs]"]',         N('c_rugs'));
+    S('input[name="custom_values[cu_sofa2]"]',        N('c_sofa2'));
+    S('input[name="custom_values[cu_sofa3]"]',        N('c_sofa3'));
+    S('input[name="custom_values[cu_armchairs]"]',    N('c_armchairs'));
+    S('input[name="custom_values[cu_mattresses]"]',   N('c_mattresses'));
+  }
+
+  // IMPORTANT: Make the GHL file input visible in your UI.
+  // Use <input id="ghlPhotosInput" ...> as your uploader so files submit with this form.
+
+  g.submit(); // → GHL receives, tags Quote-Ready & Quoted → Instant Email+SMS + follow-ups
+};
+</script>
+
+
+Your existing “Get Quote” click already calls TS.pushToGHL(quote) (from our earlier step), so no extra wiring needed here.
+
+3.3 Set the Book button to your GHL calendar
+
+In your result panel:
+
+document.getElementById('bookNowBtn').href = TS.cfg.calendarUrl; // set once on page load
+
+
+…and set TS.cfg.calendarUrl = "https://your-ghl-calendar-link" near the top of your JS.
+
+4) Test (fast)
+
+Fill Step-1 → click Next → in GHL, a Contact appears (Stage Lead).
+
+Fill Step-2 → click Get Quote → your page shows the band AND you instantly receive SMS + Email with the booking link. Contact is Stage: Quoted with all fields populated (and photos if attached).
+
+Click Book & hold my price → complete deposit → appointment shows; Contact becomes Stage: Booked; confirmation is sent.
+
+If you don’t book, your +5m / +2h / +24h / +48h follow-ups send automatically.
+
+Notes / gotchas
+
+Photos: use the GHL file input as your visible uploader (#ghlPhotosInput). You can style it; but it must be the actual GHL input so the files submit with Form B.
+
+Raw HTML forms: always keep any extra hidden fields GHL includes (anti-spam tokens).
+
+Duplicate quotes: re-quoting will just update the same contact — that’s fine.
+
+Optional resume: you can email {{contact.resume_url}} so users jump back to the same page.

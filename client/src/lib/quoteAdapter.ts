@@ -237,62 +237,164 @@ export class QuoteStorage {
   }
 }
 
-// HighLevel (GHL) integration stubs - ready for future implementation
+// HighLevel Integration - Real form submission implementation
 export class GHLIntegration {
   private static readonly GHL_CONFIG = {
-    webhookUrl: '', // To be configured later
-    calendarUrl: '#', // GHL calendar link
+    calendarUrl: 'PASTE_YOUR_GHL_CALENDAR_LINK_HERE', // GHL calendar link - to be replaced
     depositUrl: '#', // GHL payment link
-    contactFormId: '', // GHL form ID
-    opportunityPipelineId: '', // GHL pipeline
-    opportunityStageId: '' // GHL stage
   };
 
-  // Stub: Push quote data to HighLevel
+  // Submit lead capture form (Form A) - called on Step 1 Next
+  static submitLeadForm(formData: { name: string; email: string; phone: string; address: string; postcode: string; region?: string; city?: string }): void {
+    const form = document.getElementById('ghl-form-lead') as HTMLFormElement;
+    if (!form) {
+      console.error('GHL lead form not found');
+      return;
+    }
+
+    // Populate form fields
+    const setFormValue = (selector: string, value: string) => {
+      const element = form.querySelector(selector) as HTMLInputElement | HTMLTextAreaElement;
+      if (element) element.value = value || '';
+    };
+
+    setFormValue('input[name="first_name"]', formData.name);
+    setFormValue('input[name="email"]', formData.email);
+    setFormValue('input[name="phone"]', formData.phone);
+    setFormValue('textarea[name="custom_values[address_full]"]', formData.address);
+    setFormValue('input[name="custom_values[postcode]"]', formData.postcode);
+    setFormValue('input[name="custom_values[region]"]', formData.region || '');
+    setFormValue('input[name="custom_values[city_town]"]', formData.city || '');
+
+    // Submit the form
+    form.submit();
+    console.log('GHL Lead form submitted:', formData);
+  }
+
+  // Replace the old pushQuoteToGHL with real form submission (Form B)
   static async pushQuoteToGHL(quote: SavedQuote): Promise<{ success: boolean; ghlId?: string; error?: string }> {
-    // NO-OP for now - ready for GHL webhook integration
-    console.log('GHL Push Stub - Quote ready for submission:', {
-      quoteId: quote.id,
-      contact: quote.contact,
-      estimate: quote.estimate,
-      service: quote.serviceData.service
-    });
+    try {
+      const form = document.getElementById('ghl-form-quote') as HTMLFormElement;
+      if (!form) {
+        throw new Error('GHL quote form not found');
+      }
 
-    // Simulate async operation
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ 
-          success: true, 
-          ghlId: `ghl_${quote.id}_${Date.now()}` 
-        });
-      }, 100);
-    });
+      // Helper functions for form population
+      const setFormValue = (selector: string, value: string | number | boolean, isCheckbox = false) => {
+        const element = form.querySelector(selector) as HTMLInputElement | HTMLTextAreaElement;
+        if (!element) return;
+        
+        if (element.type === 'checkbox' || isCheckbox) {
+          (element as HTMLInputElement).checked = !!value;
+        } else {
+          element.value = (value ?? '').toString();
+        }
+      };
+
+      // Core quote data
+      setFormValue('input[name="custom_values[quote_id]"]', quote.id);
+      setFormValue('input[name="custom_values[price_low]"]', quote.estimate.low);
+      setFormValue('input[name="custom_values[price_high]"]', quote.estimate.high);
+
+      // Lock date (7 days from now)
+      const lockDate = new Date();
+      lockDate.setDate(lockDate.getDate() + 7);
+      setFormValue('input[name="custom_values[lock_until]"]', lockDate.toISOString().split('T')[0]);
+
+      // URLs
+      setFormValue('input[name="custom_values[quote_url]"]', window.location.href);
+      setFormValue('input[name="custom_values[resume_url]"]', quote.resumeUrl || window.location.href);
+
+      // Contact details
+      setFormValue('input[name="custom_values[address_full]"]', quote.address);
+      setFormValue('input[name="custom_values[postcode]"]', quote.postcode);
+
+      // Service details
+      setFormValue('input[name="custom_values[service]"]', quote.serviceData.service);
+      setFormValue('input[name="custom_values[property_type]"]', quote.serviceData.property_type || '');
+      setFormValue('input[name="custom_values[bedrooms]"]', quote.serviceData.bedrooms || '');
+      setFormValue('input[name="custom_values[bathrooms]"]', quote.serviceData.bathrooms || 1);
+      setFormValue('input[name="custom_values[toilets]"]', quote.serviceData.toilets || 1);
+      setFormValue('input[name="custom_values[condition]"]', quote.serviceData.condition || '');
+      setFormValue('textarea[name="custom_values[notes_optional]"]', quote.serviceData.notes || '');
+
+      // Property factors
+      setFormValue('input[name="custom_values[second_kitchen]"]', quote.serviceData.second_kitchen ?? false, true);
+      setFormValue('input[name="custom_values[internal_stairs]"]', quote.serviceData.internal_stairs ?? false, true);
+      setFormValue('input[name="custom_values[furnished]"]', quote.serviceData.furnished ?? false, true);
+      setFormValue('input[name="custom_values[occupied]"]', quote.serviceData.occupied ?? false, true);
+      setFormValue('input[name="custom_values[hmo_rooms]"]', quote.serviceData.hmo_rooms || 0);
+      setFormValue('input[name="custom_values[waste_bags]"]', quote.serviceData.waste_bags || 0);
+
+      // Add-ons
+      setFormValue('input[name="custom_values[add_oven]"]', quote.serviceData.add_oven ?? false, true);
+      setFormValue('input[name="custom_values[add_fridge]"]', quote.serviceData.add_fridge ?? false, true);
+      setFormValue('input[name="custom_values[add_cabinets]"]', quote.serviceData.add_cabinets ?? false, true);
+      setFormValue('input[name="custom_values[add_limescale]"]', quote.serviceData.add_limescale ?? false, true);
+      setFormValue('input[name="custom_values[add_carpet]"]', quote.serviceData.add_carpet ?? false, true);
+      setFormValue('input[name="custom_values[add_upholstery]"]', quote.serviceData.add_upholstery ?? false, true);
+      setFormValue('input[name="custom_values[windows_count]"]', quote.serviceData.windows_count || 0);
+      setFormValue('input[name="custom_values[urgent]"]', quote.serviceData.urgent ?? false, true);
+      setFormValue('input[name="custom_values[weekend]"]', quote.serviceData.weekend ?? false, true);
+      setFormValue('input[name="custom_values[above_2nd_no_lift]"]', quote.serviceData.above_2nd_no_lift ?? false, true);
+
+      // Commercial specific
+      if (quote.serviceData.service === 'Commercial/Office Cleaning') {
+        setFormValue('input[name="custom_values[commercial_type]"]', quote.serviceData.commercial_type || '');
+        setFormValue('input[name="custom_values[area_m2]"]', quote.serviceData.area_m2 || 0);
+        setFormValue('input[name="custom_values[rooms_count]"]', quote.serviceData.rooms_count || 0);
+      }
+
+      // Carpet & upholstery specific
+      if (quote.serviceData.service === 'Carpet & Upholstery Cleaning') {
+        setFormValue('input[name="custom_values[cu_carpet_rooms]"]', quote.serviceData.cu?.carpet_rooms || 0);
+        setFormValue('input[name="custom_values[cu_stairs]"]', quote.serviceData.cu?.stairs || 0);
+        setFormValue('input[name="custom_values[cu_rugs]"]', quote.serviceData.cu?.rugs || 0);
+        setFormValue('input[name="custom_values[cu_sofa2]"]', quote.serviceData.cu?.sofa2 || 0);
+        setFormValue('input[name="custom_values[cu_sofa3]"]', quote.serviceData.cu?.sofa3 || 0);
+        setFormValue('input[name="custom_values[cu_armchairs]"]', quote.serviceData.cu?.armchairs || 0);
+        setFormValue('input[name="custom_values[cu_mattresses]"]', quote.serviceData.cu?.mattresses || 0);
+      }
+
+      // Submit the form
+      form.submit();
+      
+      console.log('GHL Quote form submitted successfully:', quote);
+      
+      return { 
+        success: true, 
+        ghlId: `ghl_${quote.id}_${Date.now()}` 
+      };
+    } catch (error) {
+      console.error('Error submitting GHL quote form:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      };
+    }
   }
 
-  // Stub: Create GHL contact
-  static async createGHLContact(contact: SavedQuote['contact'], address: string, postcode: string): Promise<{ success: boolean; contactId?: string }> {
-    console.log('GHL Contact Stub - Ready to create:', { contact, address, postcode });
-    return { success: true, contactId: `contact_${Date.now()}` };
-  }
-
-  // Stub: Create GHL opportunity/lead
-  static async createGHLOpportunity(quote: SavedQuote): Promise<{ success: boolean; opportunityId?: string }> {
-    console.log('GHL Opportunity Stub - Ready to create:', {
-      value: quote.estimate.high,
-      service: quote.serviceData.service,
-      contact: quote.contact
-    });
-    return { success: true, opportunityId: `opp_${Date.now()}` };
-  }
-
-  // Get booking calendar URL (placeholder)
+  // Get calendar URL for booking
   static getCalendarUrl(): string {
     return this.GHL_CONFIG.calendarUrl;
   }
 
-  // Get deposit/payment URL (placeholder)  
+  // Get deposit/payment URL  
   static getDepositUrl(): string {
     return this.GHL_CONFIG.depositUrl;
+  }
+
+  // Legacy methods kept for compatibility
+  static async createGHLContact(contact: SavedQuote['contact'], address: string, postcode: string): Promise<{ success: boolean; contactId?: string }> {
+    // This is now handled by submitLeadForm
+    console.log('Contact creation handled by GHL lead form');
+    return { success: true, contactId: `handled_by_form` };
+  }
+
+  static async createGHLOpportunity(quote: SavedQuote): Promise<{ success: boolean; opportunityId?: string }> {
+    // This is now handled by pushQuoteToGHL
+    console.log('Opportunity creation handled by GHL quote form');
+    return { success: true, opportunityId: `handled_by_form` };
   }
 }
 
