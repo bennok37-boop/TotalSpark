@@ -1,4 +1,4 @@
-import { useParams } from 'wouter';
+import { useParams, Link } from 'wouter';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import ProofStrip from '@/components/ProofStrip';
@@ -9,6 +9,7 @@ import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import SEOHead from '@/components/SEOHead';
+import NotFoundPage from '@/components/NotFoundPage';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -81,7 +82,7 @@ export default function CityPage() {
   const locationData = findLocationBySlug(citySlug);
   
   if (!locationData) {
-    return <div>City not found</div>;
+    return <NotFoundPage locationSlug={slug} type="location" />;
   }
   
   // Generate dynamic content based on location and region
