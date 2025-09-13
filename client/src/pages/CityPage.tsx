@@ -31,6 +31,7 @@ type Location = {
 function generateCityPageContent(location: Location, region: typeof REGIONS[keyof typeof REGIONS]) {
   const nearbyLocations = getNearbyLocations(location, region);
   const nearbyNames = nearbyLocations.slice(0, 6).map(loc => loc.name);
+  const nearbyAreas = nearbyLocations.slice(0, 8).map(loc => ({ name: loc.name, slug: loc.slug }));
   
   return {
     name: location.name,
@@ -55,6 +56,7 @@ function generateCityPageContent(location: Location, region: typeof REGIONS[keyo
       `Ongoing cleaning contracts with businesses around ${location.name} & surrounding areas`
     ],
     miniAbout: `Proudly serving ${location.name} and surrounding ${region.name} areas since 2025, CleanPro has built a reputation for reliable, professional cleaning. Whether it's residential properties, student accommodation, or commercial spaces around ${location.name}, we provide cleaning services you can trust to get the job done right — the first time.`,
+    nearbyAreas,
     faqs: [
       { q: `Do you cover ${location.name} and surrounding areas?`, a: `Yes — we regularly provide cleaning services across ${location.name} and all surrounding ${region.name} areas including ${nearbyNames.slice(0, 3).join(', ')}.` },
       { q: 'Can you clean offices and commercial properties?', a: `Absolutely. We cover everything from small offices to full business premises across ${location.name} and ${region.name}, with flexible daily, weekly, or one-off cleans.` },
@@ -259,11 +261,18 @@ export default function CityPage() {
                 {city.miniAbout}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {city.areas.slice(0, 8).map((area) => (
-                  <Badge key={area} variant="outline" className="p-3 text-center justify-center">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    {area}
-                  </Badge>
+                {city.nearbyAreas.map((area) => (
+                  <Link 
+                    key={area.slug} 
+                    href={`/cleaning/${area.slug}`} 
+                    className="group"
+                    data-testid={`link-nearby-${area.slug}`}
+                  >
+                    <Badge variant="outline" className="p-3 text-center justify-center w-full hover-elevate transition-all">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      {area.name}
+                    </Badge>
+                  </Link>
                 ))}
               </div>
             </div>
