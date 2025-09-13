@@ -79,7 +79,6 @@ interface QuoteFormData {
 export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
-  const [postcodeResults, setPostcodeResults] = useState<any[]>([]);
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -212,21 +211,29 @@ export default function QuoteForm() {
       if (response.ok) {
         const data = await response.json();
         if (data.result) {
-          // Auto-fill address components
+          // Auto-fill address components only if address is empty
           const result = data.result;
-          const addressParts = [];
+          const normalizedPostcode = postcode.toUpperCase().trim().replace(/(.+)(\d[A-Z]{2})$/, '$1 $2');
           
-          if (result.parliamentary_constituency) addressParts.push(result.parliamentary_constituency);
-          if (result.admin_ward) addressParts.push(result.admin_ward);
-          if (result.admin_district) addressParts.push(result.admin_district);
-          
-          const suggestedAddress = addressParts.join(', ');
-          
-          setFormData(prev => ({
-            ...prev,
-            address: suggestedAddress || prev.address,
-            postcode: postcode.toUpperCase()
-          }));
+          // Only auto-fill if address is empty, otherwise suggest
+          if (!formData.address.trim()) {
+            const addressParts = [];
+            if (result.admin_district) addressParts.push(result.admin_district);
+            if (result.admin_ward) addressParts.push(result.admin_ward);
+            const suggestedAddress = addressParts.join(', ');
+            
+            setFormData(prev => ({
+              ...prev,
+              address: suggestedAddress,
+              postcode: normalizedPostcode
+            }));
+          } else {
+            // Just update postcode if address already exists
+            setFormData(prev => ({
+              ...prev,
+              postcode: normalizedPostcode
+            }));
+          }
           
           toast({
             title: "Postcode found!",
@@ -329,7 +336,28 @@ export default function QuoteForm() {
 
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address }); // Todo: remove mock functionality
+    
+    // Enhanced validation for address and postcode
+    if (formData.address && !formData.postcode) {
+      toast({
+        title: "Postcode Required",
+        description: "Please provide a postcode with your address for accurate service delivery",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Validate postcode format (basic UK postcode pattern)
+    if (formData.postcode && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(formData.postcode.replace(/\s/g, ''))) {
+      toast({
+        title: "Invalid Postcode",
+        description: "Please enter a valid UK postcode (e.g. NE1 1AA)",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode, additionalDetails: formData.additionalDetails });
     setStep(2);
   };
 
@@ -432,7 +460,7 @@ export default function QuoteForm() {
                   </div>
 
                   <div>
-                    <Label htmlFor="postcode">Postcode Lookup</Label>
+                    <Label htmlFor="postcode">Postcode *</Label>
                     <div className="flex gap-2">
                       <Input
                         id="postcode"
@@ -440,6 +468,7 @@ export default function QuoteForm() {
                         value={formData.postcode}
                         onChange={(e) => handleInputChange('postcode', e.target.value)}
                         placeholder="Enter postcode (e.g. NE1 1AA)"
+                      required
                         data-testid="input-postcode"
                         className="flex-1"
                       />
