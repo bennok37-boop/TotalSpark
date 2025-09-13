@@ -53,7 +53,6 @@ interface QuoteFormData {
   // Carpet items
   carpetRooms: number;
   stairs: number;
-  rugs: number;
   sofa2: number;
   sofa3: number;
   armchair: number;
@@ -116,7 +115,6 @@ export default function QuoteForm() {
     
     carpetRooms: 0,
     stairs: 0,
-    rugs: 0,
     sofa2: 0,
     sofa3: 0,
     armchair: 0,
@@ -318,7 +316,7 @@ export default function QuoteForm() {
 
   // Real-time price calculation using the pricing engine
   useEffect(() => {
-    const hasCarpetItems = formData.carpetRooms > 0 || formData.stairs > 0 || formData.rugs > 0 || 
+    const hasCarpetItems = formData.carpetRooms > 0 || formData.stairs > 0 || 
                           formData.sofa2 > 0 || formData.sofa3 > 0 || formData.armchair > 0 || formData.mattress > 0;
     
     if (formData.service && 
@@ -352,7 +350,6 @@ export default function QuoteForm() {
         items: formData.service === 'carpets' ? {
           carpetRooms: formData.carpetRooms,
           stairs: formData.stairs,
-          rugs: formData.rugs,
           sofa2: formData.sofa2,
           sofa3: formData.sofa3,
           armchair: formData.armchair,
@@ -859,17 +856,6 @@ export default function QuoteForm() {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="rugs">Rugs</Label>
-                          <Input
-                            id="rugs"
-                            type="number"
-                            min="0"
-                            value={formData.rugs || ''}
-                            onChange={(e) => handleNumberChange('rugs', e.target.value)}
-                            data-testid="input-rugs"
-                          />
-                        </div>
-                        <div>
                           <Label htmlFor="sofa2">2-Seater Sofas</Label>
                           <Input
                             id="sofa2"
@@ -1253,7 +1239,6 @@ export default function QuoteForm() {
                           
                           carpetRooms: 0,
                           stairs: 0,
-                          rugs: 0,
                           sofa2: 0,
                           sofa3: 0,
                           armchair: 0,
