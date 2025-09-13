@@ -302,5 +302,5 @@ export { formatMoney };
 export const adapterConfig = {
   estimateBand: 0.10, // ±10%
   autoSave: true, // Auto-save quotes to localStorage
-  debugMode: process.env.NODE_ENV === 'development'
+  debugMode: import.meta.env.DEV
 };

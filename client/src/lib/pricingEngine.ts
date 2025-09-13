@@ -232,6 +232,18 @@ export function computeQuote(input: QuoteInput): QuoteResult {
       add(`Interior windows x${input.windows_count}`, 
           Math.max(cfg.addons.windowsMin, (input.windows_count || 0) * cfg.addons.windowsPer));
     }
+
+    // Add-on carpet and upholstery cleaning for domestic services
+    if (input.add_carpet) {
+      // Use carpet room pricing - assume 2 rooms if not specified
+      const carpetRooms = input.cu?.carpet_rooms || 2;
+      add(`Add-on carpet cleaning (${carpetRooms} rooms)`, carpetRooms * cfg.carpets.room);
+    }
+    if (input.add_upholstery) {
+      // Standard upholstery add-on - assume 1 sofa if not specified  
+      const sofaPrice = cfg.carpets.sofa2; // Use 2-seater price as standard
+      add("Add-on upholstery cleaning (sofa)", sofaPrice);
+    }
   }
 
   // COMMERCIAL / OFFICE
@@ -266,6 +278,13 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     if (it.sofa3) add(`3-seater sofas x${it.sofa3}`, it.sofa3 * c.sofa3);
     if (it.armchairs) add(`Armchairs x${it.armchairs}`, it.armchairs * c.armchair);
     if (it.mattresses) add(`Mattresses x${it.mattresses}`, it.mattresses * c.mattress);
+  }
+
+  // Bundle discount for End of Tenancy + Carpet cleaning
+  if (["End of Tenancy Cleaning", "Deep Cleaning"].includes(input.service) && 
+      (input.add_carpet || input.add_upholstery)) {
+    const bundleDiscount = subtotal * cfg.modifiers.bundleCarpetWithEoT;
+    add("Bundle discount (EoT + Carpet/Upholstery)", -bundleDiscount);
   }
 
   // Surcharges

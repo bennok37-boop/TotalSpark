@@ -14,7 +14,13 @@ import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
-import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
+import { 
+  computeReactQuote, 
+  EnhancedQuoteResult, 
+  QuoteStorage, 
+  GHLIntegration, 
+  ReactFormData 
+} from '@/lib/quoteAdapter';
 
 type FormStep = 1 | 2 | 3;
 
@@ -136,7 +142,7 @@ export default function QuoteForm() {
     // Job Images
     jobImages: []
   });
-  const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
+  const [quoteResult, setQuoteResult] = useState<EnhancedQuoteResult | null>(null);
   const { toast } = useToast();
 
   // Handle auto-scroll when page loads with #quote-form hash
@@ -167,7 +173,22 @@ export default function QuoteForm() {
   }, []);
 
   const submitQuoteMutation = useMutation({
-    mutationFn: async (data: QuoteFormData & { quoteResult?: QuoteResult }) => {
+    mutationFn: async (data: QuoteFormData & { quoteResult?: EnhancedQuoteResult }) => {
+      if (!data.quoteResult) {
+        throw new Error('Quote result is required for submission');
+      }
+
+      // Create saved quote for localStorage and GHL
+      const savedQuote = QuoteStorage.createSavedQuote(data as ReactFormData, data.quoteResult);
+      
+      // Save to localStorage
+      QuoteStorage.saveQuote(savedQuote);
+      
+      // Push to GHL (stub for now)
+      const ghlResult = await GHLIntegration.pushQuoteToGHL(savedQuote);
+      console.log('GHL integration result:', ghlResult);
+
+      // Also submit to current API endpoint for compatibility
       const submitData = {
         name: data.name,
         email: data.email,
@@ -178,8 +199,11 @@ export default function QuoteForm() {
         service: data.service,
         bedrooms: data.bedrooms || null,
         area_m2: data.area_m2 || null,
-        quoteResult: data.quoteResult || null
+        quoteResult: data.quoteResult,
+        quoteId: savedQuote.id, // Include quote ID for tracking
+        ghlResult // Include GHL result
       };
+      
       return apiRequest('POST', '/api/quotes', submitData);
     },
     onSuccess: () => {
@@ -314,7 +338,7 @@ export default function QuoteForm() {
     setFormData(prev => ({ ...prev, [field]: checked }));
   };
 
-  // Real-time price calculation using the pricing engine
+  // Real-time price calculation using the new standardized pricing engine
   useEffect(() => {
     const hasCarpetItems = formData.carpetRooms > 0 || formData.stairs > 0 || 
                           formData.sofa2 > 0 || formData.sofa3 > 0 || formData.armchair > 0 || formData.mattress > 0;
@@ -324,57 +348,8 @@ export default function QuoteForm() {
          (formData.service === 'carpets' && hasCarpetItems) ||
          (formData.service !== 'commercial' && formData.service !== 'carpets' && formData.bedrooms))) {
       
-      const quoteInput: QuoteInput = {
-        service: formData.service,
-        bedrooms: formData.bedrooms || undefined,
-        bathrooms: formData.bathrooms,
-        toilets: formData.toilets,
-        livingRooms: formData.livingRooms,
-        area_m2: formData.area_m2 || undefined,
-        
-        // Enhanced property factors
-        propertyType: formData.propertyType || undefined,
-        condition: formData.condition || undefined,
-        secondKitchen: formData.secondKitchen,
-        internalStairs: formData.internalStairs,
-        furnished: formData.furnished,
-        occupied: formData.occupied,
-        hmoRooms: formData.hmoRooms,
-        wasteBags: formData.wasteBags,
-        
-        // Commercial enhancements
-        commercialType: formData.commercialType || undefined,
-        commercialRooms: formData.commercialRooms || undefined,
-        commercialToilets: formData.commercialToilets || undefined,
-        
-        items: formData.service === 'carpets' ? {
-          carpetRooms: formData.carpetRooms,
-          stairs: formData.stairs,
-          sofa2: formData.sofa2,
-          sofa3: formData.sofa3,
-          armchair: formData.armchair,
-          mattress: formData.mattress
-        } : undefined,
-        addons: {
-          oven: formData.oven,
-          fridge: formData.fridge,
-          windows: formData.windows,
-          cabinets: formData.cabinets,
-          limescale: formData.limescale,
-          carpets: formData.addOnCarpets,
-          upholstery: formData.addOnUpholstery
-        },
-        modifiers: {
-          urgent: formData.urgent,
-          weekend: formData.weekend,
-          stairsNoLift: formData.stairsNoLift,
-        },
-        bundleCarpetsWithEoT: formData.bundleCarpetsWithEoT,
-        vat: formData.vat
-      };
-      
       try {
-        const result = computeQuote(quoteInput);
+        const result = computeReactQuote(formData as ReactFormData);
         setQuoteResult(result);
       } catch (error) {
         console.error('Price calculation error:', error);
