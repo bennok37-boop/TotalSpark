@@ -7,9 +7,15 @@ import { CITIES } from '@shared/schema';
 import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function Header() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCity, setSelectedCity] = useState('Newcastle');
+
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+    const citySlug = city.toLowerCase().replace(/\s+/g, '');
+    navigate(`/cleaning/${citySlug}`);
+  };
 
   const phoneNumber = "0191 123 4567"; // Todo: remove mock functionality
   const whatsappNumber = "447123456789"; // Todo: remove mock functionality
@@ -32,7 +38,7 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Select value={selectedCity} onValueChange={setSelectedCity}>
+            <Select value={selectedCity} onValueChange={handleCityChange}>
               <SelectTrigger className="w-[140px]" data-testid="select-city">
                 <SelectValue placeholder="Select City" />
               </SelectTrigger>
@@ -125,7 +131,7 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4">
             <nav className="flex flex-col space-y-4">
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <Select value={selectedCity} onValueChange={handleCityChange}>
                 <SelectTrigger className="w-full" data-testid="select-city-mobile">
                   <SelectValue placeholder="Select City" />
                 </SelectTrigger>

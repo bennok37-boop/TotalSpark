@@ -76,7 +76,7 @@ export type InsertQuoteRequest = z.infer<typeof insertQuoteRequestSchema>;
 export type QuoteRequest = typeof quoteRequests.$inferSelect;
 
 // City and service types
-export const CITIES = ['Newcastle', 'Sunderland', 'York', 'Middlesbrough', 'Leeds'] as const;
+export const CITIES = ['Newcastle', 'Leeds', 'Sunderland', 'York', 'Durham', 'Middlesbrough'] as const;
 export const SERVICE_TYPES = ['endOfTenancy', 'deep', 'commercial', 'carpets'] as const;
 export const BEDROOM_OPTIONS = ['studio', '1', '2', '3', '4', '5plus'] as const;
 
