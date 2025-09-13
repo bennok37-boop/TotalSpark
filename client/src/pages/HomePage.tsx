@@ -19,8 +19,8 @@ export default function HomePage() {
       <main>
         <HeroSection 
           city="North East England"
-          title="Professional Cleaning Services in Newcastle, Leeds, Sunderland, York & Middlesbrough"
-          subtitle="End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds. Serving all surrounding areas including Jesmond, Headingley, Ashbrooke & more."
+          title="Professional Cleaning Services in Newcastle, Leeds, Durham, Sunderland, York & Middlesbrough"
+          subtitle="End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds. Serving all surrounding areas including Gateshead, Bradford, Stockton-on-Tees, Hartlepool, Darlington, Harrogate & more."
         />
         <ProofStrip />
         <ServiceCards />
@@ -39,7 +39,7 @@ export default function HomePage() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Newcastle</h3>
-                  <p className="text-muted-foreground text-sm mb-4">including Jesmond, Heaton, Gosforth & city centre</p>
+                  <p className="text-muted-foreground text-sm mb-4">Jesmond, Heaton, Gosforth, Gateshead, Washington, Cramlington, Blyth, Tynemouth</p>
                   <Link href="/cleaning/newcastle">
                     <Button variant="outline" size="sm" data-testid="button-newcastle-location">Get Local Quote</Button>
                   </Link>
@@ -52,7 +52,7 @@ export default function HomePage() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Leeds</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Headingley, Hyde Park, Burley & suburbs</p>
+                  <p className="text-muted-foreground text-sm mb-4">Headingley, Hyde Park, Burley, Bradford, Wakefield, Harrogate, Wetherby, Pudsey</p>
                   <Link href="/cleaning/leeds">
                     <Button variant="outline" size="sm" data-testid="button-leeds-location">Get Local Quote</Button>
                   </Link>
@@ -65,7 +65,7 @@ export default function HomePage() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Sunderland</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Ashbrooke, city centre & University areas</p>
+                  <p className="text-muted-foreground text-sm mb-4">Ashbrooke, Washington, Seaham, Houghton-le-Spring, Durham, South Shields</p>
                   <Link href="/cleaning/sunderland">
                     <Button variant="outline" size="sm" data-testid="button-sunderland-location">Get Local Quote</Button>
                   </Link>
@@ -78,7 +78,7 @@ export default function HomePage() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">York</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Heslington, Clifton, York city centre</p>
+                  <p className="text-muted-foreground text-sm mb-4">Heslington, Clifton, Selby, Tadcaster, Pocklington, Harrogate, Wetherby</p>
                   <Link href="/cleaning/york">
                     <Button variant="outline" size="sm" data-testid="button-york-location">Get Local Quote</Button>
                   </Link>
@@ -90,8 +90,21 @@ export default function HomePage() {
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
+                  <h3 className="text-xl font-semibold mb-2">Durham</h3>
+                  <p className="text-muted-foreground text-sm mb-4">Chester-le-Street, Bishop Auckland, Consett, Stanley, Spennymoor, Newton Aycliffe</p>
+                  <Link href="/cleaning/durham">
+                    <Button variant="outline" size="sm" data-testid="button-durham-location">Get Local Quote</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card className="hover-elevate">
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
                   <h3 className="text-xl font-semibold mb-2">Middlesbrough</h3>
-                  <p className="text-muted-foreground text-sm mb-4">Teesside University, Linthorpe & surrounding areas</p>
+                  <p className="text-muted-foreground text-sm mb-4">Stockton-on-Tees, Redcar, Hartlepool, Darlington, Thornaby, Billingham</p>
                   <Link href="/cleaning/middlesbrough">
                     <Button variant="outline" size="sm" data-testid="button-middlesbrough-location">Get Local Quote</Button>
                   </Link>
