@@ -357,7 +357,7 @@ export default function QuoteForm() {
       return;
     }
     
-    console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode, additionalDetails: formData.additionalDetails });
+    console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode });
     setStep(2);
   };
 
@@ -499,20 +499,6 @@ export default function QuoteForm() {
                     </p>
                   </div>
 
-                  <div>
-                    <Label htmlFor="additionalDetails">Additional Details (Optional)</Label>
-                    <Textarea
-                      id="additionalDetails"
-                      value={formData.additionalDetails}
-                      onChange={(e) => handleInputChange('additionalDetails', e.target.value)}
-                      placeholder="Any additional information about your cleaning requirements, special instructions, access details, or specific areas that need attention..."
-                      rows={3}
-                      data-testid="textarea-additional-details"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Help us provide the most accurate quote by sharing any special requirements
-                    </p>
-                  </div>
 
                   <Button type="submit" className="w-full" data-testid="button-next-step">
                     Next Step
@@ -1040,6 +1026,22 @@ export default function QuoteForm() {
                       </CardContent>
                     </Card>
                   )}
+
+                  {/* Additional Details - moved to end of form */}
+                  <div>
+                    <Label htmlFor="additionalDetails">Additional Details (Optional)</Label>
+                    <Textarea
+                      id="additionalDetails"
+                      value={formData.additionalDetails}
+                      onChange={(e) => handleInputChange('additionalDetails', e.target.value)}
+                      placeholder="Any additional information about your cleaning requirements, special instructions, access details, or specific areas that need attention..."
+                      rows={3}
+                      data-testid="textarea-additional-details"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Help us provide the most accurate quote by sharing any special requirements
+                    </p>
+                  </div>
 
                   <div className="flex space-x-3">
                     <Button
