@@ -82,7 +82,7 @@ export default function CityPage() {
   const locationData = findLocationBySlug(citySlug);
   
   if (!locationData) {
-    return <NotFoundPage locationSlug={slug} type="location" />;
+    return <NotFoundPage locationSlug={citySlug} type="location" />;
   }
   
   // Generate dynamic content based on location and region
