@@ -1,21 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Phone, Menu, X } from 'lucide-react';
-import { CITIES } from '@shared/schema';
+import { Phone, Menu, X, MapPin, ChevronDown } from 'lucide-react';
+import { REGIONS } from '@shared/locations';
 import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function Header() {
   const [location, navigate] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState('Newcastle');
-
-  const handleCityChange = (city: string) => {
-    setSelectedCity(city);
-    const citySlug = city.toLowerCase().replace(/\s+/g, '');
-    navigate(`/cleaning/${citySlug}`);
-  };
 
   const phoneNumber = "0191 123 4567"; // Todo: remove mock functionality
   const whatsappNumber = "447123456789"; // Todo: remove mock functionality
@@ -38,19 +30,6 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Select value={selectedCity} onValueChange={handleCityChange}>
-              <SelectTrigger className="w-[140px]" data-testid="select-city">
-                <SelectValue placeholder="Select City" />
-              </SelectTrigger>
-              <SelectContent>
-                {CITIES.map((city) => (
-                  <SelectItem key={city} value={city}>
-                    {city}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
             <Link 
               href="/" 
               className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/') ? 'text-primary' : 'text-muted-foreground'}`}
@@ -58,6 +37,56 @@ export default function Header() {
             >
               Home
             </Link>
+
+            {/* Areas Mega Menu */}
+            <div className="relative group">
+              <span className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer flex items-center">
+                Areas <ChevronDown className="w-3 h-3 ml-1" />
+              </span>
+              <div className="absolute top-full left-0 mt-2 w-[800px] bg-popover border border-popover-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="p-6">
+                  <div className="mb-4">
+                    <Link 
+                      href="/areas" 
+                      className="inline-flex items-center text-primary hover:text-primary/80 font-medium"
+                      data-testid="link-areas-hub"
+                    >
+                      <MapPin className="w-4 h-4 mr-2" />
+                      View All Areas We Cover
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-4 gap-6">
+                    {Object.values(REGIONS).map((region) => (
+                      <div key={region.slug} className="space-y-3">
+                        <h3 className="font-semibold text-foreground text-sm border-b border-border pb-2">
+                          {region.name}
+                        </h3>
+                        <div className="space-y-1">
+                          {region.locations.slice(0, 8).map((location) => (
+                            <Link
+                              key={location.slug}
+                              href={`/cleaning/${location.slug}`}
+                              className="block text-xs text-muted-foreground hover:text-primary transition-colors py-1"
+                              data-testid={`link-location-${location.slug}`}
+                            >
+                              {location.name}
+                            </Link>
+                          ))}
+                          {region.locations.length > 8 && (
+                            <Link
+                              href="/areas"
+                              className="block text-xs text-primary hover:text-primary/80 py-1 font-medium"
+                            >
+                              +{region.locations.length - 8} more...
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="relative group">
               <span className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer">
@@ -131,22 +160,45 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4">
             <nav className="flex flex-col space-y-4">
-              <Select value={selectedCity} onValueChange={handleCityChange}>
-                <SelectTrigger className="w-full" data-testid="select-city-mobile">
-                  <SelectValue placeholder="Select City" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CITIES.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
               <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 Home
               </Link>
+
+              {/* Areas Mobile Section */}
+              <div className="space-y-2">
+                <Link 
+                  href="/areas" 
+                  className="flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="link-areas-mobile"
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Areas We Cover
+                </Link>
+                <div className="pl-6 space-y-2">
+                  <div className="text-xs text-muted-foreground font-medium">Popular Areas:</div>
+                  {Object.values(REGIONS).slice(0, 2).map((region) => (
+                    <div key={region.slug} className="space-y-1">
+                      {region.locations.slice(0, 3).map((location) => (
+                        <Link
+                          key={location.slug}
+                          href={`/cleaning/${location.slug}`}
+                          className="block text-xs text-muted-foreground hover:text-primary transition-colors pl-2"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {location.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                  <Link
+                    href="/areas"
+                    className="block text-xs text-primary hover:text-primary/80 pl-2 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    View all 70+ areas →
+                  </Link>
+                </div>
+              </div>
 
               <div className="space-y-2">
                 <span className="text-sm font-medium text-muted-foreground">Services</span>
@@ -156,6 +208,7 @@ export default function Header() {
                       key={service}
                       href={`/${service.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
                       className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
                     >
                       {service}
                     </Link>
@@ -163,7 +216,11 @@ export default function Header() {
                 </div>
               </div>
 
-              <Link href="/about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              <Link 
+                href="/about" 
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 About
               </Link>
 
