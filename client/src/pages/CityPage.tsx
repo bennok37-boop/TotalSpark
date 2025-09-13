@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { MapPin, Clock, Users, Shield, Award, CheckCircle, Phone } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
+import { findLocationBySlug, getRegionPhoneNumber, getRegionWhatsAppNumber, getNearbyLocations } from '@shared/location-utils';
 import heroImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
 import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
 import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
@@ -24,48 +25,6 @@ type Location = {
   slug: string;
 };
 
-// Helper function to find a location by slug across all regions
-function findLocationBySlug(slug: string): { location: Location; region: typeof REGIONS[keyof typeof REGIONS] } | null {
-  for (const region of Object.values(REGIONS)) {
-    const location = region.locations.find(loc => loc.slug === slug);
-    if (location) {
-      return { location, region };
-    }
-  }
-  return null;
-}
-
-// Helper function to get nearby locations (same region, different locations)
-function getNearbyLocations(currentLocation: Location, region: typeof REGIONS[keyof typeof REGIONS], limit: number = 8): Location[] {
-  return region.locations
-    .filter(loc => loc.slug !== currentLocation.slug)
-    .slice(0, limit);
-}
-
-// Helper function to get region-specific phone number
-function getRegionPhoneNumber(regionSlug: string): string {
-  console.log('Getting phone for region slug:', regionSlug); // Debug log
-  const phoneMap: Record<string, string> = {
-    'tyne-and-wear': '0191 123 4567',
-    'county-durham': '0191 789 0123',
-    'northumberland': '01670 123 456',
-    'tees-valley': '01642 123 456'
-  };
-  const phone = phoneMap[regionSlug] || '0191 123 4567';
-  console.log('Selected phone number:', phone); // Debug log
-  return phone;
-}
-
-// Helper function to get region-specific WhatsApp number
-function getRegionWhatsAppNumber(regionSlug: string): string {
-  const whatsappMap: Record<string, string> = {
-    'tyne-and-wear': '447123456789',
-    'county-durham': '447789012345',
-    'northumberland': '447670123456',
-    'tees-valley': '447642123456'
-  };
-  return whatsappMap[regionSlug] || '447123456789';
-}
 
 // Dynamic content generator for any location
 function generateCityPageContent(location: Location, region: typeof REGIONS[keyof typeof REGIONS]) {
