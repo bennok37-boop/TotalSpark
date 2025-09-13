@@ -8,6 +8,7 @@ import BeforeAfterGallery from '@/components/BeforeAfterGallery';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
+import SEOHead from '@/components/SEOHead';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -84,8 +85,23 @@ export default function CityPage() {
   // Generate dynamic content based on location and region
   const city = generateCityPageContent(locationData.location, locationData.region);
 
+  // Generate SEO content
+  const seoTitle = `Professional Cleaning Services in ${locationData.location.name} | CleanPro - ${locationData.region.name}`;
+  const seoDescription = `Expert cleaning services in ${locationData.location.name} and surrounding ${locationData.region.name} areas. End of tenancy, deep cleaning, commercial cleaning. Instant quotes in 60 seconds. DBS-checked, fully insured. Call ${city.phone}.`;
+  const seoKeywords = `cleaning services ${locationData.location.name}, end of tenancy cleaning ${locationData.location.name}, deep cleaning ${locationData.region.name}, commercial cleaning, ${locationData.location.name} cleaners, professional cleaning ${locationData.region.name}`;
+  const canonicalUrl = `${window.location.origin}/cleaning/${locationData.location.slug}`;
+
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={seoTitle}
+        description={seoDescription}
+        keywords={seoKeywords}
+        canonicalUrl={canonicalUrl}
+        ogTitle={seoTitle}
+        ogDescription={seoDescription}
+        ogType="website"
+      />
       <Header />
       <main>
         {/* 1. Hero Section */}
