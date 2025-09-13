@@ -44,6 +44,7 @@ export interface QuoteInput {
   add_limescale?: boolean;
   add_carpet?: boolean;
   add_upholstery?: boolean;
+  bundle_carpet_with_eot?: boolean;
   windows_count?: number;
   urgent?: boolean;
   weekend?: boolean;
