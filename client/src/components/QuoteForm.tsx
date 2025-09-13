@@ -85,7 +85,6 @@ export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [quoteSentToGHL, setQuoteSentToGHL] = useState(false);
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -141,87 +140,6 @@ export default function QuoteForm() {
   });
   const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
   const { toast } = useToast();
-
-  // HighLevel Integration Functions
-  const ghlSubmitLead = (leadData: { firstName: string; email: string; phone: string; region?: string; city?: string }) => {
-    try {
-      const form = document.getElementById('ghl-form-lead') as HTMLFormElement;
-      if (!form) return;
-      
-      const setField = (name: string, value: string) => {
-        const field = form.querySelector(`input[name="${name}"]`) as HTMLInputElement;
-        if (field) field.value = value || '';
-      };
-      
-      setField('first_name', leadData.firstName);
-      setField('email', leadData.email);  
-      setField('phone', leadData.phone);
-      setField('custom_values[region]', leadData.region || '');
-      setField('custom_values[city_town]', leadData.city || '');
-      
-      // Submit form in background
-      form.submit();
-      console.log('Lead submitted to GHL:', leadData);
-    } catch (error) {
-      console.error('GHL Lead submission error:', error);
-    }
-  };
-
-  const ghlSubmitQuote = (quoteData: {
-    quoteId: string;
-    estimateLow: number;
-    estimateHigh: number;
-    service: string;
-    region?: string;
-    city?: string;
-    propertyType?: string;
-    bedrooms?: string;
-    bathrooms?: number;
-    condition?: string;
-    notes?: string;
-    images?: string[];
-  }) => {
-    try {
-      const form = document.getElementById('ghl-form-quote') as HTMLFormElement;
-      if (!form) return;
-      
-      const setField = (name: string, value: string | number) => {
-        const field = form.querySelector(`input[name="${name}"], textarea[name="${name}"]`) as HTMLInputElement;
-        if (field) field.value = String(value || '');
-      };
-      
-      const lockUntil = new Date();
-      lockUntil.setDate(lockUntil.getDate() + 7);
-      
-      setField('custom_values[quote_id]', quoteData.quoteId);
-      setField('custom_values[price_low]', quoteData.estimateLow);
-      setField('custom_values[price_high]', quoteData.estimateHigh);
-      setField('custom_values[lock_until]', lockUntil.toISOString().split('T')[0]);
-      setField('custom_values[service]', quoteData.service);
-      setField('custom_values[region]', quoteData.region || '');
-      setField('custom_values[city_town]', quoteData.city || '');
-      setField('custom_values[property_type]', quoteData.propertyType || '');
-      setField('custom_values[bedrooms]', quoteData.bedrooms || '');
-      setField('custom_values[bathrooms]', quoteData.bathrooms || '');
-      setField('custom_values[condition]', quoteData.condition || '');
-      setField('custom_values[quote_url]', window.location.href);
-      setField('custom_values[resume_url]', window.location.href + '?qid=' + encodeURIComponent(quoteData.quoteId));
-      setField('custom_values[notes_optional]', quoteData.notes || '');
-      
-      // Include uploaded images URLs for reference
-      if (quoteData.images && quoteData.images.length > 0) {
-        setField('custom_values[photo_urls]', quoteData.images.join(', '));
-        setField('custom_values[photo_count]', quoteData.images.length);
-      }
-      
-      // Submit form in background - triggers instant SMS + Email
-      form.submit();
-      setQuoteSentToGHL(true);
-      console.log('Quote submitted to GHL:', quoteData);
-    } catch (error) {
-      console.error('GHL Quote submission error:', error);
-    }
-  };
 
   // Handle auto-scroll when page loads with #quote-form hash
   useEffect(() => {
@@ -461,31 +379,6 @@ export default function QuoteForm() {
       try {
         const result = computeQuote(quoteInput);
         setQuoteResult(result);
-        
-        // Submit quote to GHL when price is calculated and displayed (only once)
-        if (result && !quoteSentToGHL && formData.name && formData.email) {
-          const serviceMap: { [key: string]: string } = {
-            'endOfTenancy': 'End of Tenancy',
-            'deep': 'Deep Clean', 
-            'commercial': 'Commercial',
-            'carpets': 'Carpet & Upholstery'
-          };
-          
-          ghlSubmitQuote({
-            quoteId: `TS-${Date.now()}`,
-            estimateLow: result.estimateRange.low,
-            estimateHigh: result.estimateRange.high,
-            service: serviceMap[formData.service] || formData.service,
-            region: 'North East UK',
-            city: formData.address.split(',')[0],
-            propertyType: formData.propertyType,
-            bedrooms: formData.bedrooms,
-            bathrooms: formData.bathrooms,
-            condition: formData.condition,
-            notes: formData.additionalDetails,
-            images: uploadedImages
-          });
-        }
       } catch (error) {
         console.error('Price calculation error:', error);
         setQuoteResult(null);
@@ -519,16 +412,6 @@ export default function QuoteForm() {
     }
     
     console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode });
-    
-    // Submit lead to GHL after successful Step 1 validation
-    ghlSubmitLead({
-      firstName: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      region: 'North East UK', // You can determine region based on postcode if needed
-      city: formData.address.split(',')[0] // Extract city from address
-    });
-    
     setStep(2);
   };
 
@@ -557,37 +440,6 @@ export default function QuoteForm() {
 
   return (
     <section id="quote-form" className="py-16 bg-muted scroll-mt-20" data-testid="section-quote-form">
-      <div style={{ display: 'none' }}>
-        {/* Hidden iframe to prevent page navigation when forms are submitted */}
-        <iframe name="ghl_iframe" style={{ display: 'none' }} title="HighLevel Form Submission"></iframe>
-        
-        <form id="ghl-form-lead" action="https://YOUR_GHL_DOMAIN/forms/submit/LEAD_FORM_ID" method="POST" target="ghl_iframe">
-          <input type="hidden" name="first_name" />
-          <input type="hidden" name="email" />
-          <input type="hidden" name="phone" />
-          <input type="hidden" name="custom_values[region]" />
-          <input type="hidden" name="custom_values[city_town]" />
-        </form>
-
-        <form id="ghl-form-quote" action="https://YOUR_GHL_DOMAIN/forms/submit/QUOTE_FORM_ID" method="POST" target="ghl_iframe">
-          <input type="hidden" name="custom_values[quote_id]" />
-          <input type="hidden" name="custom_values[price_low]" />
-          <input type="hidden" name="custom_values[price_high]" />
-          <input type="hidden" name="custom_values[lock_until]" />
-          <input type="hidden" name="custom_values[service]" />
-          <input type="hidden" name="custom_values[region]" />
-          <input type="hidden" name="custom_values[city_town]" />
-          <input type="hidden" name="custom_values[property_type]" />
-          <input type="hidden" name="custom_values[bedrooms]" />
-          <input type="hidden" name="custom_values[bathrooms]" />
-          <input type="hidden" name="custom_values[condition]" />
-          <input type="hidden" name="custom_values[quote_url]" />
-          <input type="hidden" name="custom_values[resume_url]" />
-          <textarea name="custom_values[notes_optional]" style={{ display: 'none' }}></textarea>
-          <input type="hidden" name="custom_values[photo_urls]" />
-          <input type="hidden" name="custom_values[photo_count]" />
-        </form>
-      </div>
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <Card>
@@ -1349,28 +1201,6 @@ export default function QuoteForm() {
                       </div>
                     )}
                   </div>
-                  
-                  {/* Primary Booking Button */}
-                  <div className="space-y-4">
-                    <a 
-                      href="https://YOUR-GHL-CALENDAR-LINK"
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-block w-full"
-                    >
-                      <Button 
-                        size="lg"
-                        className="w-full text-lg py-6 bg-green-600 hover:bg-green-700 text-white font-semibold"
-                        data-testid="button-book-hold-price"
-                      >
-                        📅 Book & Hold My Price
-                      </Button>
-                    </a>
-                    <p className="text-sm text-muted-foreground">
-                      Secure your slot with a £30 deposit. Fully refundable up to 24h before arrival.
-                    </p>
-                  </div>
-                  
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Button 
                       variant="default" 
