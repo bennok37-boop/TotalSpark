@@ -350,7 +350,5 @@ export function generateAllPages(): void {
   console.log(`📊 Expected total: ${SERVICES.length * allLocations.length}`);
 }
 
-// CLI usage
-if (require.main === module) {
-  generateAllPages();
-}
+// CLI usage - ESM version  
+generateAllPages();

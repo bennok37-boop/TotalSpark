@@ -6,6 +6,10 @@ import { Badge } from '@/components/ui/badge';
 export default function NewcastleuponTyneCleaningPage() {
   useEffect(() => {
     document.title = "Professional Cleaning Services Newcastle upon Tyne | Regular & One-Off | Tyne & Wear";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', "Professional cleaning services in Newcastle upon Tyne. Regular domestic cleaning & one-off cleans. Serving Gateshead & Tyne & Wear. Book today.");
+    }
   }, []);
 
   return (
@@ -18,10 +22,10 @@ export default function NewcastleuponTyneCleaningPage() {
               Cleaning Services in Newcastle upon Tyne
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
-              Professional Cleaning Services Newcastle upon Tyne – Regular & One-Off Cleans
+              {"Professional Cleaning Services Newcastle upon Tyne – Regular & One-Off Cleans"}
             </h1>
             <p className="text-xl text-muted-foreground mb-8" data-testid="text-hero-subtitle">
-              Trusted cleaning services across Newcastle upon Tyne, Gateshead and surrounding Tyne & Wear areas. Regular domestic cleaning, one-off cleans, and maintenance services.
+              {"Trusted cleaning services across Newcastle upon Tyne, Gateshead and surrounding Tyne & Wear areas. Regular domestic cleaning, one-off cleans, and maintenance services."}
             </p>
             <Button size="lg" className="text-lg px-8 py-6" data-testid="button-get-quote">
               Get Free Quote Now
@@ -41,25 +45,25 @@ export default function NewcastleuponTyneCleaningPage() {
               
               <Card className="hover-elevate" data-testid="card-service-feature-0">
                 <CardContent className="p-6">
-                  <p className="font-medium">Regular domestic cleaning schedules</p>
+                  <p className="font-medium">{"Regular domestic cleaning schedules"}</p>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-service-feature-1">
                 <CardContent className="p-6">
-                  <p className="font-medium">One-off deep cleaning sessions</p>
+                  <p className="font-medium">{"One-off deep cleaning sessions"}</p>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-service-feature-2">
                 <CardContent className="p-6">
-                  <p className="font-medium">Kitchen & bathroom specialist cleaning</p>
+                  <p className="font-medium">{"Kitchen & bathroom specialist cleaning"}</p>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-service-feature-3">
                 <CardContent className="p-6">
-                  <p className="font-medium">Dusting, vacuuming & mopping</p>
+                  <p className="font-medium">{"Dusting, vacuuming & mopping"}</p>
                 </CardContent>
               </Card>
               
@@ -79,31 +83,31 @@ export default function NewcastleuponTyneCleaningPage() {
               
               <Card className="hover-elevate" data-testid="card-pricing-0">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">1-bed property</CardTitle>
-                  <CardDescription>Per clean</CardDescription>
+                  <CardTitle className="text-lg">{"1-bed property"}</CardTitle>
+                  <CardDescription>{"Per clean"}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">£35</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{"£35"}</div>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-pricing-1">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">2-bed property</CardTitle>
-                  <CardDescription>Per clean</CardDescription>
+                  <CardTitle className="text-lg">{"2-bed property"}</CardTitle>
+                  <CardDescription>{"Per clean"}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">£45</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{"£45"}</div>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-pricing-2">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">3-bed property</CardTitle>
-                  <CardDescription>Per clean</CardDescription>
+                  <CardTitle className="text-lg">{"3-bed property"}</CardTitle>
+                  <CardDescription>{"Per clean"}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">£55</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{"£55"}</div>
                 </CardContent>
               </Card>
               

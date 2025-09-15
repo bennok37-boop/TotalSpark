@@ -1,0 +1,137 @@
+import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+
+export default function BoldonCleaningPage() {
+  useEffect(() => {
+    document.title = "Professional Cleaning Services Boldon | Regular & One-Off | Tyne & Wear";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', "Professional cleaning services in Boldon. Regular domestic cleaning & one-off cleans. Serving South Shields, Sunderland, Washington & Tyne & Wear. Book today.");
+    }
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge variant="secondary" className="mb-4" data-testid="badge-service-type">
+              Cleaning Services in Boldon
+            </Badge>
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
+              {"Professional Cleaning Services Boldon – Regular & One-Off Cleans"}
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8" data-testid="text-hero-subtitle">
+              {"Trusted cleaning services across Boldon, South Shields, Sunderland, Washington and surrounding Tyne & Wear areas. Regular domestic cleaning, one-off cleans, and maintenance services."}
+            </p>
+            <Button size="lg" className="text-lg px-8 py-6" data-testid="button-get-quote">
+              Get Free Quote Now
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Service Features */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center" data-testid="text-features-title">
+              Cleaning Services Services in Boldon
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              
+              <Card className="hover-elevate" data-testid="card-service-feature-0">
+                <CardContent className="p-6">
+                  <p className="font-medium">{"Regular domestic cleaning schedules"}</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-service-feature-1">
+                <CardContent className="p-6">
+                  <p className="font-medium">{"One-off deep cleaning sessions"}</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-service-feature-2">
+                <CardContent className="p-6">
+                  <p className="font-medium">{"Kitchen & bathroom specialist cleaning"}</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-service-feature-3">
+                <CardContent className="p-6">
+                  <p className="font-medium">{"Dusting, vacuuming & mopping"}</p>
+                </CardContent>
+              </Card>
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center" data-testid="text-pricing-title">
+              Cleaning Services Prices in Boldon
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              
+              <Card className="hover-elevate" data-testid="card-pricing-0">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-lg">{"1-bed property"}</CardTitle>
+                  <CardDescription>{"Per clean"}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-4">{"£35"}</div>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-pricing-1">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-lg">{"2-bed property"}</CardTitle>
+                  <CardDescription>{"Per clean"}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-4">{"£45"}</div>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-pricing-2">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-lg">{"3-bed property"}</CardTitle>
+                  <CardDescription>{"Per clean"}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-4">{"£55"}</div>
+                </CardContent>
+              </Card>
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-16 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4" data-testid="text-cta-title">
+              Ready to Book Cleaning Services in Boldon?
+            </h2>
+            <p className="text-xl mb-8 opacity-90">
+              Get your free quote today and experience professional cleaning services
+            </p>
+            <Button size="lg" variant="secondary" className="text-lg px-8 py-6" data-testid="button-final-quote">
+              Get Free Quote
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

@@ -6,6 +6,10 @@ import { Badge } from '@/components/ui/badge';
 export default function NewcastleuponTyneEndOfTenancyPage() {
   useEffect(() => {
     document.title = "End of Tenancy Cleaning Newcastle upon Tyne | Deposit Back Guarantee | Tyne & Wear";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', "Professional end of tenancy cleaning in Newcastle upon Tyne. 100% deposit back guarantee. Serving Gateshead & Tyne & Wear. Book online today.");
+    }
   }, []);
 
   return (
@@ -18,10 +22,10 @@ export default function NewcastleuponTyneEndOfTenancyPage() {
               End of Tenancy Cleaning in Newcastle upon Tyne
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
-              End of Tenancy Cleaning Newcastle upon Tyne – 100% Deposit Back Guarantee
+              {"End of Tenancy Cleaning Newcastle upon Tyne – 100% Deposit Back Guarantee"}
             </h1>
             <p className="text-xl text-muted-foreground mb-8" data-testid="text-hero-subtitle">
-              Professional end of tenancy cleaning across Newcastle upon Tyne, Gateshead and surrounding Tyne & Wear areas. Get your full deposit back or we'll re-clean free.
+              {"Professional end of tenancy cleaning across Newcastle upon Tyne, Gateshead and surrounding Tyne & Wear areas. Get your full deposit back or we'll re-clean free."}
             </p>
             <Button size="lg" className="text-lg px-8 py-6" data-testid="button-get-quote">
               Get Free Quote Now
@@ -41,25 +45,25 @@ export default function NewcastleuponTyneEndOfTenancyPage() {
               
               <Card className="hover-elevate" data-testid="card-service-feature-0">
                 <CardContent className="p-6">
-                  <p className="font-medium">Kitchen deep clean including oven, hob & extractor</p>
+                  <p className="font-medium">{"Kitchen deep clean including oven, hob & extractor"}</p>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-service-feature-1">
                 <CardContent className="p-6">
-                  <p className="font-medium">Bathroom restoration with descaling & grout cleaning</p>
+                  <p className="font-medium">{"Bathroom restoration with descaling & grout cleaning"}</p>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-service-feature-2">
                 <CardContent className="p-6">
-                  <p className="font-medium">Bedroom & living area comprehensive cleaning</p>
+                  <p className="font-medium">{"Bedroom & living area comprehensive cleaning"}</p>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-service-feature-3">
                 <CardContent className="p-6">
-                  <p className="font-medium">Interior window cleaning & frame cleaning</p>
+                  <p className="font-medium">{"Interior window cleaning & frame cleaning"}</p>
                 </CardContent>
               </Card>
               
@@ -79,31 +83,31 @@ export default function NewcastleuponTyneEndOfTenancyPage() {
               
               <Card className="hover-elevate" data-testid="card-pricing-0">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">Studio flat</CardTitle>
-                  <CardDescription>Perfect for Newcastle upon Tyne centre studios</CardDescription>
+                  <CardTitle className="text-lg">{"Studio flat"}</CardTitle>
+                  <CardDescription>{"Perfect for Newcastle upon Tyne centre studios"}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">£100</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{"£100"}</div>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-pricing-1">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">1-bed flat</CardTitle>
-                  <CardDescription>Ideal for young professionals</CardDescription>
+                  <CardTitle className="text-lg">{"1-bed flat"}</CardTitle>
+                  <CardDescription>{"Ideal for young professionals"}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">£120</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{"£120"}</div>
                 </CardContent>
               </Card>
               
               <Card className="hover-elevate" data-testid="card-pricing-2">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">2-bed house</CardTitle>
-                  <CardDescription>Common in Newcastle upon Tyne areas</CardDescription>
+                  <CardTitle className="text-lg">{"2-bed house"}</CardTitle>
+                  <CardDescription>{"Common in Newcastle upon Tyne areas"}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">£160</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{"£160"}</div>
                 </CardContent>
               </Card>
               
