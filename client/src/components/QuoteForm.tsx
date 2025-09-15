@@ -1231,7 +1231,7 @@ export default function QuoteForm() {
       </form>
 
       {/* Hidden GHL Form B: Quote Push */}
-      <form id="ghl-form-quote" action="https://hooks.leadconnectorhq.com/widget/form/submit/COjDmZnsAeziScbXKitR" method="POST" target="ghl-quote-target" encType="multipart/form-data" style={{display: 'none'}}>
+      <form id="ghl-form-quote" action="https://api.leadconnectorhq.com/widget/form/COjDmZnsAeziScbXKitR" method="POST" target="ghl-quote-target" encType="multipart/form-data" style={{display: 'none'}}>
         {/* GHL will provide hidden inputs here - keep ALL of them */}
         <input type="text" name="custom_values[quote_id]" />
         <input type="text" name="custom_values[price_low]" />
