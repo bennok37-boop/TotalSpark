@@ -8,15 +8,18 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
 // Email notification service
 async function sendEmailNotification(quote: any) {
-  // Simple email setup (works with most SMTP providers)
+  // Hostinger SMTP configuration
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    host: process.env.SMTP_HOST || 'smtp.hostinger.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
+    secure: false, // Use STARTTLS
     auth: {
-      user: process.env.SMTP_USER || 'noreply@totalsparksolutions.co.uk',
-      pass: process.env.SMTP_PASS || 'your-app-password'
-    }
+      user: process.env.SMTP_USER || 'hello@totalsparksolutions.co.uk',
+      pass: process.env.SMTP_PASS || 'your-hostinger-password'
+    },
+    // Add timeouts to prevent hanging
+    connectionTimeout: 10000,
+    socketTimeout: 10000
   });
 
   const serviceDisplayName = getServiceDisplayName(quote.service);
@@ -78,8 +81,9 @@ This lead is ready to copy-paste into GoHighLevel!
 
   try {
     await transporter.sendMail({
-      from: `"TotalSpark Solutions" <noreply@totalsparksolutions.co.uk>`,
+      from: `"TotalSpark Solutions" <hello@totalsparksolutions.co.uk>`,
       to: 'hello@totalsparksolutions.co.uk',
+      replyTo: quote.email, // Customer can reply directly to lead
       subject: emailSubject,
       text: emailBody
     });
