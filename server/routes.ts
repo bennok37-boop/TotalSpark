@@ -5,6 +5,105 @@ import { insertQuoteRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
+// GoHighLevel webhook integration function
+async function sendToGHLWebhook(quote: any) {
+  // Format the data for GoHighLevel integration
+  const ghlData = {
+    // Contact Information
+    first_name: quote.name.split(' ')[0] || '',
+    last_name: quote.name.split(' ').slice(1).join(' ') || '',
+    email: quote.email,
+    phone: quote.phone,
+    address1: quote.address,
+    postal_code: quote.postcode || '',
+    
+    // Custom Fields for GoHighLevel
+    website: 'TotalSpark Solutions',
+    source: 'Website Quote Form',
+    
+    // Service-specific tags and information
+    service_type: getServiceDisplayName(quote.service),
+    service_category: quote.service,
+    bedrooms: quote.bedrooms || 'Not specified',
+    area_m2: quote.area_m2 || null,
+    commercial_rooms: quote.commercialRooms || null,
+    
+    // Add-ons as a formatted string
+    add_ons: formatAddOns(quote),
+    
+    // Pricing modifiers
+    urgent_request: quote.urgent || false,
+    weekend_request: quote.weekend || false,
+    
+    // Additional details
+    notes: quote.additionalDetails || '',
+    
+    // Tags for automation workflows
+    tags: generateGHLTags(quote),
+    
+    // Quote metadata
+    quote_id: quote.id,
+    submitted_at: new Date().toISOString(),
+    total_estimate: quote.estimatedTotal || null,
+    vat_included: quote.vat || false
+  };
+
+  // In a real implementation, this would be sent to your webhook endpoint
+  // For now, we'll just log the formatted data for setup with Zapier/Make.com
+  console.log('GoHighLevel Lead Data (ready for webhook):', JSON.stringify(ghlData, null, 2));
+  
+  // Example webhook URL (replace with your actual automation platform webhook)
+  // await fetch('YOUR_ZAPIER_OR_MAKE_WEBHOOK_URL', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(ghlData)
+  // });
+}
+
+function getServiceDisplayName(service: string): string {
+  const serviceNames = {
+    'endOfTenancy': 'End of Tenancy Cleaning',
+    'deep': 'Deep Cleaning',
+    'commercial': 'Commercial Cleaning',
+    'carpets': 'Carpet & Upholstery Cleaning',
+    'cleaning': 'General Cleaning Services'
+  };
+  return serviceNames[service as keyof typeof serviceNames] || service;
+}
+
+function formatAddOns(quote: any): string {
+  const addOns = [];
+  if (quote.oven) addOns.push('Oven Cleaning');
+  if (quote.fridge) addOns.push('Fridge Cleaning');
+  if (quote.windows > 0) addOns.push(`${quote.windows} Windows`);
+  if (quote.cabinets) addOns.push('Cabinet Cleaning');
+  if (quote.limescale) addOns.push('Limescale Removal');
+  if (quote.addOnCarpets) addOns.push('Additional Carpets');
+  if (quote.addOnUpholstery) addOns.push('Additional Upholstery');
+  return addOns.join(', ') || 'None';
+}
+
+function generateGHLTags(quote: any): string[] {
+  const tags = ['TotalSpark_Lead', 'Website_Quote'];
+  
+  // Service type tag
+  tags.push(`Service_${quote.service}`);
+  
+  // Priority tags
+  if (quote.urgent) tags.push('Urgent_Request');
+  if (quote.weekend) tags.push('Weekend_Service');
+  
+  // Size/scale tags
+  if (quote.bedrooms) tags.push(`Bedrooms_${quote.bedrooms}`);
+  if (quote.area_m2 && quote.area_m2 > 500) tags.push('Large_Commercial');
+  
+  // High-value indicators
+  if (quote.addOnCarpets || quote.addOnUpholstery) tags.push('Add_On_Services');
+  if (quote.oven || quote.fridge || quote.limescale) tags.push('Premium_Services');
+  
+  return tags;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Quote requests endpoints
   app.post('/api/quotes', async (req, res) => {
@@ -17,6 +116,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const quote = await storage.createQuoteRequest(result.data);
+      
+      // Send to GoHighLevel webhook (for automation platforms like Zapier/Make.com)
+      try {
+        await sendToGHLWebhook(quote);
+      } catch (webhookError) {
+        console.warn('Webhook delivery failed (quote still saved):', webhookError);
+        // Don't fail the main request if webhook fails
+      }
+      
       res.status(201).json(quote);
     } catch (error) {
       console.error('Error creating quote request:', error);
@@ -44,6 +152,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching quote request:', error);
       res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // Direct webhook endpoint for automation platforms (Zapier, Make.com, etc.)
+  app.post('/webhook/ghl', async (req, res) => {
+    try {
+      console.log('GHL Webhook received data:', JSON.stringify(req.body, null, 2));
+      
+      // This endpoint can be used by external automation platforms
+      // to send data to GoHighLevel or receive data from your website
+      
+      res.status(200).json({ 
+        success: true, 
+        message: 'Webhook received successfully',
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Webhook error:', error);
+      res.status(500).json({ error: 'Webhook processing failed' });
+    }
+  });
+
+  // Test endpoint to simulate quote submission for webhook testing
+  app.post('/webhook/test', async (req, res) => {
+    try {
+      const testQuote = {
+        id: 'test-' + Date.now(),
+        name: 'John Smith',
+        email: 'john.smith@email.com',
+        phone: '07123456789',
+        address: '123 Test Street, Newcastle',
+        postcode: 'NE1 4ST',
+        service: 'endOfTenancy',
+        bedrooms: '2',
+        oven: true,
+        windows: 3,
+        urgent: false,
+        additionalDetails: 'Test webhook integration for GoHighLevel'
+      };
+      
+      await sendToGHLWebhook(testQuote);
+      
+      res.status(200).json({ 
+        success: true, 
+        message: 'Test webhook sent',
+        data: testQuote
+      });
+    } catch (error) {
+      console.error('Test webhook error:', error);
+      res.status(500).json({ error: 'Test webhook failed' });
     }
   });
 

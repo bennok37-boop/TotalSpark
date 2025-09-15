@@ -295,17 +295,29 @@ export default function QuoteForm() {
           });
         }
       } else {
+        // Fallback: Format the postcode and allow continuation
+        const normalizedPostcode = postcode.toUpperCase().trim().replace(/(.+)(\d[A-Z]{2})$/, '$1 $2');
+        setFormData(prev => ({
+          ...prev,
+          postcode: normalizedPostcode
+        }));
+        
         toast({
-          title: "Postcode not found",
-          description: "Please check the postcode and try again",
-          variant: "destructive"
+          title: "Postcode lookup unavailable",
+          description: "Continuing with manual entry - please verify your address is correct"
         });
       }
     } catch (error) {
+      // Fallback: Format the postcode and allow continuation
+      const normalizedPostcode = postcode.toUpperCase().trim().replace(/(.+)(\d[A-Z]{2})$/, '$1 $2');
+      setFormData(prev => ({
+        ...prev,
+        postcode: normalizedPostcode
+      }));
+      
       toast({
-        title: "Lookup failed",
-        description: "Please enter address manually",
-        variant: "destructive"
+        title: "Lookup service unavailable", 
+        description: "Continuing with manual entry - please verify your address"
       });
     } finally {
       setIsLookingUpPostcode(false);
