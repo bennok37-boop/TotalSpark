@@ -15,6 +15,7 @@ import PrivacyPage from "@/pages/PrivacyPage";
 import TermsPage from "@/pages/TermsPage";
 import ComplaintsPage from "@/pages/ComplaintsPage";
 import EndOfTenancyPage from "@/pages/EndOfTenancyPage";
+import EndOfTenancyNewcastlePage from "@/pages/EndOfTenancyNewcastlePage";
 import CommercialCleaningPage from "@/pages/CommercialCleaningPage";
 import DeepCleaningPage from "@/pages/DeepCleaningPage";
 import CarpetUpholsteryPage from "@/pages/CarpetUpholsteryPage";
@@ -37,6 +38,7 @@ function Router() {
       <Route path="/complaints" component={ComplaintsPage} />
       {/* Service pages */}
       <Route path="/end-of-tenancy-cleaning" component={EndOfTenancyPage} />
+      <Route path="/end-of-tenancy-cleaning-newcastle" component={EndOfTenancyNewcastlePage} />
       <Route path="/commercial-cleaning" component={CommercialCleaningPage} />
       <Route path="/deep-cleaning" component={DeepCleaningPage} />
       <Route path="/carpet-upholstery-cleaning" component={CarpetUpholsteryPage} />
