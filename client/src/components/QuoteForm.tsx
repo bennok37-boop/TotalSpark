@@ -313,7 +313,9 @@ export default function QuoteForm() {
     }
   }, [formData]);
 
-  const handleStep1Submit = (e: React.FormEvent) => {
+  const [contactId, setContactId] = useState<string | null>(null);
+
+  const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Enhanced validation for address and postcode
@@ -346,17 +348,31 @@ export default function QuoteForm() {
     
     console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode });
     
-    // Submit lead capture to GHL (Form A)
-    GHLIntegration.submitLeadForm({
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      postcode: formData.postcode,
-      // TODO: Add region/city detection from postcode or user selection
-      region: '',
-      city: ''
-    });
+    // Submit lead capture to GHL via backend API
+    try {
+      const leadData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        postcode: formData.postcode,
+        region: currentCity?.region || 'North East England',
+        city: currentCity?.city || ''
+      };
+      
+      const result = await QuoteAdapter.submitLeadForm(leadData);
+      
+      if (result.success && result.contactId) {
+        setContactId(result.contactId);
+        console.log('Lead captured successfully in GHL:', result.contactId);
+      } else {
+        console.warn('Lead capture failed:', result.error);
+        // Continue with form flow even if GHL fails
+      }
+    } catch (error) {
+      console.error('Error capturing lead:', error);
+      // Continue with form flow even if GHL fails
+    }
     
     setStep(2);
   };
@@ -1212,85 +1228,7 @@ export default function QuoteForm() {
         </div>
       </div>
 
-      {/* Hidden iframes to prevent form submissions from navigating away */}
-      <iframe name="ghl-lead-target" style={{display: 'none'}}></iframe>
-      <iframe name="ghl-quote-target" style={{display: 'none'}}></iframe>
-
-      {/* Hidden GHL Forms - Replace ACTION_URL_A and ACTION_URL_B with actual GHL form URLs */}
-      
-      {/* Hidden GHL Form A: Lead Capture */}
-      <form id="ghl-form-lead" action="https://api.leadconnectorhq.com/widget/form/NCevT1c7zsnGoE2Eklik" method="POST" target="ghl-lead-target" style={{display: 'none'}}>
-        {/* GHL will provide hidden inputs here - keep ALL of them */}
-        <input type="text" name="first_name" />
-        <input type="email" name="email" />
-        <input type="tel" name="phone" />
-        <textarea name="custom_values[address_full]"></textarea>
-        <input type="text" name="custom_values[postcode]" />
-        <input type="text" name="custom_values[region]" />
-        <input type="text" name="custom_values[city_town]" />
-      </form>
-
-      {/* Hidden GHL Form B: Quote Push */}
-      <form id="ghl-form-quote" action="https://api.leadconnectorhq.com/widget/form/COjDmZnsAeziScbXKitR" method="POST" target="ghl-quote-target" encType="multipart/form-data" style={{display: 'none'}}>
-        {/* GHL will provide hidden inputs here - keep ALL of them */}
-        <input type="text" name="custom_values[quote_id]" />
-        <input type="text" name="custom_values[price_low]" />
-        <input type="text" name="custom_values[price_high]" />
-        <input type="text" name="custom_values[lock_until]" />
-        <input type="text" name="custom_values[service]" />
-        <input type="text" name="custom_values[property_type]" />
-        <input type="number" name="custom_values[bedrooms]" />
-        <input type="number" name="custom_values[bathrooms]" />
-        <input type="number" name="custom_values[toilets]" />
-        <input type="text" name="custom_values[condition]" />
-        {/* commercial */}
-        <input type="text" name="custom_values[commercial_type]" />
-        <input type="number" name="custom_values[area_m2]" />
-        <input type="number" name="custom_values[rooms_count]" />
-        {/* carpets & upholstery */}
-        <input type="number" name="custom_values[cu_carpet_rooms]" />
-        <input type="number" name="custom_values[cu_stairs]" />
-        <input type="number" name="custom_values[cu_rugs]" />
-        <input type="number" name="custom_values[cu_sofa2]" />
-        <input type="number" name="custom_values[cu_sofa3]" />
-        <input type="number" name="custom_values[cu_armchairs]" />
-        <input type="number" name="custom_values[cu_mattresses]" />
-        {/* add-ons / requirements */}
-        <input type="checkbox" name="custom_values[second_kitchen]" />
-        <input type="checkbox" name="custom_values[internal_stairs]" />
-        <input type="checkbox" name="custom_values[furnished]" />
-        <input type="checkbox" name="custom_values[occupied]" />
-        <input type="number" name="custom_values[hmo_rooms]" />
-        <input type="number" name="custom_values[waste_bags]" />
-        <input type="checkbox" name="custom_values[add_oven]" />
-        <input type="checkbox" name="custom_values[add_fridge]" />
-        <input type="checkbox" name="custom_values[add_cabinets]" />
-        <input type="checkbox" name="custom_values[add_limescale]" />
-        <input type="checkbox" name="custom_values[add_carpet]" />
-        <input type="checkbox" name="custom_values[add_upholstery]" />
-        <input type="number" name="custom_values[windows_count]" />
-        <input type="checkbox" name="custom_values[urgent]" />
-        <input type="checkbox" name="custom_values[weekend]" />
-        <input type="checkbox" name="custom_values[above_2nd_no_lift]" />
-        {/* notes, address context and links */}
-        <textarea name="custom_values[notes_optional]"></textarea>
-        <input type="text" name="custom_values[address_full]" />
-        <input type="text" name="custom_values[postcode]" />
-        <input type="text" name="custom_values[region]" />
-        <input type="text" name="custom_values[city_town]" />
-        <input type="url" name="custom_values[quote_url]" />
-        <input type="url" name="custom_values[resume_url]" />
-        {/* IMPORTANT: This is the actual GHL file input that will be used for photo uploads */}
-        <input 
-          id="ghlPhotosInput" 
-          type="file" 
-          name="custom_values[photos_upload]" 
-          multiple 
-          accept="image/*"
-          style={{display: 'none'}} 
-          data-testid="input-ghl-photos"
-        />
-      </form>
+      {/* GHL integration now handled via backend API - no client-side forms needed */}
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertQuoteRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
+import { GHLApi } from "./ghl.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Quote requests endpoints
@@ -97,6 +98,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error processing job image:", error);
       res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // GHL Integration endpoints
+  app.post('/api/ghl/lead', async (req, res) => {
+    try {
+      const { name, email, phone, address, postcode } = req.body;
+      
+      if (!name || !email || !phone) {
+        return res.status(400).json({ error: 'Name, email, and phone are required' });
+      }
+
+      const result = await GHLApi.submitLead({
+        name,
+        email,
+        phone,
+        address: address || '',
+        postcode: postcode || ''
+      });
+
+      if (result.success) {
+        res.json({ success: true, contactId: result.contactId });
+      } else {
+        console.error('GHL lead submission failed:', result.error);
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      console.error('Error submitting lead to GHL:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/ghl/quote', async (req, res) => {
+    try {
+      const { contactId, quoteId, serviceName, estimateLow, estimateHigh, quoteUrl } = req.body;
+      
+      if (!contactId || !quoteId || !serviceName) {
+        return res.status(400).json({ error: 'contactId, quoteId, and serviceName are required' });
+      }
+
+      const result = await GHLApi.submitQuote({
+        contactId,
+        quoteId,
+        serviceName,
+        estimateLow: estimateLow || 0,
+        estimateHigh: estimateHigh || 0,
+        quoteUrl: quoteUrl || ''
+      });
+
+      if (result.success) {
+        res.json({ success: true, opportunityId: result.opportunityId });
+      } else {
+        console.error('GHL quote submission failed:', result.error);
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      console.error('Error submitting quote to GHL:', error);
+      res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });
 
