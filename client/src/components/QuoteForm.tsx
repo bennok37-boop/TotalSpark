@@ -8,18 +8,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin, Camera, X } from 'lucide-react';
-// ObjectUploader removed - using GHL file input for photo uploads
+import { ObjectUploader } from '@/components/ObjectUploader';
+import type { UploadResult } from "@uppy/core";
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  computeReactQuote, 
-  EnhancedQuoteResult, 
-  QuoteStorage, 
-  GHLIntegration, 
-  ReactFormData 
-} from '@/lib/quoteAdapter';
+import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
 
 type FormStep = 1 | 2 | 3;
 
@@ -58,6 +53,7 @@ interface QuoteFormData {
   // Carpet items
   carpetRooms: number;
   stairs: number;
+  rugs: number;
   sofa2: number;
   sofa3: number;
   armchair: number;
@@ -81,13 +77,14 @@ interface QuoteFormData {
   bundleCarpetsWithEoT: boolean;
   vat: boolean;
   
-  // Job Images - handled by GHL form
+  // Job Images
+  jobImages: string[];
 }
 
 export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
-// Removed uploadedImages state - using GHL file input instead
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -119,6 +116,7 @@ export default function QuoteForm() {
     
     carpetRooms: 0,
     stairs: 0,
+    rugs: 0,
     sofa2: 0,
     sofa3: 0,
     armchair: 0,
@@ -135,9 +133,12 @@ export default function QuoteForm() {
     stairsNoLift: false,
 
     bundleCarpetsWithEoT: false,
-    vat: false
+    vat: false,
+    
+    // Job Images
+    jobImages: []
   });
-  const [quoteResult, setQuoteResult] = useState<EnhancedQuoteResult | null>(null);
+  const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
   const { toast } = useToast();
 
   // Handle auto-scroll when page loads with #quote-form hash
@@ -168,22 +169,7 @@ export default function QuoteForm() {
   }, []);
 
   const submitQuoteMutation = useMutation({
-    mutationFn: async (data: QuoteFormData & { quoteResult?: EnhancedQuoteResult }) => {
-      if (!data.quoteResult) {
-        throw new Error('Quote result is required for submission');
-      }
-
-      // Create saved quote for localStorage and GHL
-      const savedQuote = QuoteStorage.createSavedQuote(data as ReactFormData, data.quoteResult);
-      
-      // Save to localStorage
-      QuoteStorage.saveQuote(savedQuote);
-      
-      // Push to GHL (stub for now)
-      const ghlResult = await GHLIntegration.pushQuoteToGHL(savedQuote);
-      console.log('GHL integration result:', ghlResult);
-
-      // Also submit to current API endpoint for compatibility
+    mutationFn: async (data: QuoteFormData & { quoteResult?: QuoteResult }) => {
       const submitData = {
         name: data.name,
         email: data.email,
@@ -194,11 +180,8 @@ export default function QuoteForm() {
         service: data.service,
         bedrooms: data.bedrooms || null,
         area_m2: data.area_m2 || null,
-        quoteResult: data.quoteResult,
-        quoteId: savedQuote.id, // Include quote ID for tracking
-        ghlResult // Include GHL result
+        quoteResult: data.quoteResult || null
       };
-      
       return apiRequest('POST', '/api/quotes', submitData);
     },
     onSuccess: () => {
@@ -223,7 +206,49 @@ export default function QuoteForm() {
   };
 
   // Image upload handlers
-  // Old upload functions removed - using GHL file input for photos
+  const handleGetUploadParameters = async () => {
+    const response = await fetch('/api/objects/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to get upload URL');
+    }
+    
+    const { uploadURL } = await response.json();
+    return {
+      method: 'PUT' as const,
+      url: uploadURL,
+    };
+  };
+
+  const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+    if (result.successful && result.successful.length > 0) {
+      const newImageUrls = result.successful.map(file => file.uploadURL || '').filter(Boolean);
+      setUploadedImages(prev => [...prev, ...newImageUrls]);
+      setFormData(prev => ({ 
+        ...prev, 
+        jobImages: [...prev.jobImages, ...newImageUrls] 
+      }));
+      
+      toast({
+        title: "Images uploaded successfully!",
+        description: `${newImageUrls.length} image(s) added to your quote request.`
+      });
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    const updatedImages = uploadedImages.filter((_, index) => index !== indexToRemove);
+    setUploadedImages(updatedImages);
+    setFormData(prev => ({ 
+      ...prev, 
+      jobImages: updatedImages 
+    }));
+  };
 
   const handleNumberChange = (field: keyof QuoteFormData, value: string) => {
     const numValue = parseInt(value) || 0;
@@ -291,9 +316,9 @@ export default function QuoteForm() {
     setFormData(prev => ({ ...prev, [field]: checked }));
   };
 
-  // Real-time price calculation using the new standardized pricing engine
+  // Real-time price calculation using the pricing engine
   useEffect(() => {
-    const hasCarpetItems = formData.carpetRooms > 0 || formData.stairs > 0 || 
+    const hasCarpetItems = formData.carpetRooms > 0 || formData.stairs > 0 || formData.rugs > 0 || 
                           formData.sofa2 > 0 || formData.sofa3 > 0 || formData.armchair > 0 || formData.mattress > 0;
     
     if (formData.service && 
@@ -301,8 +326,58 @@ export default function QuoteForm() {
          (formData.service === 'carpets' && hasCarpetItems) ||
          (formData.service !== 'commercial' && formData.service !== 'carpets' && formData.bedrooms))) {
       
+      const quoteInput: QuoteInput = {
+        service: formData.service,
+        bedrooms: formData.bedrooms || undefined,
+        bathrooms: formData.bathrooms,
+        toilets: formData.toilets,
+        livingRooms: formData.livingRooms,
+        area_m2: formData.area_m2 || undefined,
+        
+        // Enhanced property factors
+        propertyType: formData.propertyType || undefined,
+        condition: formData.condition || undefined,
+        secondKitchen: formData.secondKitchen,
+        internalStairs: formData.internalStairs,
+        furnished: formData.furnished,
+        occupied: formData.occupied,
+        hmoRooms: formData.hmoRooms,
+        wasteBags: formData.wasteBags,
+        
+        // Commercial enhancements
+        commercialType: formData.commercialType || undefined,
+        commercialRooms: formData.commercialRooms || undefined,
+        commercialToilets: formData.commercialToilets || undefined,
+        
+        items: formData.service === 'carpets' ? {
+          carpetRooms: formData.carpetRooms,
+          stairs: formData.stairs,
+          rugs: formData.rugs,
+          sofa2: formData.sofa2,
+          sofa3: formData.sofa3,
+          armchair: formData.armchair,
+          mattress: formData.mattress
+        } : undefined,
+        addons: {
+          oven: formData.oven,
+          fridge: formData.fridge,
+          windows: formData.windows,
+          cabinets: formData.cabinets,
+          limescale: formData.limescale,
+          carpets: formData.addOnCarpets,
+          upholstery: formData.addOnUpholstery
+        },
+        modifiers: {
+          urgent: formData.urgent,
+          weekend: formData.weekend,
+          stairsNoLift: formData.stairsNoLift,
+        },
+        bundleCarpetsWithEoT: formData.bundleCarpetsWithEoT,
+        vat: formData.vat
+      };
+      
       try {
-        const result = computeReactQuote(formData as ReactFormData);
+        const result = computeQuote(quoteInput);
         setQuoteResult(result);
       } catch (error) {
         console.error('Price calculation error:', error);
@@ -313,9 +388,7 @@ export default function QuoteForm() {
     }
   }, [formData]);
 
-  const [contactId, setContactId] = useState<string | null>(null);
-
-  const handleStep1Submit = async (e: React.FormEvent) => {
+  const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Enhanced validation for address and postcode
@@ -329,15 +402,7 @@ export default function QuoteForm() {
     }
     
     // Validate postcode format (basic UK postcode pattern)
-    const postcodePattern = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
-    const cleanPostcode = formData.postcode?.replace(/\s/g, '') || '';
-    if (formData.postcode && !postcodePattern.test(cleanPostcode)) {
-      console.log('Postcode validation failed:', {
-        original: formData.postcode,
-        cleaned: cleanPostcode,
-        pattern: postcodePattern.toString(),
-        test: postcodePattern.test(cleanPostcode)
-      });
+    if (formData.postcode && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(formData.postcode.replace(/\s/g, ''))) {
       toast({
         title: "Invalid Postcode",
         description: "Please enter a valid UK postcode (e.g. NE1 1AA)",
@@ -347,33 +412,6 @@ export default function QuoteForm() {
     }
     
     console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode });
-    
-    // Submit lead capture to GHL via backend API
-    try {
-      const leadData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        postcode: formData.postcode,
-        region: currentCity?.region || 'North East England',
-        city: currentCity?.city || ''
-      };
-      
-      const result = await QuoteAdapter.submitLeadForm(leadData);
-      
-      if (result.success && result.contactId) {
-        setContactId(result.contactId);
-        console.log('Lead captured successfully in GHL:', result.contactId);
-      } else {
-        console.warn('Lead capture failed:', result.error);
-        // Continue with form flow even if GHL fails
-      }
-    } catch (error) {
-      console.error('Error capturing lead:', error);
-      // Continue with form flow even if GHL fails
-    }
-    
     setStep(2);
   };
 
@@ -513,6 +551,67 @@ export default function QuoteForm() {
                       <MapPin className="w-3 h-3 inline mr-1" />
                       Enter your postcode to auto-fill address details
                     </p>
+                  </div>
+
+                  {/* Job Images Upload Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Camera className="w-5 h-5 text-primary" />
+                      <div>
+                        <Label className="text-base font-medium">Upload Job Photos (Optional)</Label>
+                        <p className="text-sm text-muted-foreground">
+                          Help us provide a more accurate quote by sharing photos of the areas that need cleaning
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <ObjectUploader
+                        maxNumberOfFiles={5}
+                        maxFileSize={10485760} // 10MB
+                        onGetUploadParameters={handleGetUploadParameters}
+                        onComplete={handleImageUploadComplete}
+                        buttonClassName="w-full"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Camera className="w-4 h-4" />
+                          <span>Add Photos ({uploadedImages.length}/5)</span>
+                        </div>
+                      </ObjectUploader>
+                      
+                      {uploadedImages.length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {uploadedImages.map((imageUrl, index) => (
+                            <div key={index} className="relative group">
+                              <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                                <img 
+                                  src={imageUrl} 
+                                  alt={`Job photo ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                  data-testid={`image-preview-${index}`}
+                                />
+                              </div>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => removeImage(index)}
+                                data-testid={`button-remove-image-${index}`}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <div className="text-xs text-muted-foreground">
+                        <p>• Upload up to 5 photos (max 10MB each)</p>
+                        <p>• Show us kitchens, bathrooms, carpets, or any areas needing special attention</p>
+                        <p>• This helps us provide the most accurate quote possible</p>
+                      </div>
+                    </div>
                   </div>
 
                   <Button type="submit" className="w-full" data-testid="button-next-step">
@@ -821,6 +920,17 @@ export default function QuoteForm() {
                           />
                         </div>
                         <div>
+                          <Label htmlFor="rugs">Rugs</Label>
+                          <Input
+                            id="rugs"
+                            type="number"
+                            min="0"
+                            value={formData.rugs || ''}
+                            onChange={(e) => handleNumberChange('rugs', e.target.value)}
+                            data-testid="input-rugs"
+                          />
+                        </div>
+                        <div>
                           <Label htmlFor="sofa2">2-Seater Sofas</Label>
                           <Input
                             id="sofa2"
@@ -1031,38 +1141,6 @@ export default function QuoteForm() {
                     </Card>
                   )}
 
-                  {/* Job Images Upload Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Camera className="w-5 h-5 text-primary" />
-                      <div>
-                        <Label className="text-base font-medium">Upload Job Photos (Optional)</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Help us provide a more accurate quote by sharing photos of the areas that need cleaning
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {/* GHL Photo Upload - Using the actual GHL file input for proper form submission */}
-                      <label 
-                        htmlFor="ghlPhotosInput" 
-                        className="flex items-center justify-center gap-2 w-full h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer transition-colors"
-                        data-testid="button-add-photos"
-                      >
-                        <Camera className="w-4 h-4" />
-                        <span>Add Photos (up to 5 photos)</span>
-                      </label>
-                      
-                      <div className="text-xs text-muted-foreground">
-                        <p>• Upload up to 5 photos (max 10MB each)</p>
-                        <p>• Show us kitchens, bathrooms, carpets, or any areas needing special attention</p>
-                        <p>• Photos will be submitted directly with your quote for accurate pricing</p>
-                        <p>• <strong>Note:</strong> Photos are sent when you submit your quote, not immediately upon selection</p>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Additional Details - moved to end of form */}
                   <div>
                     <Label htmlFor="additionalDetails">Additional Details (Optional)</Label>
@@ -1141,26 +1219,6 @@ export default function QuoteForm() {
                       WhatsApp Chat
                     </Button>
                     <Button 
-                      variant="default" 
-                      className="w-full"
-                      onClick={() => {
-                        const calendarUrl = GHLIntegration.getCalendarUrl();
-                        if (calendarUrl && calendarUrl !== 'PASTE_YOUR_GHL_CALENDAR_LINK_HERE') {
-                          window.open(calendarUrl, '_blank');
-                        } else {
-                          toast({
-                            title: "Calendar Not Available",
-                            description: "Please contact us directly to book your appointment.",
-                            variant: "destructive"
-                          });
-                        }
-                      }}
-                      data-testid="button-book-now"
-                    >
-                      <Clock className="w-4 h-4 mr-2" />
-                      Book & Hold My Price
-                    </Button>
-                    <Button 
                       variant="outline" 
                       onClick={() => {
                         setStep(1);
@@ -1195,6 +1253,7 @@ export default function QuoteForm() {
                           
                           carpetRooms: 0,
                           stairs: 0,
+                          rugs: 0,
                           sofa2: 0,
                           sofa3: 0,
                           armchair: 0,
@@ -1211,8 +1270,12 @@ export default function QuoteForm() {
                           stairsNoLift: false,
                       
                           bundleCarpetsWithEoT: false,
-                          vat: false
+                          vat: false,
+                          
+                          // Job Images
+                          jobImages: []
                         });
+                        setUploadedImages([]);
                         setQuoteResult(null);
                       }}
                       className="w-full"
@@ -1227,8 +1290,6 @@ export default function QuoteForm() {
           </Card>
         </div>
       </div>
-
-      {/* GHL integration now handled via backend API - no client-side forms needed */}
     </section>
   );
 }
