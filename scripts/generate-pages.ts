@@ -1,0 +1,359 @@
+import { writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+import { getAllLocations, REGIONS, LocationData, RegionData } from '../shared/locations';
+import { SERVICE_GENERATORS, ServiceType, ServicePageData } from '../shared/service-templates';
+
+// Service type configuration
+const SERVICES: Array<{ type: ServiceType; urlSegment: string; displayName: string }> = [
+  { type: 'end-of-tenancy', urlSegment: 'end-of-tenancy-cleaning', displayName: 'End of Tenancy Cleaning' },
+  { type: 'cleaning', urlSegment: 'cleaning-services', displayName: 'Cleaning Services' },
+  { type: 'deep-cleaning', urlSegment: 'deep-cleaning', displayName: 'Deep Cleaning' },
+  { type: 'commercial-cleaning', urlSegment: 'commercial-cleaning', displayName: 'Commercial Cleaning' },
+  { type: 'carpet-cleaning', urlSegment: 'carpet-cleaning', displayName: 'Carpet & Upholstery Cleaning' }
+];
+
+// Generate the page component code
+function generatePageComponent(
+  serviceData: ServicePageData, 
+  serviceType: ServiceType,
+  serviceDisplayName: string
+): string {
+  const componentName = `${serviceData.location.name.replace(/[^a-zA-Z0-9]/g, '')}${serviceType.split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join('')}Page`;
+
+  return `import { useEffect } from 'react';
+import { Link } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Separator } from '@/components/ui/separator';
+import { Phone, MessageCircle, MapPin, Clock, Star, CheckCircle, Users, Award, Shield } from 'lucide-react';
+
+export default function ${componentName}() {
+  // Set page title and meta description
+  useEffect(() => {
+    document.title = "${serviceData.metaTitle}";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', "${serviceData.metaDescription}");
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = "${serviceData.metaDescription}";
+      document.head.appendChild(meta);
+    }
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge variant="secondary" className="mb-4" data-testid="badge-service-type">
+              ${serviceDisplayName} in ${serviceData.location.name}
+            </Badge>
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
+              ${serviceData.heroTitle}
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
+              ${serviceData.heroSubtitle}
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button size="lg" className="text-lg px-8 py-6" data-testid="button-get-quote">
+                <Phone className="mr-2 h-5 w-5" />
+                Get Free Quote Now
+              </Button>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-6" data-testid="button-call-now">
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Call ${serviceData.phone}
+              </Button>
+            </div>
+            
+            {/* Trust Signals */}
+            <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-muted-foreground">
+              ${serviceData.trustSignals.map(signal => `
+              <div className="flex items-center gap-2" data-testid="text-trust-signal">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span>${signal}</span>
+              </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Service Features */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-features-title">
+                ${serviceDisplayName} Services in ${serviceData.location.name}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Professional cleaning services across ${serviceData.location.name} and surrounding ${serviceData.region.name} areas
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              ${serviceData.serviceFeatures.map(feature => `
+              <Card className="hover-elevate" data-testid="card-service-feature">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">${feature}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-pricing-title">
+                ${serviceDisplayName} Prices in ${serviceData.location.name}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Transparent pricing for ${serviceData.location.name} properties
+              </p>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${serviceData.pricing.map((price, index) => `
+              <Card className="hover-elevate" data-testid="card-pricing-${index}">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-lg">${price.size}</CardTitle>
+                  <CardDescription>${price.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-4">${price.price}</div>
+                  <Button className="w-full" data-testid="button-book-${index}">
+                    Book Now
+                  </Button>
+                </CardContent>
+              </Card>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Local Areas */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-areas-title">
+                Areas We Cover Near ${serviceData.location.name}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                ${serviceDisplayName} services across ${serviceData.region.name}
+              </p>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${serviceData.nearbyAreas.map(area => `
+              <Card className="hover-elevate cursor-pointer" data-testid="card-area-${area.slug}">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <span className="font-medium">${area.name}</span>
+                  </div>
+                </CardContent>
+              </Card>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-faq-title">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Common questions about ${serviceDisplayName.toLowerCase()} in ${serviceData.location.name}
+              </p>
+            </div>
+            
+            <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
+              ${serviceData.faqs.map((faq, index) => `
+              <AccordionItem value="item-${index}" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-${index}">
+                  ${faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-${index}">
+                  ${faq.a}
+                </AccordionContent>
+              </AccordionItem>
+              `).join('')}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-success-title">
+                Recent Success Stories
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                ${serviceDisplayName} success stories from ${serviceData.location.name} and ${serviceData.region.name}
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              ${serviceData.successStories.map((story, index) => `
+              <Card className="text-center hover-elevate" data-testid="card-success-${index}">
+                <CardContent className="p-6">
+                  <Star className="h-8 w-8 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold mb-2">${story.title}</h3>
+                  <p className="text-muted-foreground text-sm">${story.subtitle}</p>
+                </CardContent>
+              </Card>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4" data-testid="text-final-cta-title">
+              Ready to Book ${serviceDisplayName} in ${serviceData.location.name}?
+            </h2>
+            <p className="text-xl mb-8 opacity-90">
+              Get your free quote today and experience professional cleaning services
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-6" data-testid="button-final-quote">
+                <Phone className="mr-2 h-5 w-5" />
+                Get Free Quote
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-final-call">
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Call ${serviceData.phone}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}`;
+}
+
+// Generate route configurations
+function generateRouteConfig(): string {
+  const allLocations = getAllLocations();
+  const routes: string[] = [];
+
+  SERVICES.forEach(service => {
+    allLocations.forEach(location => {
+      routes.push(`  { 
+    path: "/${service.urlSegment}-${location.slug}", 
+    component: lazy(() => import("@/pages/${location.name.replace(/[^a-zA-Z0-9]/g, '')}${service.type.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join('')}Page")) 
+  }`);
+    });
+  });
+
+  return `import { lazy } from 'react';
+
+// Auto-generated service-location routes
+export const serviceLocationRoutes = [
+${routes.join(',\n')}
+];`;
+}
+
+// Main generation function
+export function generateAllPages(): void {
+  console.log('🚀 Starting page generation...');
+  
+  const allLocations = getAllLocations();
+  const allRegions = Object.values(REGIONS);
+  
+  // Ensure pages directory exists
+  mkdirSync('client/src/pages/generated', { recursive: true });
+  
+  let totalGenerated = 0;
+  
+  // Generate pages for each service-location combination
+  SERVICES.forEach(service => {
+    console.log(`📄 Generating ${service.displayName} pages...`);
+    
+    allLocations.forEach(location => {
+      // Find the region for this location
+      const region = allRegions.find(r => 
+        Object.values(REGIONS[r.slug as keyof typeof REGIONS].locations).some(loc => loc.slug === location.slug)
+      );
+      
+      if (!region) {
+        console.warn(`⚠️  Region not found for location: ${location.name}`);
+        return;
+      }
+      
+      // Generate service data using the template
+      const serviceGenerator = SERVICE_GENERATORS[service.type];
+      const serviceData = serviceGenerator(location, region);
+      
+      // Generate the page component
+      const componentCode = generatePageComponent(serviceData, service.type, service.displayName);
+      
+      // Create filename
+      const componentName = `${location.name.replace(/[^a-zA-Z0-9]/g, '')}${service.type.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join('')}Page`;
+      
+      const filename = `${componentName}.tsx`;
+      const filepath = join('client/src/pages/generated', filename);
+      
+      // Write the file
+      writeFileSync(filepath, componentCode);
+      totalGenerated++;
+      
+      if (totalGenerated % 50 === 0) {
+        console.log(`✅ Generated ${totalGenerated} pages...`);
+      }
+    });
+  });
+  
+  // Generate route configuration
+  console.log('🔗 Generating route configuration...');
+  const routeConfig = generateRouteConfig();
+  writeFileSync('client/src/routes/generated-routes.ts', routeConfig);
+  
+  console.log(`🎉 Page generation complete!`);
+  console.log(`📊 Total pages generated: ${totalGenerated}`);
+  console.log(`📊 Services: ${SERVICES.length}`);
+  console.log(`📊 Locations: ${allLocations.length}`);
+  console.log(`📊 Expected total: ${SERVICES.length * allLocations.length}`);
+}
+
+// CLI usage
+if (require.main === module) {
+  generateAllPages();
+}

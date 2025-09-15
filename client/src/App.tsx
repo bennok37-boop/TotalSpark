@@ -19,6 +19,7 @@ import EndOfTenancyNewcastlePage from "@/pages/EndOfTenancyNewcastlePage";
 import CommercialCleaningPage from "@/pages/CommercialCleaningPage";
 import DeepCleaningPage from "@/pages/DeepCleaningPage";
 import CarpetUpholsteryPage from "@/pages/CarpetUpholsteryPage";
+import { ServiceLocationRouter } from "@/routes/ServiceLocationRouter";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -42,6 +43,8 @@ function Router() {
       <Route path="/commercial-cleaning" component={CommercialCleaningPage} />
       <Route path="/deep-cleaning" component={DeepCleaningPage} />
       <Route path="/carpet-upholstery-cleaning" component={CarpetUpholsteryPage} />
+      {/* Generated Service-Location Routes */}
+      <ServiceLocationRouter />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
