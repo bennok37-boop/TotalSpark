@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function ConsettCommercialCleaningPage() {
   useEffect(() => {
@@ -27,7 +28,12 @@ export default function ConsettCommercialCleaningPage() {
             <p className="text-xl text-muted-foreground mb-8" data-testid="text-hero-subtitle">
               {"Professional commercial cleaning across Consett, Stanley, Durham, Hexham and surrounding County Durham business areas. Daily, weekly, and contract cleaning services."}
             </p>
-            <Button size="lg" className="text-lg px-8 py-6" data-testid="button-get-quote">
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-6" 
+              onClick={scrollToQuoteForm}
+              data-testid="button-get-quote"
+            >
               Get Free Quote Now
             </Button>
           </div>
@@ -126,7 +132,13 @@ export default function ConsettCommercialCleaningPage() {
             <p className="text-xl mb-8 opacity-90">
               Get your free quote today and experience professional cleaning services
             </p>
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-6" data-testid="button-final-quote">
+            <Button 
+              size="lg" 
+              variant="secondary" 
+              className="text-lg px-8 py-6" 
+              onClick={scrollToQuoteForm}
+              data-testid="button-final-quote"
+            >
               Get Free Quote
             </Button>
           </div>
