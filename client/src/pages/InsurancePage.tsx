@@ -9,9 +9,9 @@ export default function InsurancePage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="Insurance & DBS Checks | CleanPro - Fully Insured & Background Checked"
-        description="All CleanPro staff are DBS-checked and we carry comprehensive public liability insurance. Professional cleaning services you can trust across North East UK."
-        ogTitle="Insurance & DBS Checks | CleanPro"
+        title="Insurance & DBS Checks | TotalSpark Solutions - Fully Insured & Background Checked"
+        description="All TotalSpark Solutions staff are DBS-checked and we carry comprehensive public liability insurance. Professional cleaning services you can trust across North East UK."
+        ogTitle="Insurance & DBS Checks | TotalSpark Solutions"
         ogDescription="DBS-checked staff and fully insured cleaning services across North East UK. Your peace of mind is our priority."
       />
       

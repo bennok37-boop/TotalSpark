@@ -15,9 +15,11 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">C</span>
-              </div>
+              <img 
+                src="@assets/4_1757953109291.png" 
+                alt="TotalSpark Solutions Logo" 
+                className="w-10 h-10 object-contain"
+              />
               <span className="font-bold text-xl">TotalSpark Solutions</span>
             </div>
             <p className="text-background/80 mb-4 text-sm leading-relaxed">
@@ -26,11 +28,11 @@ export default function Footer() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-primary" />
-                <span>0191 123 4567</span>
+                <span>0191 821 4567</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-primary" />
-                <span>info@totalspark.co.uk</span>
+                <span>hello@totalsparksolutions.co.uk</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-primary" />

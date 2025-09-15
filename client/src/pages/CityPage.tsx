@@ -56,7 +56,7 @@ function generateCityPageContent(location: Location, region: typeof REGIONS[keyo
       `Approved cleaning partner for local landlords and letting agencies in ${location.name}`,
       `Ongoing cleaning contracts with businesses around ${location.name} & surrounding areas`
     ],
-    miniAbout: `Proudly serving ${location.name} and surrounding ${region.name} areas since 2025, CleanPro has built a reputation for reliable, professional cleaning. Whether it's residential properties, student accommodation, or commercial spaces around ${location.name}, we provide cleaning services you can trust to get the job done right — the first time.`,
+    miniAbout: `Proudly serving ${location.name} and surrounding ${region.name} areas since 2025, TotalSpark Solutions has built a reputation for reliable, professional cleaning. Whether it's residential properties, student accommodation, or commercial spaces around ${location.name}, we provide cleaning services you can trust to get the job done right — the first time.`,
     nearbyAreas,
     faqs: [
       { q: `Do you cover ${location.name} and surrounding areas?`, a: `Yes — we regularly provide cleaning services across ${location.name} and all surrounding ${region.name} areas including ${nearbyNames.slice(0, 3).join(', ')}.` },
@@ -89,7 +89,7 @@ export default function CityPage() {
   const city = generateCityPageContent(locationData.location, locationData.region);
 
   // Generate SEO content
-  const seoTitle = `Professional Cleaning Services in ${locationData.location.name} | CleanPro - ${locationData.region.name}`;
+  const seoTitle = `Professional Cleaning Services in ${locationData.location.name} | TotalSpark Solutions - ${locationData.region.name}`;
   const seoDescription = `Expert cleaning services in ${locationData.location.name} and surrounding ${locationData.region.name} areas. End of tenancy, deep cleaning, commercial cleaning. Instant quotes in 60 seconds. DBS-checked, fully insured. Call ${city.phone}.`;
   const seoKeywords = `cleaning services ${locationData.location.name}, end of tenancy cleaning ${locationData.location.name}, deep cleaning ${locationData.region.name}, commercial cleaning, ${locationData.location.name} cleaners, professional cleaning ${locationData.region.name}`;
   const canonicalUrl = `${window.location.origin}/cleaning/${locationData.location.slug}`;

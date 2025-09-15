@@ -7,10 +7,10 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="Terms of Service | CleanPro - Service Terms and Conditions"
-        description="CleanPro's terms of service outline the conditions for using our professional cleaning services across North East UK. Read our service terms and conditions."
-        ogTitle="Terms of Service | CleanPro"
-        ogDescription="Terms and conditions for CleanPro's professional cleaning services across North East UK."
+        title="Terms of Service | TotalSpark Solutions - Service Terms and Conditions"
+        description="TotalSpark Solutions' terms of service outline the conditions for using our professional cleaning services across North East UK. Read our service terms and conditions."
+        ogTitle="Terms of Service | TotalSpark Solutions"
+        ogDescription="Terms and conditions for TotalSpark Solutions' professional cleaning services across North East UK."
       />
       
       <Header />
@@ -22,7 +22,7 @@ export default function TermsPage() {
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Terms of Service</h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                These terms govern your use of CleanPro's cleaning services. 
+                These terms govern your use of TotalSpark Solutions' cleaning services. 
                 Please read them carefully before booking our services.
               </p>
               <p className="text-sm text-muted-foreground mt-4">
@@ -229,8 +229,8 @@ export default function TermsPage() {
                     <div className="space-y-4 text-muted-foreground text-sm">
                       <p>For questions about these terms or to discuss any service-related matters:</p>
                       <div className="space-y-2">
-                        <p><strong>CleanPro (TotalSpark Solutions)</strong></p>
-                        <p>Email: info@cleanpro.co.uk</p>
+                        <p><strong>TotalSpark Solutions</strong></p>
+                        <p>Email: hello@totalsparksolutions.co.uk</p>
                         <p>Phone: 0191 349 7777</p>
                         <p>Service Areas: North East England (Newcastle, Leeds, York, Durham, Sunderland, Middlesbrough and surrounding areas)</p>
                       </div>

@@ -20,7 +20,7 @@ export default function SpennymoorEndOfTenancyPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="secondary" className="mb-4" data-testid="badge-service-type">
-              End of Tenancy Cleaning in Spennymoor
+              TotalSpark Solutions - End of Tenancy Cleaning in Spennymoor
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
               {"End of Tenancy Cleaning Spennymoor – 100% Deposit Back Guarantee"}
@@ -130,7 +130,7 @@ export default function SpennymoorEndOfTenancyPage() {
               Ready to Book End of Tenancy Cleaning in Spennymoor?
             </h2>
             <p className="text-xl mb-8 opacity-90">
-              Get your free quote today and experience professional cleaning services
+              Get your free quote today from TotalSpark Solutions and experience professional cleaning services across the North East
             </p>
             <Button 
               size="lg" 

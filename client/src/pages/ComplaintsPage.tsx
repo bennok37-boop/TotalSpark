@@ -9,10 +9,10 @@ export default function ComplaintsPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="Complaints Procedure | CleanPro - How to Raise Service Concerns"
-        description="CleanPro's complaints procedure ensures fair resolution of any service concerns. Learn how to contact us and our commitment to customer satisfaction."
-        ogTitle="Complaints Procedure | CleanPro"
-        ogDescription="Fair and prompt resolution of service concerns. Learn about CleanPro's complaints process and customer commitment."
+        title="Complaints Procedure | TotalSpark Solutions - How to Raise Service Concerns"
+        description="TotalSpark Solutions' complaints procedure ensures fair resolution of any service concerns. Learn how to contact us and our commitment to customer satisfaction."
+        ogTitle="Complaints Procedure | TotalSpark Solutions"
+        ogDescription="Fair and prompt resolution of service concerns. Learn about TotalSpark Solutions' complaints process and customer commitment."
       />
       
       <Header />
@@ -103,7 +103,7 @@ export default function ComplaintsPage() {
                         <Mail className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                         <div>
                           <div className="font-semibold">Email (For Detailed Complaints)</div>
-                          <p className="text-sm text-muted-foreground">complaints@cleanpro.co.uk</p>
+                          <p className="text-sm text-muted-foreground">hello@totalsparksolutions.co.uk</p>
                           <p className="text-xs text-muted-foreground">Response within 48 hours</p>
                         </div>
                       </div>

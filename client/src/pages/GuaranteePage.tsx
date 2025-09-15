@@ -9,9 +9,9 @@ export default function GuaranteePage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="Our Guarantee | CleanPro - 100% Satisfaction & Deposit-Back Guarantee"
-        description="CleanPro's comprehensive guarantee includes 100% satisfaction guarantee, deposit-back guarantee for end of tenancy cleans, and quality assurance across North East UK."
-        ogTitle="Our Guarantee | CleanPro - 100% Satisfaction Guaranteed"
+        title="Our Guarantee | TotalSpark Solutions - 100% Satisfaction & Deposit-Back Guarantee"
+        description="TotalSpark Solutions' comprehensive guarantee includes 100% satisfaction guarantee, deposit-back guarantee for end of tenancy cleans, and quality assurance across North East UK."
+        ogTitle="Our Guarantee | TotalSpark Solutions - 100% Satisfaction Guaranteed"
         ogDescription="100% satisfaction guarantee and deposit-back promise. Professional cleaning services you can trust across North East UK."
       />
       

@@ -7,10 +7,10 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="Privacy Policy | CleanPro - How We Protect Your Personal Information"
-        description="CleanPro's privacy policy explains how we collect, use, and protect your personal information when you use our cleaning services across North East UK."
-        ogTitle="Privacy Policy | CleanPro"
-        ogDescription="Learn how CleanPro protects your personal information and privacy when using our cleaning services."
+        title="Privacy Policy | TotalSpark Solutions - How We Protect Your Personal Information"
+        description="TotalSpark Solutions' privacy policy explains how we collect, use, and protect your personal information when you use our cleaning services across North East UK."
+        ogTitle="Privacy Policy | TotalSpark Solutions"
+        ogDescription="Learn how TotalSpark Solutions protects your personal information and privacy when using our cleaning services."
       />
       
       <Header />
@@ -183,8 +183,8 @@ export default function PrivacyPage() {
                         If you have questions about this privacy policy or our data practices, please contact us:
                       </p>
                       <div className="space-y-2 text-sm">
-                        <p><strong>CleanPro (TotalSpark Solutions)</strong></p>
-                        <p>Email: info@cleanpro.co.uk</p>
+                        <p><strong>TotalSpark Solutions</strong></p>
+                        <p>Email: hello@totalsparksolutions.co.uk</p>
                         <p>Phone: 0191 349 7777</p>
                         <p>Address: North East England, UK</p>
                       </div>

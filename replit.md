@@ -1,8 +1,8 @@
-# CleanPro - North East UK Cleaning Service Website
+# TotalSpark Solutions - North East UK Cleaning Service Website
 
 ## Overview
 
-CleanPro is a professional cleaning service website targeting the North East UK market, specifically serving Newcastle, Leeds, York, Sunderland, and Middlesbrough. The application is designed as a high-converting, SEO-friendly platform that facilitates quote requests for various cleaning services including end-of-tenancy, commercial, deep cleaning, and carpet & upholstery cleaning. The site emphasizes trust signals, local market targeting, and conversion optimization with features like instant quote forms, deposit-back guarantees, and DBS-checked staff credentials.
+TotalSpark Solutions is a professional cleaning service website targeting the North East UK market, specifically serving Newcastle, Leeds, York, Sunderland, and Middlesbrough. The application is designed as a high-converting, SEO-friendly platform that facilitates quote requests for various cleaning services including end-of-tenancy, commercial, deep cleaning, and carpet & upholstery cleaning. The site emphasizes trust signals, local market targeting, and conversion optimization with features like instant quote forms, deposit-back guarantees, and DBS-checked staff credentials.
 
 ## User Preferences
 

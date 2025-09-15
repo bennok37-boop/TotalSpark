@@ -9,9 +9,9 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="About CleanPro - Professional Cleaning Services in North East UK"
-        description="Learn about CleanPro's commitment to quality cleaning services across Newcastle, Leeds, York, and surrounding North East areas. DBS-checked staff, fully insured, and satisfaction guaranteed."
-        ogTitle="About CleanPro - Professional Cleaning Services"
+        title="About TotalSpark Solutions - Professional Cleaning Services in North East UK"
+        description="Learn about TotalSpark Solutions' commitment to quality cleaning services across Newcastle, Leeds, York, and surrounding North East areas. DBS-checked staff, fully insured, and satisfaction guaranteed."
+        ogTitle="About TotalSpark Solutions - Professional Cleaning Services"
         ogDescription="Trusted cleaning services across the North East UK with DBS-checked staff and satisfaction guaranteed."
       />
       
@@ -22,7 +22,7 @@ export default function AboutPage() {
         <section className="py-16 bg-muted">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">About CleanPro</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">About TotalSpark Solutions</h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
                 Your trusted cleaning partner across the North East UK, delivering exceptional results 
                 with professional, reliable, and affordable cleaning services since 2025.
@@ -39,7 +39,7 @@ export default function AboutPage() {
                 <div>
                   <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Story</h2>
                   <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                    CleanPro was founded with a simple mission: to provide outstanding cleaning services 
+                    TotalSpark Solutions was founded with a simple mission: to provide outstanding cleaning services 
                     that exceed expectations while building lasting relationships with our clients across 
                     the North East UK.
                   </p>
@@ -65,7 +65,7 @@ export default function AboutPage() {
                 </div>
                 <Card>
                   <CardContent className="p-8">
-                    <h3 className="text-2xl font-bold mb-4">Why Choose CleanPro?</h3>
+                    <h3 className="text-2xl font-bold mb-4">Why Choose TotalSpark Solutions?</h3>
                     <ul className="space-y-4">
                       <li className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
