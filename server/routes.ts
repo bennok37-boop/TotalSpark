@@ -1,9 +1,95 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import nodemailer from 'nodemailer';
 import { storage } from "./storage";
 import { insertQuoteRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
+
+// Email notification service
+async function sendEmailNotification(quote: any) {
+  // Simple email setup (works with most SMTP providers)
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: false,
+    auth: {
+      user: process.env.SMTP_USER || 'noreply@totalsparksolutions.co.uk',
+      pass: process.env.SMTP_PASS || 'your-app-password'
+    }
+  });
+
+  const serviceDisplayName = getServiceDisplayName(quote.service);
+  const addOnsText = formatAddOns(quote);
+  const tagsText = generateGHLTags(quote).join(', ');
+  const estimateText = quote.quoteResult 
+    ? `£${quote.quoteResult.estimateRange?.low || 0} - £${quote.quoteResult.estimateRange?.high || 0}`
+    : 'Quote calculation pending';
+
+  const emailSubject = `🔔 NEW LEAD: ${serviceDisplayName} - ${quote.address.split(',').pop()?.trim() || 'Location'}`;
+  
+  const emailBody = `
+NEW LEAD NOTIFICATION
+═══════════════════════════════════════
+
+📍 CONTACT DETAILS
+Name: ${quote.name}
+Email: ${quote.email}
+Phone: ${quote.phone}
+Address: ${quote.address}
+Postcode: ${quote.postcode || 'Not provided'}
+
+🏠 SERVICE REQUIREMENTS
+Service: ${serviceDisplayName}
+${quote.bedrooms ? `Bedrooms: ${quote.bedrooms}` : ''}
+${quote.bathrooms ? `Bathrooms: ${quote.bathrooms}` : ''}
+${quote.livingRooms ? `Living Rooms: ${quote.livingRooms}` : ''}
+${quote.commercialRooms ? `Commercial Rooms: ${quote.commercialRooms}` : ''}
+${quote.propertyType ? `Property Type: ${quote.propertyType}` : ''}
+${quote.condition ? `Property Condition: ${quote.condition}` : ''}
+
+💎 ADD-ONS & EXTRAS
+${addOnsText || 'None selected'}
+
+⚡ PRIORITY INDICATORS
+${quote.urgent ? '🚨 URGENT REQUEST - Needs immediate attention!' : ''}
+${quote.weekend ? '📅 Weekend service requested' : ''}
+${quote.vat ? '💰 VAT required (business/commercial)' : ''}
+
+💷 QUOTE ESTIMATE
+Range: ${estimateText}
+
+🏷️ GHL TAGS FOR AUTOMATION
+${tagsText}
+
+📝 ADDITIONAL NOTES
+${quote.additionalDetails || 'None provided'}
+
+═══════════════════════════════════════
+Quote ID: ${quote.id}
+Submitted: ${new Date().toLocaleString('en-GB', { 
+  timeZone: 'Europe/London',
+  dateStyle: 'full',
+  timeStyle: 'short'
+})}
+
+This lead is ready to copy-paste into GoHighLevel!
+  `.trim();
+
+  try {
+    await transporter.sendMail({
+      from: `"TotalSpark Solutions" <noreply@totalsparksolutions.co.uk>`,
+      to: 'hello@totalsparksolutions.co.uk',
+      subject: emailSubject,
+      text: emailBody
+    });
+    
+    console.log('Lead notification email sent successfully to hello@totalsparksolutions.co.uk');
+  } catch (error) {
+    console.error('Email notification failed:', error);
+    // Don't throw - we don't want to fail the quote submission if email fails
+  }
+}
 
 // GoHighLevel webhook integration function
 async function sendToGHLWebhook(quote: any) {
@@ -143,6 +229,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const quote = await storage.createQuoteRequest(result.data);
+      
+      // Send email notification
+      try {
+        await sendEmailNotification(quote);
+      } catch (emailError) {
+        console.warn('Email notification failed (quote still saved):', emailError);
+      }
       
       // Send to GoHighLevel webhook (for automation platforms like Zapier/Make.com)
       try {
