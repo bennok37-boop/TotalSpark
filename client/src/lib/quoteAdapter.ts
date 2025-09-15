@@ -240,7 +240,7 @@ export class QuoteStorage {
 // HighLevel Integration - Real form submission implementation
 export class GHLIntegration {
   private static readonly GHL_CONFIG = {
-    calendarUrl: 'PASTE_YOUR_GHL_CALENDAR_LINK_HERE', // GHL calendar link - to be replaced
+    calendarUrl: 'https://api.leadconnectorhq.com/widget/booking/GYCm1m2uJm37cdGZ80c2', // GHL calendar link
     depositUrl: '#', // GHL payment link
   };
 
