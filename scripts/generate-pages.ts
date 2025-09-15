@@ -1,16 +1,17 @@
 import { writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { getAllLocations, REGIONS, LocationData, RegionData } from '../shared/locations';
 import { SERVICE_GENERATORS, ServiceType, ServicePageData } from '../shared/service-templates';
+import { SERVICES, ServiceConfig, getComponentName } from '../shared/services';
 
-// Service type configuration
-const SERVICES: Array<{ type: ServiceType; urlSegment: string; displayName: string }> = [
-  { type: 'end-of-tenancy', urlSegment: 'end-of-tenancy-cleaning', displayName: 'End of Tenancy Cleaning' },
-  { type: 'cleaning', urlSegment: 'cleaning-services', displayName: 'Cleaning Services' },
-  { type: 'deep-cleaning', urlSegment: 'deep-cleaning', displayName: 'Deep Cleaning' },
-  { type: 'commercial-cleaning', urlSegment: 'commercial-cleaning', displayName: 'Commercial Cleaning' },
-  { type: 'carpet-cleaning', urlSegment: 'carpet-cleaning', displayName: 'Carpet & Upholstery Cleaning' }
-];
+// Get absolute paths for robust file operations (CommonJS-style for Node.js scripts)
+const PROJECT_ROOT = resolve(process.cwd());
+const PAGES_OUTPUT_DIR = resolve(PROJECT_ROOT, 'client/src/pages/generated');
+
+// Safe string interpolation for generated TSX
+function safeString(str: string): string {
+  return JSON.stringify(str);
+}
 
 // Generate the page component code
 function generatePageComponent(
@@ -18,9 +19,7 @@ function generatePageComponent(
   serviceType: ServiceType,
   serviceDisplayName: string
 ): string {
-  const componentName = `${serviceData.location.name.replace(/[^a-zA-Z0-9]/g, '')}${serviceType.split('-').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join('')}Page`;
+  const componentName = getComponentName(serviceData.location.name, serviceType);
 
   return `import { useEffect } from 'react';
 import { Link } from 'wouter';
@@ -34,14 +33,14 @@ import { Phone, MessageCircle, MapPin, Clock, Star, CheckCircle, Users, Award, S
 export default function ${componentName}() {
   // Set page title and meta description
   useEffect(() => {
-    document.title = "${serviceData.metaTitle}";
+    document.title = ${safeString(serviceData.metaTitle)};
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "${serviceData.metaDescription}");
+      metaDescription.setAttribute('content', ${safeString(serviceData.metaDescription)});
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "${serviceData.metaDescription}";
+      meta.content = ${safeString(serviceData.metaDescription)};
       document.head.appendChild(meta);
     }
   }, []);
@@ -53,13 +52,13 @@ export default function ${componentName}() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="secondary" className="mb-4" data-testid="badge-service-type">
-              ${serviceDisplayName} in ${serviceData.location.name}
+              {${safeString(serviceDisplayName)}} in {${safeString(serviceData.location.name)}}
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
-              ${serviceData.heroTitle}
+              {${safeString(serviceData.heroTitle)}}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
-              ${serviceData.heroSubtitle}
+              {${safeString(serviceData.heroSubtitle)}}
             </p>
             
             {/* CTA Buttons */}
@@ -70,7 +69,7 @@ export default function ${componentName}() {
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-8 py-6" data-testid="button-call-now">
                 <MessageCircle className="mr-2 h-5 w-5" />
-                Call ${serviceData.phone}
+                Call {${safeString(serviceData.phone)}}
               </Button>
             </div>
             
@@ -79,7 +78,7 @@ export default function ${componentName}() {
               ${serviceData.trustSignals.map(signal => `
               <div className="flex items-center gap-2" data-testid="text-trust-signal">
                 <CheckCircle className="h-4 w-4 text-primary" />
-                <span>${signal}</span>
+                <span>{${safeString(signal)}}</span>
               </div>
               `).join('')}
             </div>
@@ -93,10 +92,10 @@ export default function ${componentName}() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4" data-testid="text-features-title">
-                ${serviceDisplayName} Services in ${serviceData.location.name}
+                {${safeString(serviceDisplayName)}} Services in {${safeString(serviceData.location.name)}}
               </h2>
               <p className="text-lg text-muted-foreground">
-                Professional cleaning services across ${serviceData.location.name} and surrounding ${serviceData.region.name} areas
+                Professional cleaning services across {${safeString(serviceData.location.name)}} and surrounding {${safeString(serviceData.region.name)}} areas
               </p>
             </div>
             
@@ -107,7 +106,7 @@ export default function ${componentName}() {
                   <div className="flex items-start gap-3">
                     <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">${feature}</p>
+                      <p className="font-medium">{${safeString(feature)}}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -124,10 +123,10 @@ export default function ${componentName}() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4" data-testid="text-pricing-title">
-                ${serviceDisplayName} Prices in ${serviceData.location.name}
+                {${safeString(serviceDisplayName)}} Prices in {${safeString(serviceData.location.name)}}
               </h2>
               <p className="text-lg text-muted-foreground">
-                Transparent pricing for ${serviceData.location.name} properties
+                Transparent pricing for {${safeString(serviceData.location.name)}} properties
               </p>
             </div>
             
@@ -135,11 +134,11 @@ export default function ${componentName}() {
               ${serviceData.pricing.map((price, index) => `
               <Card className="hover-elevate" data-testid="card-pricing-${index}">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-lg">${price.size}</CardTitle>
-                  <CardDescription>${price.description}</CardDescription>
+                  <CardTitle className="text-lg">{${safeString(price.size)}}</CardTitle>
+                  <CardDescription>{${safeString(price.description)}}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-4">${price.price}</div>
+                  <div className="text-3xl font-bold text-primary mb-4">{${safeString(price.price)}}</div>
                   <Button className="w-full" data-testid="button-book-${index}">
                     Book Now
                   </Button>
@@ -157,10 +156,10 @@ export default function ${componentName}() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4" data-testid="text-areas-title">
-                Areas We Cover Near ${serviceData.location.name}
+                Areas We Cover Near {${safeString(serviceData.location.name)}}
               </h2>
               <p className="text-lg text-muted-foreground">
-                ${serviceDisplayName} services across ${serviceData.region.name}
+                {${safeString(serviceDisplayName)}} services across {${safeString(serviceData.region.name)}}
               </p>
             </div>
             
@@ -170,7 +169,7 @@ export default function ${componentName}() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <MapPin className="h-4 w-4 text-primary" />
-                    <span className="font-medium">${area.name}</span>
+                    <span className="font-medium">{${safeString(area.name)}}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -189,7 +188,7 @@ export default function ${componentName}() {
                 Frequently Asked Questions
               </h2>
               <p className="text-lg text-muted-foreground">
-                Common questions about ${serviceDisplayName.toLowerCase()} in ${serviceData.location.name}
+                Common questions about {${safeString(serviceDisplayName.toLowerCase())}} in {${safeString(serviceData.location.name)}}
               </p>
             </div>
             
@@ -197,10 +196,10 @@ export default function ${componentName}() {
               ${serviceData.faqs.map((faq, index) => `
               <AccordionItem value="item-${index}" className="border rounded-lg px-6">
                 <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-${index}">
-                  ${faq.q}
+                  {${safeString(faq.q)}}
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-${index}">
-                  ${faq.a}
+                  {${safeString(faq.a)}}
                 </AccordionContent>
               </AccordionItem>
               `).join('')}
@@ -218,7 +217,7 @@ export default function ${componentName}() {
                 Recent Success Stories
               </h2>
               <p className="text-lg text-muted-foreground">
-                ${serviceDisplayName} success stories from ${serviceData.location.name} and ${serviceData.region.name}
+                {${safeString(serviceDisplayName)}} success stories from {${safeString(serviceData.location.name)}} and {${safeString(serviceData.region.name)}}
               </p>
             </div>
             
@@ -227,8 +226,8 @@ export default function ${componentName}() {
               <Card className="text-center hover-elevate" data-testid="card-success-${index}">
                 <CardContent className="p-6">
                   <Star className="h-8 w-8 text-primary mx-auto mb-4" />
-                  <h3 className="font-semibold mb-2">${story.title}</h3>
-                  <p className="text-muted-foreground text-sm">${story.subtitle}</p>
+                  <h3 className="font-semibold mb-2">{${safeString(story.title)}}</h3>
+                  <p className="text-muted-foreground text-sm">{${safeString(story.subtitle)}}</p>
                 </CardContent>
               </Card>
               `).join('')}
@@ -242,7 +241,7 @@ export default function ${componentName}() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4" data-testid="text-final-cta-title">
-              Ready to Book ${serviceDisplayName} in ${serviceData.location.name}?
+              Ready to Book {${safeString(serviceDisplayName)}} in {${safeString(serviceData.location.name)}}?
             </h2>
             <p className="text-xl mb-8 opacity-90">
               Get your free quote today and experience professional cleaning services
@@ -254,7 +253,7 @@ export default function ${componentName}() {
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-final-call">
                 <MessageCircle className="mr-2 h-5 w-5" />
-                Call ${serviceData.phone}
+                Call {${safeString(serviceData.phone)}}
               </Button>
             </div>
           </div>
@@ -296,8 +295,8 @@ export function generateAllPages(): void {
   const allLocations = getAllLocations();
   const allRegions = Object.values(REGIONS);
   
-  // Ensure pages directory exists
-  mkdirSync('client/src/pages/generated', { recursive: true });
+  // Ensure pages directory exists using absolute path
+  mkdirSync(PAGES_OUTPUT_DIR, { recursive: true });
   
   let totalGenerated = 0;
   
@@ -317,19 +316,16 @@ export function generateAllPages(): void {
       }
       
       // Generate service data using the template
-      const serviceGenerator = SERVICE_GENERATORS[service.type];
+      const serviceGenerator = SERVICE_GENERATORS[service.type as ServiceType];
       const serviceData = serviceGenerator(location, region);
       
       // Generate the page component
-      const componentCode = generatePageComponent(serviceData, service.type, service.displayName);
+      const componentCode = generatePageComponent(serviceData, service.type as ServiceType, service.displayName);
       
-      // Create filename
-      const componentName = `${location.name.replace(/[^a-zA-Z0-9]/g, '')}${service.type.split('-').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join('')}Page`;
-      
+      // Create filename using shared function
+      const componentName = getComponentName(location.name, service.type as ServiceType);
       const filename = `${componentName}.tsx`;
-      const filepath = join('client/src/pages/generated', filename);
+      const filepath = join(PAGES_OUTPUT_DIR, filename);
       
       // Write the file
       writeFileSync(filepath, componentCode);
@@ -341,10 +337,11 @@ export function generateAllPages(): void {
     });
   });
   
-  // Generate route configuration
+  // Generate route configuration with absolute path
   console.log('🔗 Generating route configuration...');
   const routeConfig = generateRouteConfig();
-  writeFileSync('client/src/routes/generated-routes.ts', routeConfig);
+  const routeConfigPath = resolve(PROJECT_ROOT, 'client/src/routes/generated-routes.ts');
+  writeFileSync(routeConfigPath, routeConfig);
   
   console.log(`🎉 Page generation complete!`);
   console.log(`📊 Total pages generated: ${totalGenerated}`);

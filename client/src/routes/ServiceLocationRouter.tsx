@@ -1,23 +1,11 @@
 import { Route, Switch } from 'wouter';
 import { lazy, Suspense } from 'react';
 import { getAllLocations } from '../../../shared/locations';
+import { SERVICES, getComponentName } from '../../../shared/services';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// Service configuration matching the generator
-const SERVICES = [
-  { type: 'end-of-tenancy', urlSegment: 'end-of-tenancy-cleaning', displayName: 'End of Tenancy Cleaning' },
-  { type: 'cleaning', urlSegment: 'cleaning-services', displayName: 'Cleaning Services' },
-  { type: 'deep-cleaning', urlSegment: 'deep-cleaning', displayName: 'Deep Cleaning' },
-  { type: 'commercial-cleaning', urlSegment: 'commercial-cleaning', displayName: 'Commercial Cleaning' },
-  { type: 'carpet-cleaning', urlSegment: 'carpet-cleaning', displayName: 'Carpet & Upholstery Cleaning' }
-];
-
-// Helper function to create component name from location and service
-function getComponentName(locationName: string, serviceType: string): string {
-  return `${locationName.replace(/[^a-zA-Z0-9]/g, '')}${serviceType.split('-').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join('')}Page`;
-}
+// Pre-load all generated pages using import.meta.glob for production safety
+const generatedPages = import.meta.glob('@/pages/generated/*.tsx');
 
 // Dynamic route component that lazy loads the appropriate page
 function ServiceLocationRoute({ 
@@ -37,14 +25,19 @@ function ServiceLocationRoute({
     return <div>Location not found</div>;
   }
   
-  // Generate component name
+  // Generate component name and file path
   const componentName = getComponentName(location.name, serviceType);
+  const pageKey = `/src/pages/generated/${componentName}.tsx`;
   
-  // Lazy load the component
-  const PageComponent = lazy(() => 
-    /* @vite-ignore */ import(`@/pages/generated/${componentName}.tsx`)
-      .catch(() => import('@/pages/not-found')) // Fallback to 404 if page doesn't exist
-  );
+  // Production-safe lazy loading using pre-registered imports
+  const PageComponent = lazy(() => {
+    const pageImporter = generatedPages[pageKey];
+    if (pageImporter) {
+      return pageImporter() as Promise<{ default: React.ComponentType }>;
+    }
+    // Fallback to 404 if page doesn't exist
+    return import('@/pages/not-found');
+  });
   
   return (
     <Suspense fallback={
