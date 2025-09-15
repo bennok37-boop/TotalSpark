@@ -11,8 +11,8 @@ async function sendEmailNotification(quote: any) {
   // Hostinger SMTP configuration
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false, // Use STARTTLS
+    port: parseInt(process.env.SMTP_PORT || '465'),
+    secure: true, // Use SSL for port 465
     auth: {
       user: process.env.SMTP_USER || 'hello@totalsparksolutions.co.uk',
       pass: process.env.SMTP_PASS || 'your-hostinger-password'
