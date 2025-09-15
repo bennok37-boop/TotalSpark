@@ -171,15 +171,66 @@ export default function QuoteForm() {
   const submitQuoteMutation = useMutation({
     mutationFn: async (data: QuoteFormData & { quoteResult?: QuoteResult }) => {
       const submitData = {
+        // Contact details
         name: data.name,
         email: data.email,
         phone: data.phone,
         address: data.address,
         postcode: data.postcode,
         additionalDetails: data.additionalDetails,
+        
+        // Service details
         service: data.service,
         bedrooms: data.bedrooms || null,
         area_m2: data.area_m2 || null,
+        
+        // Property details
+        bathrooms: data.bathrooms,
+        toilets: data.toilets,
+        livingRooms: data.livingRooms,
+        propertyType: data.propertyType,
+        condition: data.condition,
+        secondKitchen: data.secondKitchen,
+        internalStairs: data.internalStairs,
+        furnished: data.furnished,
+        occupied: data.occupied,
+        hmoRooms: data.hmoRooms,
+        wasteBags: data.wasteBags,
+        
+        // Commercial details
+        commercialType: data.commercialType,
+        commercialRooms: data.commercialRooms,
+        commercialToilets: data.commercialToilets,
+        
+        // Carpet & upholstery items
+        carpetRooms: data.carpetRooms,
+        stairs: data.stairs,
+        rugs: data.rugs,
+        sofa2: data.sofa2,
+        sofa3: data.sofa3,
+        armchair: data.armchair,
+        mattress: data.mattress,
+        
+        // Add-ons
+        oven: data.oven,
+        fridge: data.fridge,
+        windows: data.windows,
+        cabinets: data.cabinets,
+        limescale: data.limescale,
+        addOnCarpets: data.addOnCarpets,
+        addOnUpholstery: data.addOnUpholstery,
+        
+        // Modifiers
+        urgent: data.urgent,
+        weekend: data.weekend,
+        stairsNoLift: data.stairsNoLift,
+        
+        // Pricing options
+        bundleCarpetsWithEoT: data.bundleCarpetsWithEoT,
+        vat: data.vat,
+        
+        // Images and quote result
+        jobImages: data.jobImages || [],
         quoteResult: data.quoteResult || null
       };
       return apiRequest('POST', '/api/quotes', submitData);

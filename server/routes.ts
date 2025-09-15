@@ -44,20 +44,47 @@ async function sendToGHLWebhook(quote: any) {
     // Quote metadata
     quote_id: quote.id,
     submitted_at: new Date().toISOString(),
-    total_estimate: quote.estimatedTotal || null,
+    total_estimate: quote.quoteResult?.totalInclVAT || quote.quoteResult?.totalExclVAT || null,
+    estimate_range: quote.quoteResult ? `£${quote.quoteResult.estimateRange?.low || 0} - £${quote.quoteResult.estimateRange?.high || 0}` : null,
     vat_included: quote.vat || false
   };
 
-  // In a real implementation, this would be sent to your webhook endpoint
-  // For now, we'll just log the formatted data for setup with Zapier/Make.com
-  console.log('GoHighLevel Lead Data (ready for webhook):', JSON.stringify(ghlData, null, 2));
+  // Log the formatted data for debugging (remove PII in production)
+  console.log('GoHighLevel Lead Data (formatted for webhook):', {
+    service_type: ghlData.service_type,
+    tags: ghlData.tags,
+    add_ons: ghlData.add_ons,
+    urgent: ghlData.urgent_request,
+    weekend: ghlData.weekend_request
+  });
   
-  // Example webhook URL (replace with your actual automation platform webhook)
-  // await fetch('YOUR_ZAPIER_OR_MAKE_WEBHOOK_URL', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(ghlData)
-  // });
+  // Send to configured webhook URL if available
+  const webhookUrl = process.env.GHL_WEBHOOK_URL;
+  if (webhookUrl) {
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'User-Agent': 'TotalSpark-Solutions/1.0'
+        },
+        body: JSON.stringify(ghlData),
+        // Add timeout to prevent hanging
+        signal: AbortSignal.timeout(10000)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
+      }
+      
+      console.log('Webhook delivered successfully to:', webhookUrl.replace(/\/[^\/]*$/, '/***'));
+    } catch (error) {
+      console.error('Webhook delivery failed:', error);
+      throw error; // Re-throw to trigger catch in calling function
+    }
+  } else {
+    console.log('No GHL_WEBHOOK_URL configured - webhook data ready for Zapier/Make.com setup');
+  }
 }
 
 function getServiceDisplayName(service: string): string {
