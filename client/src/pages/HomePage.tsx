@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import Header from '@/components/Header';
+import { LandingLayout } from '@/components/LandingLayout';
 import HeroSection from '@/components/HeroSection';
 import ProofStrip from '@/components/ProofStrip';
 import ServiceCards from '@/components/ServiceCards';
 import QuoteForm from '@/components/QuoteForm';
 import BeforeAfterGallery from '@/components/BeforeAfterGallery';
 import FAQSection from '@/components/FAQSection';
-import Footer from '@/components/Footer';
-import StickyCallButton from '@/components/StickyCallButton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -46,15 +44,21 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
+    <LandingLayout>
         <HeroSection 
           city="North East England"
           title="Professional Cleaning Services Across the North East"
           subtitle="End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds. Serving Newcastle, Sunderland, Durham, Middlesbrough & all surrounding areas."
         />
         <ProofStrip />
+        
+        {/* Quote Form - Main Conversion Point - Above the Fold */}
+        <section className="py-16 bg-background" id="quote-form">
+          <div className="container mx-auto px-4">
+            <QuoteForm />
+          </div>
+        </section>
+        
         <ServiceCards />
         
         {/* North East Locations Section */}
@@ -130,12 +134,9 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+        
         <BeforeAfterGallery />
-        <QuoteForm />
         <FAQSection />
-      </main>
-      <Footer />
-      <StickyCallButton />
-    </div>
+    </LandingLayout>
   );
 }
