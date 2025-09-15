@@ -1219,7 +1219,7 @@ export default function QuoteForm() {
       {/* Hidden GHL Forms - Replace ACTION_URL_A and ACTION_URL_B with actual GHL form URLs */}
       
       {/* Hidden GHL Form A: Lead Capture */}
-      <form id="ghl-form-lead" action="https://hooks.leadconnectorhq.com/widget/form/submit/NCevT1c7zsnGoE2Eklik" method="POST" target="ghl-lead-target" style={{display: 'none'}}>
+      <form id="ghl-form-lead" action="https://api.leadconnectorhq.com/widget/form/NCevT1c7zsnGoE2Eklik" method="POST" target="ghl-lead-target" style={{display: 'none'}}>
         {/* GHL will provide hidden inputs here - keep ALL of them */}
         <input type="text" name="first_name" />
         <input type="email" name="email" />
