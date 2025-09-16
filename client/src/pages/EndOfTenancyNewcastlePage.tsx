@@ -86,13 +86,22 @@ export default function EndOfTenancyNewcastlePage() {
                 Professional end of tenancy cleaning across Newcastle, Jesmond, Heaton, and Gosforth. Trusted by Newcastle landlords, letting agents, and tenants since 2020. Get your full deposit back or we'll re-clean free.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <Button size="lg" className="text-lg px-8" data-testid="button-call-newcastle">
-                  <Phone className="w-5 h-5 mr-2" />
-                  Call Newcastle: {phoneNumber}
+                <Button size="lg" className="text-lg px-8" asChild>
+                  <a href={`tel:${phoneNumber?.replace(/\s/g, '') || ''}`} data-testid="button-call-newcastle">
+                    <Phone className="w-5 h-5 mr-2" />
+                    Call Newcastle: {phoneNumber}
+                  </a>
                 </Button>
-                <Button variant="outline" size="lg" className="text-lg px-8" data-testid="button-whatsapp-newcastle">
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  WhatsApp Quote
+                <Button variant="outline" size="lg" className="text-lg px-8" asChild>
+                  <a 
+                    href={`https://wa.me/${whatsappNumber?.replace(/[^\d]/g, '').replace(/^0/, '44') || '447380991629'}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="button-whatsapp-newcastle"
+                  >
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    WhatsApp Quote
+                  </a>
                 </Button>
                 <Button 
                   variant="secondary" 
@@ -414,13 +423,22 @@ export default function EndOfTenancyNewcastlePage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Secure Your Newcastle Deposit?</h2>
             <p className="text-xl mb-8 opacity-90">Professional end of tenancy cleaning across all Newcastle areas</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-              <Button size="lg" variant="secondary" className="text-lg px-8" data-testid="button-call-final-newcastle">
-                <Phone className="w-5 h-5 mr-2" />
-                Call Newcastle: {phoneNumber}
+              <Button size="lg" variant="secondary" className="text-lg px-8" asChild>
+                <a href={`tel:${phoneNumber?.replace(/\s/g, '') || ''}`} data-testid="button-call-final-newcastle">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Call Newcastle: {phoneNumber}
+                </a>
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-whatsapp-final-newcastle">
-                <MessageCircle className="w-5 h-5 mr-2" />
-                WhatsApp Quote
+              <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
+                <a 
+                  href={`https://wa.me/${whatsappNumber?.replace(/[^\d]/g, '').replace(/^0/, '44') || '447380991629'}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="button-whatsapp-final-newcastle"
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  WhatsApp Quote
+                </a>
               </Button>
               <Button 
                 size="lg" 

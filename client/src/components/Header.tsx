@@ -5,6 +5,7 @@ import { Phone, Menu, X, MapPin, ChevronDown } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import logoImage from '@assets/4_1757953109291.png';
 
 export default function Header() {
   const [location, navigate] = useLocation();
@@ -24,7 +25,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" data-testid="link-home">
             <img 
-              src="/attached_assets/4_1757953109291.png" 
+              src={logoImage} 
               alt="TotalSpark Solutions Logo" 
               className="w-10 h-10 object-contain"
             />
