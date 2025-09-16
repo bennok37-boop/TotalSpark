@@ -14,7 +14,7 @@ async function sendEmailNotification(quote: any) {
     port: parseInt(process.env.SMTP_PORT || '465'),
     secure: true, // Use SSL for port 465
     auth: {
-      user: process.env.SMTP_USER || 'hello@totalsparksolutions.co.uk',
+      user: process.env.SMTP_USER || 'leads@totalsparksolutions.co.uk',
       pass: process.env.SMTP_PASS || 'your-hostinger-password'
     },
     // Add timeouts to prevent hanging
@@ -81,14 +81,14 @@ This lead is ready to copy-paste into GoHighLevel!
 
   try {
     await transporter.sendMail({
-      from: `"TotalSpark Solutions" <hello@totalsparksolutions.co.uk>`,
-      to: 'hello@totalsparksolutions.co.uk',
+      from: `"TotalSpark Solutions" <leads@totalsparksolutions.co.uk>`,
+      to: 'leads@totalsparksolutions.co.uk',
       replyTo: quote.email, // Customer can reply directly to lead
       subject: emailSubject,
       text: emailBody
     });
     
-    console.log('Lead notification email sent successfully to hello@totalsparksolutions.co.uk');
+    console.log('Lead notification email sent successfully to leads@totalsparksolutions.co.uk');
   } catch (error) {
     console.error('Email notification failed:', error);
     // Don't throw - we don't want to fail the quote submission if email fails
