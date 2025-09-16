@@ -1,4 +1,5 @@
 import { REGIONS, LocationData, RegionData } from './locations';
+import { resolveTrackingPhone, TrackingContext } from './tracking';
 
 // Helper function to find a location by slug across all regions
 export function findLocationBySlug(slug: string) {
@@ -72,28 +73,39 @@ export function getNearbyLocations(currentLocation: LocationData, region: Region
     .map((loc: LocationData) => ({ name: loc.name, slug: loc.slug }));
 }
 
-// Helper function to get location-aware contact details
-export function getLocationContactDetails(pathname: string) {
+// Helper function to get location-aware contact details with CallRail tracking
+export function getLocationContactDetails(pathname: string, search: string = '', sessionId?: string) {
+  let regionSlug: string | undefined;
+  let location: LocationData | null = null;
+  let region: RegionData | null = null;
+  
   // Check if we're on a city page (/cleaning/slug)
   const cityPageMatch = pathname.match(/^\/cleaning\/(.+)$/);
   if (cityPageMatch) {
     const locationSlug = cityPageMatch[1];
     const locationData = findLocationBySlug(locationSlug);
     if (locationData) {
-      return {
-        phone: getRegionPhoneNumber(locationData.region.slug),
-        whatsapp: getRegionWhatsAppNumber(locationData.region.slug),
-        location: locationData.location,
-        region: locationData.region
-      };
+      regionSlug = locationData.region.slug;
+      location = locationData.location;
+      region = locationData.region;
     }
   }
   
-  // Default for non-city pages
+  // Use CallRail tracking system to get the appropriate phone number
+  const trackingContext: TrackingContext = {
+    pathname,
+    search,
+    regionSlug,
+    sessionId
+  };
+  
+  const trackingResult = resolveTrackingPhone(trackingContext);
+  
   return {
-    phone: '0191 821 4567',    // Default to Tyne & Wear CallRail pool
-    whatsapp: '447380991629', // TotalSpark WhatsApp number
-    location: null,
-    region: null
+    phone: trackingResult.phone,
+    whatsapp: getRegionWhatsAppNumber(regionSlug || 'default'),
+    location,
+    region,
+    trackingMetadata: trackingResult.metadata
   };
 }
