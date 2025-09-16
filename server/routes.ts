@@ -2,17 +2,22 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 import { storage } from "./storage";
 import { insertQuoteRequestSchema, insertBookingRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
+// Initialize email services
+let resend: Resend | null = null;
+if (process.env.RESEND_API_KEY) {
+  resend = new Resend(process.env.RESEND_API_KEY);
+  console.log('Resend email service initialized successfully');
+} else if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  console.log('SendGrid initialized successfully');
+  console.log('SendGrid initialized as fallback');
 } else {
-  console.warn('SendGrid API key not found - email notifications will use SMTP fallback');
+  console.warn('No email service API key found - will use SMTP fallback');
 }
 
 // Email notification service using SendGrid (reliable) with SMTP fallback
@@ -75,10 +80,27 @@ Submitted: ${new Date().toLocaleString('en-GB', {
 This lead is ready to copy-paste into GoHighLevel!
   `.trim();
 
-  // Use regular SMTP (SendGrid credits exceeded)
-  console.log('Using regular SMTP configuration (SendGrid credits exceeded)...');
+  // Try Resend first (most reliable)
+  if (resend) {
+    try {
+      console.log('Sending email via Resend...');
+      await resend.emails.send({
+        from: 'TotalSpark Solutions <noreply@totalsparksolutions.co.uk>',
+        to: 'leads@totalsparksolutions.co.uk',
+        replyTo: quote.email,
+        subject: emailSubject,
+        text: emailBody
+      });
+      console.log('✅ Email notification sent successfully via Resend to leads@totalsparksolutions.co.uk');
+      return;
+    } catch (resendError) {
+      console.warn('Resend email failed, trying SMTP fallback:', resendError);
+    }
+  }
   
+  // Fallback to regular SMTP if Resend fails
   try {
+    console.log('Using SMTP fallback configuration...');
     const smtpConfig = {
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
@@ -103,7 +125,7 @@ This lead is ready to copy-paste into GoHighLevel!
     
     console.log('✅ Email notification sent successfully via SMTP to leads@totalsparksolutions.co.uk');
   } catch (smtpError) {
-    console.error('SMTP email failed. Lead saved successfully but no email sent:', smtpError);
+    console.error('Both Resend and SMTP email failed. Lead saved successfully but no email sent:', smtpError);
     // Don't throw - quote should still save successfully
   }
 }
@@ -159,12 +181,30 @@ Booking ID: ${booking.id}
 Submitted: ${new Date().toLocaleString('en-GB')}
   `.trim();
 
-  // Use regular SMTP (SendGrid credits exceeded)
+  // Try Resend first for booking notifications
+  if (resend) {
+    try {
+      console.log('Sending booking email via Resend...');
+      await resend.emails.send({
+        from: 'TotalSpark Booking System <noreply@totalsparksolutions.co.uk>',
+        to: 'leads@totalsparksolutions.co.uk',
+        replyTo: booking.email,
+        subject: emailSubject,
+        text: emailBody
+      });
+      console.log('✅ Booking email notification sent successfully via Resend');
+      return;
+    } catch (resendError) {
+      console.warn('Resend booking email failed, trying SMTP fallback:', resendError);
+    }
+  }
+  
+  // Fallback to SMTP for booking notifications
   try {
     const smtpConfig = {
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false, // Use STARTTLS
+      secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
@@ -176,12 +216,13 @@ Submitted: ${new Date().toLocaleString('en-GB')}
     await transporter.sendMail({
       from: '"TotalSpark Booking System" <noreply@totalsparksolutions.co.uk>',
       to: 'leads@totalsparksolutions.co.uk',
+      replyTo: booking.email,
       subject: emailSubject,
       text: emailBody,
       priority: 'high'
     });
     
-    console.log('✅ Booking email notification sent successfully');
+    console.log('✅ Booking email notification sent successfully via SMTP');
   } catch (error) {
     console.warn('Booking email notification failed (non-blocking):', error);
     // Don't throw - booking should succeed even if email fails
