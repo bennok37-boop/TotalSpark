@@ -85,8 +85,8 @@ This lead is ready to copy-paste into GoHighLevel!
     try {
       console.log('Sending email via Resend...');
       await resend.emails.send({
-        from: 'TotalSpark Solutions <noreply@totalsparksolutions.co.uk>',
-        to: 'leads@totalsparksolutions.co.uk',
+        from: 'onboarding@resend.dev',
+        to: process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk',
         replyTo: quote.email,
         subject: emailSubject,
         text: emailBody
@@ -186,8 +186,8 @@ Submitted: ${new Date().toLocaleString('en-GB')}
     try {
       console.log('Sending booking email via Resend...');
       await resend.emails.send({
-        from: 'TotalSpark Booking System <noreply@totalsparksolutions.co.uk>',
-        to: 'leads@totalsparksolutions.co.uk',
+        from: 'onboarding@resend.dev',
+        to: process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk',
         replyTo: booking.email,
         subject: emailSubject,
         text: emailBody
