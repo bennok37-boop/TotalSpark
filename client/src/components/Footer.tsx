@@ -3,10 +3,14 @@ import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import { CITIES } from '@shared/schema';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
+  
+  // Get CallRail tracking numbers
+  const { phone: phoneNumber } = useTrackingNumbers();
 
   return (
     <footer className="bg-foreground text-background" data-testid="footer">
@@ -28,7 +32,7 @@ export default function Footer() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-primary" />
-                <span>0191 821 4567</span>
+                <span>{phoneNumber}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-primary" />

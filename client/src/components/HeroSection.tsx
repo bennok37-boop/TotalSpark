@@ -5,6 +5,7 @@ import { Phone, MessageCircle, Star } from 'lucide-react';
 import { useState } from 'react';
 import heroImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 interface HeroSectionProps {
   city: string;
@@ -18,10 +19,15 @@ export default function HeroSection({
   city, 
   title, 
   subtitle, 
-  phoneNumber = "0191 123 4567", // Todo: remove mock functionality
-  whatsappNumber = "447123456789" // Todo: remove mock functionality
+  phoneNumber,
+  whatsappNumber
 }: HeroSectionProps) {
   const [email, setEmail] = useState('');
+  
+  // Get CallRail tracking numbers, with props as override if provided
+  const trackingNumbers = useTrackingNumbers();
+  const effectivePhoneNumber = phoneNumber || trackingNumbers.phone;
+  const effectiveWhatsAppNumber = whatsappNumber || trackingNumbers.whatsapp;
 
   const defaultTitle = title || `Professional Cleaning Services in ${city}`;
   const defaultSubtitle = subtitle || `Trusted by over 1,000 customers across ${city}. DBS-checked, fully insured cleaners with our deposit-back guarantee.`;
@@ -89,15 +95,15 @@ export default function HeroSection({
           {/* Contact Options */}
           <div className="flex flex-col sm:flex-row gap-4">
             <a 
-              href={`tel:${phoneNumber}`}
+              href={`tel:${effectivePhoneNumber}`}
               className="flex items-center justify-center space-x-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-md transition-colors"
               data-testid="button-call-hero"
             >
               <Phone className="w-5 h-5" />
-              <span>Call Now: {phoneNumber}</span>
+              <span>Call Now: {effectivePhoneNumber}</span>
             </a>
             <a 
-              href={`https://wa.me/${whatsappNumber}?text=Hi! I'd like a quote for cleaning services in ${city}`}
+              href={`https://wa.me/${effectiveWhatsAppNumber}?text=Hi! I'd like a quote for cleaning services in ${city}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-md transition-colors"

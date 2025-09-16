@@ -3,15 +3,15 @@ import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Phone, Menu, X, MapPin, ChevronDown } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
-import { getLocationContactDetails } from '@shared/location-utils';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function Header() {
   const [location, navigate] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Get location-aware contact details using centralized function
-  const { phone: phoneNumber, whatsapp: whatsappNumber } = getLocationContactDetails(location);
+  // Get CallRail tracking numbers based on current context
+  const { phone: phoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
 
   const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
 

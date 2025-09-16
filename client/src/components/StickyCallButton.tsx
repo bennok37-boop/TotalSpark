@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Phone, MessageCircle } from 'lucide-react';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 interface StickyCallButtonProps {
   phoneNumber?: string;
@@ -7,15 +8,19 @@ interface StickyCallButtonProps {
 }
 
 export default function StickyCallButton({ 
-  phoneNumber = "0191 821 4567",
-  whatsappNumber = "447380991629"
+  phoneNumber,
+  whatsappNumber
 }: StickyCallButtonProps) {
+  // Use CallRail tracking numbers, with props as override if provided
+  const trackingNumbers = useTrackingNumbers();
+  const effectivePhoneNumber = phoneNumber || trackingNumbers.phone;
+  const effectiveWhatsAppNumber = whatsappNumber || trackingNumbers.whatsapp;
   return (
     <>
       {/* Mobile Call Button */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col space-y-2 md:hidden">
         <a 
-          href={`https://wa.me/${whatsappNumber}?text=Hi! I'd like a quote for cleaning services`}
+          href={`https://wa.me/${effectiveWhatsAppNumber}?text=Hi! I'd like a quote for cleaning services`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center w-14 h-14 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg transition-colors"
@@ -24,7 +29,7 @@ export default function StickyCallButton({
           <MessageCircle className="w-6 h-6" />
         </a>
         <a 
-          href={`tel:${phoneNumber}`}
+          href={`tel:${effectivePhoneNumber}`}
           className="flex items-center justify-center w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg transition-colors"
           data-testid="button-call-sticky"
         >
@@ -48,16 +53,16 @@ export default function StickyCallButton({
             
             <div className="flex items-center space-x-3">
               <a 
-                href={`tel:${phoneNumber}`}
+                href={`tel:${effectivePhoneNumber}`}
                 className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md transition-colors"
                 data-testid="button-call-strip"
               >
                 <Phone className="w-4 h-4" />
-                <span className="font-semibold">{phoneNumber}</span>
+                <span className="font-semibold">{effectivePhoneNumber}</span>
               </a>
               
               <a 
-                href={`https://wa.me/${whatsappNumber}?text=Hi! I'd like a quote for cleaning services`}
+                href={`https://wa.me/${effectiveWhatsAppNumber}?text=Hi! I'd like a quote for cleaning services`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md transition-colors"
