@@ -142,11 +142,10 @@ export const TRAFFIC_SOURCE_RULES: TrafficSourceRule[] = [
 ];
 
 // Regional fallback numbers (when no campaign/route rule matches)
+// CallRail tracking ONLY for Tyne & Wear - other regions use actual company numbers
 export const REGIONAL_FALLBACK_NUMBERS: Record<string, string[]> = {
-  'tyne-and-wear': ['0191 743 6925', '0191 743 9620', '0191 743 0019', '0191 743 7676', '0191 743 2098'],
-  'county-durham': ['0191 822 5678', '0191 822 5679'], 
-  'northumberland': ['01670 823 9012', '01670 823 9013'],
-  'tees-valley': ['01642 824 3456', '01642 824 3457']
+  'tyne-and-wear': ['0191 743 6925', '0191 743 9620', '0191 743 0019', '0191 743 7676', '0191 743 2098']
+  // Other regions removed - they will fall back to global fallback (actual company numbers)
 };
 
 // Global fallback number (absolute last resort)

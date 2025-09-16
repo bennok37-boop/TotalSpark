@@ -15,12 +15,12 @@ export function findLocationBySlug(slug: string) {
 // Helper function to get region-specific phone number
 export function getRegionPhoneNumber(regionSlug: string): string {
   const phoneMap: Record<string, string> = {
-    'tyne-and-wear': '0191 743 6925',     // CallRail tracking pool - Tyne & Wear
-    'county-durham': '0191 822 5678',     // CallRail tracking pool - County Durham  
-    'northumberland': '01670 823 9012',   // CallRail tracking pool - Northumberland
-    'tees-valley': '01642 824 3456'       // CallRail tracking pool - Tees Valley
+    'tyne-and-wear': '0191 743 6925',     // CallRail tracking pool - Tyne & Wear ONLY
+    'county-durham': '03300 435459',      // Main company number for County Durham  
+    'northumberland': '03300 435459',     // Main company number for Northumberland
+    'tees-valley': '03300 435459'         // Main company number for Tees Valley
   };
-  return phoneMap[regionSlug] || '0191 743 6925';
+  return phoneMap[regionSlug] || '03300 435459';
 }
 
 // Helper function to get region-specific WhatsApp number
@@ -73,16 +73,27 @@ export function getNearbyLocations(currentLocation: LocationData, region: Region
     .map((loc: LocationData) => ({ name: loc.name, slug: loc.slug }));
 }
 
-// Helper function to get location-aware contact details with CallRail tracking
+// Helper function to get location-aware contact details with selective CallRail tracking
 export function getLocationContactDetails(pathname: string, search: string = '', sessionId?: string) {
   let regionSlug: string | undefined;
   let location: LocationData | null = null;
   let region: RegionData | null = null;
   
-  // Check if we're on a city page (/cleaning/slug)
+  // Check if we're on a city page (/cleaning/slug) or service-location page
   const cityPageMatch = pathname.match(/^\/cleaning\/(.+)$/);
+  let locationSlug: string | undefined;
+  
   if (cityPageMatch) {
-    const locationSlug = cityPageMatch[1];
+    locationSlug = cityPageMatch[1];
+  } else {
+    // Check for service-location patterns like /cleaning-services-newcastle-upon-tyne
+    const serviceLocationMatch = pathname.match(/\/[^\/]+-([^\/]+)$/);
+    if (serviceLocationMatch) {
+      locationSlug = serviceLocationMatch[1];
+    }
+  }
+  
+  if (locationSlug) {
     const locationData = findLocationBySlug(locationSlug);
     if (locationData) {
       regionSlug = locationData.region.slug;
@@ -91,21 +102,38 @@ export function getLocationContactDetails(pathname: string, search: string = '',
     }
   }
   
-  // Use CallRail tracking system to get the appropriate phone number
-  const trackingContext: TrackingContext = {
-    pathname,
-    search,
-    regionSlug,
-    sessionId
-  };
+  let phone: string;
+  let trackingMetadata: any;
   
-  const trackingResult = resolveTrackingPhone(trackingContext);
+  // Only use CallRail tracking for Tyne & Wear locations
+  if (regionSlug === 'tyne-and-wear') {
+    const trackingContext: TrackingContext = {
+      pathname,
+      search,
+      regionSlug,
+      sessionId
+    };
+    
+    const trackingResult = resolveTrackingPhone(trackingContext);
+    phone = trackingResult.phone;
+    trackingMetadata = trackingResult.metadata;
+  } else {
+    // For non-Tyne & Wear locations, use their actual location phone numbers
+    phone = location?.phone || getRegionPhoneNumber(regionSlug || 'default');
+    trackingMetadata = {
+      selectedNumber: phone,
+      ruleName: location ? `Location - ${location.name}` : 'Region Fallback',
+      ruleType: 'location' as const,
+      timestamp: Date.now(),
+      sessionId
+    };
+  }
   
   return {
-    phone: trackingResult.phone,
+    phone,
     whatsapp: getRegionWhatsAppNumber(regionSlug || 'default'),
     location,
     region,
-    trackingMetadata: trackingResult.metadata
+    trackingMetadata
   };
 }

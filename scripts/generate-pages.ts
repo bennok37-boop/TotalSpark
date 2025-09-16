@@ -77,10 +77,14 @@ export default function ${componentName}() {
                 <Phone className="mr-2 h-5 w-5" />
                 Get Free Quote Now
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-6" data-testid="button-call-now">
+              <a 
+                href={\`tel:\${trackingNumbers.phone.replace(/\\s/g, '')}\`}
+                className="inline-flex items-center justify-center h-14 px-8 bg-transparent border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-md font-medium text-lg transition-colors"
+                data-testid="button-call-now"
+              >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Call {trackingNumbers.phone}
-              </Button>
+              </a>
             </div>
             
             {/* Trust Signals */}
@@ -149,7 +153,7 @@ export default function ${componentName}() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{${safeString(price.price)}}</div>
-                  <Button className="w-full" data-testid="button-book-${index}">
+                  <Button className="w-full" onClick={scrollToQuoteForm} data-testid="button-book-${index}">
                     Book Now
                   </Button>
                 </CardContent>
@@ -261,10 +265,14 @@ export default function ${componentName}() {
                 <Phone className="mr-2 h-5 w-5" />
                 Get Free Quote
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-final-call">
+              <a 
+                href={\`tel:\${trackingNumbers.phone.replace(/\\s/g, '')}\`}
+                className="inline-flex items-center justify-center h-14 px-8 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-md font-medium text-lg transition-colors"
+                data-testid="button-final-call"
+              >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Call {trackingNumbers.phone}
-              </Button>
+              </a>
             </div>
           </div>
         </div>
