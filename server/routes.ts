@@ -95,16 +95,26 @@ This lead is ready to copy-paste into GoHighLevel!
       console.log(`📧 Sending quote email via Resend to: ${targetEmail}`);
       
       const result = await resend.emails.send({
-        from: 'TotalSpark Solutions <onboarding@resend.dev>',
+        from: 'onboarding@resend.dev',
         to: targetEmail,
         replyTo: quote.email,
         subject: emailSubject,
         text: emailBody,
-        html: `<pre style="font-family: monospace; white-space: pre-wrap;">${emailBody}</pre>`
+        html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">New Quote Request - TotalSpark Solutions</h2>
+          <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace;">${emailBody}</pre>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">This email was automatically generated from the TotalSpark Solutions website.</p>
+        </div>`
       });
       
+      if (result.error) {
+        console.error('❌ Resend error details:', result.error);
+        throw new Error(`Resend failed: ${result.error.message}`);
+      }
+      
       console.log('✅ Quote email sent successfully via Resend');
-      console.log('📧 Resend Response ID:', result.data?.id);
+      console.log('📧 Resend Response:', JSON.stringify(result, null, 2));
+      console.log('📫 Email ID:', result.data?.id || 'No ID received');
       return;
     } catch (resendError) {
       console.warn('❌ Resend quote email failed, falling back to SMTP:', resendError);
@@ -203,16 +213,26 @@ Submitted: ${new Date().toLocaleString('en-GB')}
       console.log(`📧 Sending booking email via Resend to: ${targetEmail}`);
       
       const result = await resend.emails.send({
-        from: 'TotalSpark Bookings <onboarding@resend.dev>',
+        from: 'onboarding@resend.dev',
         to: targetEmail,
         replyTo: booking.email,
         subject: emailSubject,
         text: emailBody,
-        html: `<pre style="font-family: monospace; white-space: pre-wrap;">${emailBody}</pre>`
+        html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333; border-bottom: 2px solid #28a745; padding-bottom: 10px;">New Booking Request - TotalSpark Solutions</h2>
+          <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace;">${emailBody}</pre>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">This email was automatically generated from the TotalSpark Solutions website.</p>
+        </div>`
       });
       
+      if (result.error) {
+        console.error('❌ Resend booking error details:', result.error);
+        throw new Error(`Resend booking failed: ${result.error.message}`);
+      }
+      
       console.log('✅ Booking email sent successfully via Resend');
-      console.log('📧 Resend Response ID:', result.data?.id);
+      console.log('📧 Resend Booking Response:', JSON.stringify(result, null, 2));
+      console.log('📫 Email ID:', result.data?.id || 'No ID received');
       return;
     } catch (resendError) {
       console.warn('❌ Resend booking email failed, falling back to SMTP:', resendError);
