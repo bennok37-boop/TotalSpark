@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 // Import gallery images
 import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
@@ -16,8 +17,10 @@ import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6
 import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
 
 export default function EndOfTenancyNewcastlePage() {
-  const phoneNumber = "0191 821 4567";
-  const whatsappNumber = "447380991629";
+  // Get tracking numbers for Newcastle (Tyne & Wear region)
+  const trackingNumbers = useTrackingNumbers();
+  const phoneNumber = trackingNumbers.phone;
+  const whatsappNumber = trackingNumbers.whatsapp;
 
   const newcastleAreas = [
     'Jesmond', 'Heaton', 'Gosforth', 'Byker', 'Walker',

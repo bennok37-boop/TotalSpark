@@ -29,8 +29,17 @@ import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
 import { Phone, MessageCircle, MapPin, Clock, Star, CheckCircle, Users, Award, Shield } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import StickyCallButton from '@/components/StickyCallButton';
+import QuoteForm from '@/components/QuoteForm';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
+import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function ${componentName}() {
+  // Get tracking numbers for this location
+  const trackingNumbers = useTrackingNumbers();
+  
   // Set page title and meta description
   useEffect(() => {
     document.title = ${safeString(serviceData.metaTitle)};
@@ -47,6 +56,7 @@ export default function ${componentName}() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">
         <div className="container mx-auto px-4">
@@ -63,13 +73,13 @@ export default function ${componentName}() {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" className="text-lg px-8 py-6" data-testid="button-get-quote">
+              <Button size="lg" className="text-lg px-8 py-6" onClick={scrollToQuoteForm} data-testid="button-get-quote">
                 <Phone className="mr-2 h-5 w-5" />
                 Get Free Quote Now
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-8 py-6" data-testid="button-call-now">
                 <MessageCircle className="mr-2 h-5 w-5" />
-                Call {${safeString(serviceData.phone)}}
+                Call {trackingNumbers.phone}
               </Button>
             </div>
             
@@ -247,18 +257,22 @@ export default function ${componentName}() {
               Get your free quote today and experience professional cleaning services
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-6" data-testid="button-final-quote">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-6" onClick={scrollToQuoteForm} data-testid="button-final-quote">
                 <Phone className="mr-2 h-5 w-5" />
                 Get Free Quote
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-final-call">
                 <MessageCircle className="mr-2 h-5 w-5" />
-                Call {${safeString(serviceData.phone)}}
+                Call {trackingNumbers.phone}
               </Button>
             </div>
           </div>
         </div>
       </section>
+      
+      <QuoteForm />
+      <Footer />
+      <StickyCallButton />
     </div>
   );
 }`;

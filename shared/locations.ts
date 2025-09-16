@@ -25,14 +25,14 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Newcastle upon Tyne",
         slug: "newcastle-upon-tyne",
-        phone: "0191 821 4567", // CallRail tracking - Tyne & Wear pool
+        phone: "0191 743 6925", // CallRail tracking - Tyne & Wear pool
         region: "Tyne & Wear",
         nearby: ["Gateshead", "Gosforth", "Jesmond", "Heaton"]
       },
       {
         name: "Sunderland",
         slug: "sunderland",
-        phone: "0191 821 4567", // CallRail tracking - Tyne & Wear pool  
+        phone: "0191 743 6925", // CallRail tracking - Tyne & Wear pool  
         region: "Tyne & Wear",
         nearby: ["Washington", "Houghton-le-Spring", "Seaham", "South Shields"]
       },

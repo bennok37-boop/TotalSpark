@@ -1,41 +1,89 @@
 import { useEffect } from 'react';
+import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Separator } from '@/components/ui/separator';
+import { Phone, MessageCircle, MapPin, Clock, Star, CheckCircle, Users, Award, Shield } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import StickyCallButton from '@/components/StickyCallButton';
+import QuoteForm from '@/components/QuoteForm';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
 
 export default function WheatleyHillCarpetCleaningPage() {
+  // Get tracking numbers for this location
+  const trackingNumbers = useTrackingNumbers();
+  
+  // Set page title and meta description
   useEffect(() => {
     document.title = "Carpet & Upholstery Cleaning Wheatley Hill | Steam Cleaning Specialists | County Durham";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', "Professional carpet & upholstery cleaning in Wheatley Hill. Steam cleaning & stain removal. Serving Shotton Colliery, Trimdon & County Durham. Book today.");
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = "Professional carpet & upholstery cleaning in Wheatley Hill. Steam cleaning & stain removal. Serving Shotton Colliery, Trimdon & County Durham. Book today.";
+      document.head.appendChild(meta);
     }
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16">
+      <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="secondary" className="mb-4" data-testid="badge-service-type">
-              TotalSpark Solutions - Carpet & Upholstery Cleaning in Wheatley Hill
+              {"Carpet & Upholstery Cleaning"} in {"Wheatley Hill"}
             </Badge>
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-foreground" data-testid="text-hero-title">
               {"Carpet & Upholstery Cleaning Wheatley Hill – Steam Cleaning Specialists"}
             </h1>
-            <p className="text-xl text-muted-foreground mb-8" data-testid="text-hero-subtitle">
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed" data-testid="text-hero-subtitle">
               {"Professional carpet and upholstery cleaning across Wheatley Hill, Shotton Colliery, Trimdon and surrounding County Durham areas. Steam cleaning, stain removal, and fabric protection."}
             </p>
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-6" 
-              onClick={scrollToQuoteForm}
-              data-testid="button-get-quote"
-            >
-              Get Free Quote Now
-            </Button>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button size="lg" className="text-lg px-8 py-6" onClick={scrollToQuoteForm} data-testid="button-get-quote">
+                <Phone className="mr-2 h-5 w-5" />
+                Get Free Quote Now
+              </Button>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-6" data-testid="button-call-now">
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Call {trackingNumbers.phone}
+              </Button>
+            </div>
+            
+            {/* Trust Signals */}
+            <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-muted-foreground">
+              
+              <div className="flex items-center gap-2" data-testid="text-trust-signal">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span>{"Carpet specialists serving Wheatley Hill"}</span>
+              </div>
+              
+              <div className="flex items-center gap-2" data-testid="text-trust-signal">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span>{"Professional steam cleaning equipment"}</span>
+              </div>
+              
+              <div className="flex items-center gap-2" data-testid="text-trust-signal">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span>{"Stain removal guarantee"}</span>
+              </div>
+              
+              <div className="flex items-center gap-2" data-testid="text-trust-signal">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span>{"Same-day service available in County Durham"}</span>
+              </div>
+              
+            </div>
           </div>
         </div>
       </section>
@@ -44,32 +92,69 @@ export default function WheatleyHillCarpetCleaningPage() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center" data-testid="text-features-title">
-              Carpet & Upholstery Cleaning Services in Wheatley Hill
-            </h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-features-title">
+                {"Carpet & Upholstery Cleaning"} Services in {"Wheatley Hill"}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Professional cleaning services across {"Wheatley Hill"} and surrounding {"County Durham"} areas
+              </p>
+            </div>
+            
             <div className="grid md:grid-cols-2 gap-6">
               
-              <Card className="hover-elevate" data-testid="card-service-feature-0">
+              <Card className="hover-elevate" data-testid="card-service-feature">
                 <CardContent className="p-6">
-                  <p className="font-medium">{"Professional steam cleaning equipment"}</p>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">{"Professional steam cleaning equipment"}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
               
-              <Card className="hover-elevate" data-testid="card-service-feature-1">
+              <Card className="hover-elevate" data-testid="card-service-feature">
                 <CardContent className="p-6">
-                  <p className="font-medium">{"Stain removal & odor elimination"}</p>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">{"Stain removal & odor elimination"}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
               
-              <Card className="hover-elevate" data-testid="card-service-feature-2">
+              <Card className="hover-elevate" data-testid="card-service-feature">
                 <CardContent className="p-6">
-                  <p className="font-medium">{"Pet stain & odor specialist treatment"}</p>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">{"Pet stain & odor specialist treatment"}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
               
-              <Card className="hover-elevate" data-testid="card-service-feature-3">
+              <Card className="hover-elevate" data-testid="card-service-feature">
                 <CardContent className="p-6">
-                  <p className="font-medium">{"Upholstery & curtain cleaning"}</p>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">{"Upholstery & curtain cleaning"}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-service-feature">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">{"Fabric protection treatment available"}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
               
@@ -82,9 +167,15 @@ export default function WheatleyHillCarpetCleaningPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center" data-testid="text-pricing-title">
-              Carpet & Upholstery Cleaning Prices in Wheatley Hill
-            </h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-pricing-title">
+                {"Carpet & Upholstery Cleaning"} Prices in {"Wheatley Hill"}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Transparent pricing for {"Wheatley Hill"} properties
+              </p>
+            </div>
+            
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               
               <Card className="hover-elevate" data-testid="card-pricing-0">
@@ -94,6 +185,9 @@ export default function WheatleyHillCarpetCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£35"}</div>
+                  <Button className="w-full" data-testid="button-book-0">
+                    Book Now
+                  </Button>
                 </CardContent>
               </Card>
               
@@ -104,6 +198,9 @@ export default function WheatleyHillCarpetCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£65"}</div>
+                  <Button className="w-full" data-testid="button-book-1">
+                    Book Now
+                  </Button>
                 </CardContent>
               </Card>
               
@@ -114,6 +211,35 @@ export default function WheatleyHillCarpetCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£120"}</div>
+                  <Button className="w-full" data-testid="button-book-2">
+                    Book Now
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-pricing-3">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-lg">{"3-piece suite"}</CardTitle>
+                  <CardDescription>{"Sofa + 2 chairs"}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-4">{"£85"}</div>
+                  <Button className="w-full" data-testid="button-book-3">
+                    Book Now
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate" data-testid="card-pricing-4">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-lg">{"Single item"}</CardTitle>
+                  <CardDescription>{"Sofa or large chair"}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-4">{"£25"}</div>
+                  <Button className="w-full" data-testid="button-book-4">
+                    Book Now
+                  </Button>
                 </CardContent>
               </Card>
               
@@ -122,28 +248,180 @@ export default function WheatleyHillCarpetCleaningPage() {
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-16 bg-primary text-primary-foreground">
+      {/* Local Areas */}
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4" data-testid="text-cta-title">
-              Ready to Book Carpet & Upholstery Cleaning in Wheatley Hill?
-            </h2>
-            <p className="text-xl mb-8 opacity-90">
-              Get your free quote today from TotalSpark Solutions and experience professional cleaning services across the North East
-            </p>
-            <Button 
-              size="lg" 
-              variant="secondary" 
-              className="text-lg px-8 py-6" 
-              onClick={scrollToQuoteForm}
-              data-testid="button-final-quote"
-            >
-              Get Free Quote
-            </Button>
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-areas-title">
+                Areas We Cover Near {"Wheatley Hill"}
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                {"Carpet & Upholstery Cleaning"} services across {"County Durham"}
+              </p>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              
+              <Card className="hover-elevate cursor-pointer" data-testid="card-area-shotton-colliery">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <span className="font-medium">{"Shotton Colliery"}</span>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover-elevate cursor-pointer" data-testid="card-area-trimdon">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <span className="font-medium">{"Trimdon"}</span>
+                  </div>
+                </CardContent>
+              </Card>
+              
+            </div>
           </div>
         </div>
       </section>
+
+      {/* FAQs */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-faq-title">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Common questions about {"carpet & upholstery cleaning"} in {"Wheatley Hill"}
+              </p>
+            </div>
+            
+            <Accordion type="single" collapsible className="space-y-4" data-testid="accordion-faq">
+              
+              <AccordionItem value="item-0" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-0">
+                  {"What carpet cleaning methods do you use in Wheatley Hill?"}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-0">
+                  {"We use professional steam cleaning and hot water extraction methods in Wheatley Hill. This ensures deep cleaning while being safe for all carpet types across County Durham."}
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-1" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-1">
+                  {"Can you remove pet stains and odors in Wheatley Hill?"}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-1">
+                  {"Yes, we specialize in pet stain and odor removal using enzyme treatments and deep extraction methods. Our Wheatley Hill service covers all types of pet-related carpet issues."}
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-2" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-2">
+                  {"How long does carpet cleaning take in Wheatley Hill?"}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-2">
+                  {"Wheatley Hill carpet cleaning typically takes 1-3 hours depending on room size and soil level. Carpets are usually dry within 2-6 hours."}
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-3" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-3">
+                  {"Do you clean upholstery and sofas in Wheatley Hill?"}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-3">
+                  {"Yes, we clean all types of upholstery including sofas, chairs, curtains, and mattresses across Wheatley Hill and County Durham using appropriate methods for each fabric type."}
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-4" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-medium" data-testid="trigger-faq-4">
+                  {"Can you protect carpets after cleaning in Wheatley Hill?"}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pt-2" data-testid="content-faq-4">
+                  {"We offer fabric protection treatments for carpets and upholstery in Wheatley Hill. This helps prevent future staining and extends the life of your furnishings."}
+                </AccordionContent>
+              </AccordionItem>
+              
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4" data-testid="text-success-title">
+                Recent Success Stories
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                {"Carpet & Upholstery Cleaning"} success stories from {"Wheatley Hill"} and {"County Durham"}
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              
+              <Card className="text-center hover-elevate" data-testid="card-success-0">
+                <CardContent className="p-6">
+                  <Star className="h-8 w-8 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold mb-2">{"Wheatley Hill Family Home"}</h3>
+                  <p className="text-muted-foreground text-sm">{"Pet stain removal success"}</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="text-center hover-elevate" data-testid="card-success-1">
+                <CardContent className="p-6">
+                  <Star className="h-8 w-8 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold mb-2">{"Shotton Colliery Office"}</h3>
+                  <p className="text-muted-foreground text-sm">{"Commercial carpet refresh"}</p>
+                </CardContent>
+              </Card>
+              
+              <Card className="text-center hover-elevate" data-testid="card-success-2">
+                <CardContent className="p-6">
+                  <Star className="h-8 w-8 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold mb-2">{"Trimdon Rental"}</h3>
+                  <p className="text-muted-foreground text-sm">{"Full house carpet restoration"}</p>
+                </CardContent>
+              </Card>
+              
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4" data-testid="text-final-cta-title">
+              Ready to Book {"Carpet & Upholstery Cleaning"} in {"Wheatley Hill"}?
+            </h2>
+            <p className="text-xl mb-8 opacity-90">
+              Get your free quote today and experience professional cleaning services
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-6" onClick={scrollToQuoteForm} data-testid="button-final-quote">
+                <Phone className="mr-2 h-5 w-5" />
+                Get Free Quote
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-final-call">
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Call {trackingNumbers.phone}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <QuoteForm />
+      <Footer />
+      <StickyCallButton />
     </div>
   );
 }
