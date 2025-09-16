@@ -75,57 +75,36 @@ Submitted: ${new Date().toLocaleString('en-GB', {
 This lead is ready to copy-paste into GoHighLevel!
   `.trim();
 
-  // Try SendGrid first (most reliable)
-  if (process.env.SENDGRID_API_KEY) {
-    try {
-      const emailData = {
-        to: 'leads@totalsparksolutions.co.uk',
-        from: 'noreply@totalsparksolutions.co.uk', // Must be verified sender in SendGrid
-        replyTo: quote.email,
-        subject: emailSubject,
-        text: emailBody,
-        html: emailBody.replace(/\n/g, '<br>')
-      };
-      
-      await sgMail.send(emailData);
-      console.log('✅ Email notification sent successfully via SendGrid to leads@totalsparksolutions.co.uk');
-      return; // Success - no need for fallbacks
-      
-    } catch (sendGridError: any) {
-      console.error('SendGrid email failed:', sendGridError.response?.body || sendGridError.message);
-      console.log('Falling back to SMTP...');
-    }
-  }
+  // Skip SendGrid API (credits exceeded) - go straight to SMTP
+  console.log('Using SendGrid SMTP relay (bypassing API due to credit limits)...');
   
-  // Fallback: Try SMTP (currently having auth issues)
+  // Use SendGrid SMTP (more reliable than API with credit limits)
   try {
     const smtpConfig = {
-      host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false,
-      requireTLS: true,
+      host: 'smtp.sendgrid.net',
+      port: 465,
+      secure: true, // Use SSL for port 465
       auth: {
-        user: process.env.SMTP_USER || 'leads@totalsparksolutions.co.uk',
-        pass: process.env.SMTP_PASS || 'your-hostinger-password'
+        user: 'apikey',
+        pass: process.env.SENDGRID_API_KEY
       },
-      authMethod: 'LOGIN',
-      connectionTimeout: 10000,
-      socketTimeout: 10000
+      connectionTimeout: 15000,
+      socketTimeout: 15000
     };
     
     const transporter = nodemailer.createTransport(smtpConfig);
     
     await transporter.sendMail({
-      from: `"TotalSpark Solutions" <leads@totalsparksolutions.co.uk>`,
+      from: `"TotalSpark Solutions" <noreply@totalsparksolutions.co.uk>`,
       to: 'leads@totalsparksolutions.co.uk',
       replyTo: quote.email,
       subject: emailSubject,
       text: emailBody
     });
     
-    console.log('Email notification sent successfully via SMTP to leads@totalsparksolutions.co.uk');
+    console.log('✅ Email notification sent successfully via SendGrid SMTP to leads@totalsparksolutions.co.uk');
   } catch (smtpError) {
-    console.error('Both webhook and SMTP email failed. Lead saved successfully but no email sent:', smtpError);
+    console.error('Both SendGrid API and SMTP email failed. Lead saved successfully but no email sent:', smtpError);
     // Don't throw - quote should still save successfully
   }
 }
