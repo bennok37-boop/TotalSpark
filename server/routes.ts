@@ -8,19 +8,21 @@ import { insertQuoteRequestSchema, insertBookingRequestSchema } from "@shared/sc
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
-// Initialize email services
+// Initialize email services - Use SMTP as primary for reliability
 let resend: Resend | null = null;
-if (process.env.RESEND_API_KEY) {
-  resend = new Resend(process.env.RESEND_API_KEY);
-  console.log('Resend email service initialized successfully');
-} else if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  console.log('SendGrid initialized as fallback');
+if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_')) {
+  try {
+    resend = new Resend(process.env.RESEND_API_KEY);
+    console.log('Resend email service initialized successfully');
+  } catch (error) {
+    console.warn('Resend initialization failed, using SMTP:', error);
+    resend = null;
+  }
 } else {
-  console.warn('No email service API key found - will use SMTP fallback');
+  console.log('Using SMTP as primary email service (Resend not configured properly)');
 }
 
-// Email notification service using SendGrid (reliable) with SMTP fallback
+// Email notification service using SMTP (reliable)
 async function sendEmailNotification(quote: any) {
 
   const serviceDisplayName = getServiceDisplayName(quote.service);
@@ -80,25 +82,9 @@ Submitted: ${new Date().toLocaleString('en-GB', {
 This lead is ready to copy-paste into GoHighLevel!
   `.trim();
 
-  // Try Resend first (most reliable)
-  if (resend) {
-    try {
-      console.log('Sending email via Resend...');
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk',
-        replyTo: quote.email,
-        subject: emailSubject,
-        text: emailBody
-      });
-      console.log('✅ Email notification sent successfully via Resend to leads@totalsparksolutions.co.uk');
-      return;
-    } catch (resendError) {
-      console.warn('Resend email failed, trying SMTP fallback:', resendError);
-    }
-  }
-  
-  // Fallback to regular SMTP if Resend fails
+  // Use SMTP as primary email service
+  const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
+  console.log(`📧 Sending quote email via SMTP to: ${targetEmail}`);
   try {
     console.log('Using SMTP fallback configuration...');
     const smtpConfig = {
@@ -116,16 +102,16 @@ This lead is ready to copy-paste into GoHighLevel!
     const transporter = nodemailer.createTransport(smtpConfig);
     
     await transporter.sendMail({
-      from: `"TotalSpark Solutions" <noreply@totalsparksolutions.co.uk>`,
-      to: 'leads@totalsparksolutions.co.uk',
+      from: `"TotalSpark Solutions" <${process.env.SMTP_USER}>`,
+      to: targetEmail,
       replyTo: quote.email,
       subject: emailSubject,
       text: emailBody
     });
     
-    console.log('✅ Email notification sent successfully via SMTP to leads@totalsparksolutions.co.uk');
+    console.log(`✅ Quote email sent successfully via SMTP to ${targetEmail}`);
   } catch (smtpError) {
-    console.error('Both Resend and SMTP email failed. Lead saved successfully but no email sent:', smtpError);
+    console.error('SMTP email failed. Quote saved successfully but no email sent:', smtpError);
     // Don't throw - quote should still save successfully
   }
 }
@@ -181,25 +167,9 @@ Booking ID: ${booking.id}
 Submitted: ${new Date().toLocaleString('en-GB')}
   `.trim();
 
-  // Try Resend first for booking notifications
-  if (resend) {
-    try {
-      console.log('Sending booking email via Resend...');
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk',
-        replyTo: booking.email,
-        subject: emailSubject,
-        text: emailBody
-      });
-      console.log('✅ Booking email notification sent successfully via Resend');
-      return;
-    } catch (resendError) {
-      console.warn('Resend booking email failed, trying SMTP fallback:', resendError);
-    }
-  }
-  
-  // Fallback to SMTP for booking notifications
+  // Send booking email via SMTP
+  const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
+  console.log(`📧 Sending booking email via SMTP to: ${targetEmail}`);
   try {
     const smtpConfig = {
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -214,15 +184,15 @@ Submitted: ${new Date().toLocaleString('en-GB')}
     const transporter = nodemailer.createTransport(smtpConfig);
     
     await transporter.sendMail({
-      from: '"TotalSpark Booking System" <noreply@totalsparksolutions.co.uk>',
-      to: 'leads@totalsparksolutions.co.uk',
+      from: `"TotalSpark Booking System" <${process.env.SMTP_USER}>`,
+      to: targetEmail,
       replyTo: booking.email,
       subject: emailSubject,
       text: emailBody,
       priority: 'high'
     });
     
-    console.log('✅ Booking email notification sent successfully via SMTP');
+    console.log(`✅ Booking email sent successfully via SMTP to ${targetEmail}`);
   } catch (error) {
     console.warn('Booking email notification failed (non-blocking):', error);
     // Don't throw - booking should succeed even if email fails
