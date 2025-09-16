@@ -15,6 +15,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 type FormStep = 1 | 2 | 3 | 4 | 5;
 
@@ -90,6 +91,10 @@ export default function QuoteForm() {
     preferredTimeSlot: 'morning',
     additionalNotes: ''
   });
+  
+  // Get tracking numbers for phone and WhatsApp
+  const { phone: phoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
+  
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -1324,13 +1329,14 @@ export default function QuoteForm() {
                         <Calendar className="w-4 h-4 mr-2" />
                         Book Online Now
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        data-testid="button-call-to-book"
-                      >
-                        <Phone className="w-4 h-4 mr-2" />
-                        Call to Book
+                      <Button variant="outline" className="w-full" asChild>
+                        <a
+                          href={`tel:${phoneNumber?.replace(/\s/g, '') || ''}`}
+                          data-testid="button-call-to-book"
+                        >
+                          <Phone className="w-4 h-4 mr-2" />
+                          Call to Book
+                        </a>
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground text-center mt-2">
@@ -1340,21 +1346,25 @@ export default function QuoteForm() {
 
                   {/* Contact Options */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      data-testid="button-call-direct"
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      Call Us Direct
+                    <Button variant="outline" className="w-full" asChild>
+                      <a
+                        href={`tel:${phoneNumber?.replace(/\s/g, '') || ''}`}
+                        data-testid="button-call-direct"
+                      >
+                        <Phone className="w-4 h-4 mr-2" />
+                        Call Us Direct
+                      </a>
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      data-testid="button-whatsapp"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      WhatsApp Chat
+                    <Button variant="outline" className="w-full" asChild>
+                      <a
+                        href={`https://wa.me/${whatsappNumber?.replace(/[^\d]/g, '').replace(/^0/, '44') || '447380991629'}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid="button-whatsapp"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        WhatsApp Chat
+                      </a>
                     </Button>
                     <Button 
                       variant="outline" 
