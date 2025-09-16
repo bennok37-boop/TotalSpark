@@ -1,12 +1,21 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import { storage } from "./storage";
 import { insertQuoteRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
-// Email notification service
+// Initialize SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('SendGrid initialized successfully');
+} else {
+  console.warn('SendGrid API key not found - email notifications will use SMTP fallback');
+}
+
+// Email notification service using SendGrid (reliable) with SMTP fallback
 async function sendEmailNotification(quote: any) {
 
   const serviceDisplayName = getServiceDisplayName(quote.service);
@@ -66,44 +75,25 @@ Submitted: ${new Date().toLocaleString('en-GB', {
 This lead is ready to copy-paste into GoHighLevel!
   `.trim();
 
-  // Try webhook email service first (most reliable)
-  const emailWebhookUrl = process.env.EMAIL_WEBHOOK_URL;
-  if (emailWebhookUrl) {
+  // Try SendGrid first (most reliable)
+  if (process.env.SENDGRID_API_KEY) {
     try {
       const emailData = {
         to: 'leads@totalsparksolutions.co.uk',
-        from: 'noreply@totalsparksolutions.co.uk',
-        subject: emailSubject,
-        body: emailBody,
+        from: 'noreply@totalsparksolutions.co.uk', // Must be verified sender in SendGrid
         replyTo: quote.email,
-        // Additional data for automation
-        leadData: {
-          name: quote.name,
-          email: quote.email,
-          phone: quote.phone,
-          service: getServiceDisplayName(quote.service),
-          urgent: quote.urgent || false,
-          weekend: quote.weekend || false,
-          estimate: estimateText
-        }
+        subject: emailSubject,
+        text: emailBody,
+        html: emailBody.replace(/\n/g, '<br>')
       };
       
-      const response = await fetch(emailWebhookUrl, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'User-Agent': 'TotalSpark-Solutions/1.0'
-        },
-        body: JSON.stringify(emailData),
-        signal: AbortSignal.timeout(10000)
-      });
+      await sgMail.send(emailData);
+      console.log('✅ Email notification sent successfully via SendGrid to leads@totalsparksolutions.co.uk');
+      return; // Success - no need for fallbacks
       
-      if (response.ok) {
-        console.log('Email notification sent successfully via webhook to leads@totalsparksolutions.co.uk');
-        return; // Success - no need to try SMTP
-      }
-    } catch (webhookError) {
-      console.warn('Webhook email failed, trying SMTP backup:', webhookError);
+    } catch (sendGridError: any) {
+      console.error('SendGrid email failed:', sendGridError.response?.body || sendGridError.message);
+      console.log('Falling back to SMTP...');
     }
   }
   
