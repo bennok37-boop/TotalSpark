@@ -78,9 +78,20 @@ export const insertQuoteRequestSchema = createInsertSchema(quoteRequests).omit({
   createdAt: true,
 });
 
+// Booking request schema with additional validation for booking-specific fields
+export const insertBookingRequestSchema = insertQuoteRequestSchema.extend({
+  preferredDate: z.string().min(1, 'Preferred date is required'),
+  preferredTimeSlot: z.enum(['morning', 'afternoon', 'evening', 'flexible']),
+  additionalNotes: z.string().optional(),
+  bookedOnline: z.boolean().default(true),
+  bookingStatus: z.enum(['quote_requested', 'booking_requested', 'booking_confirmed', 'completed', 'cancelled']).default('booking_requested'),
+  leadSource: z.string().default('website')
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertQuoteRequest = z.infer<typeof insertQuoteRequestSchema>;
+export type InsertBookingRequest = z.infer<typeof insertBookingRequestSchema>;
 export type QuoteRequest = typeof quoteRequests.$inferSelect;
 
 // City and service types

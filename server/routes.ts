@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 import { storage } from "./storage";
-import { insertQuoteRequestSchema } from "@shared/schema";
+import { insertQuoteRequestSchema, insertBookingRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
@@ -184,8 +184,8 @@ Submitted: ${new Date().toLocaleString('en-GB')}
     
     console.log('✅ Booking email notification sent successfully');
   } catch (error) {
-    console.error('Booking email notification failed:', error);
-    throw error;
+    console.warn('Booking email notification failed (non-blocking):', error);
+    // Don't throw - booking should succeed even if email fails
   }
 }
 
@@ -209,7 +209,16 @@ async function sendBookingToGHLWebhook(booking: any) {
     ]
   };
 
-  console.log('Booking GHL Data:', JSON.stringify(bookingData, null, 2));
+  // Log only non-PII fields for privacy compliance
+  console.log('Booking webhook data (PII redacted):', {
+    service_type: bookingData.service_type,
+    service_category: bookingData.service_category,
+    booking_status: bookingData.booking_status,
+    preferred_time_slot: bookingData.preferred_time_slot,
+    urgent_request: bookingData.urgent_request,
+    weekend_request: bookingData.weekend_request,
+    tags: bookingData.tags
+  });
   
   const webhookUrl = process.env.GHL_WEBHOOK_URL;
   if (!webhookUrl) {
@@ -218,19 +227,26 @@ async function sendBookingToGHLWebhook(booking: any) {
   }
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(bookingData)
+      body: JSON.stringify(bookingData),
+      signal: controller.signal
     });
 
+    clearTimeout(timeoutId);
+    
     if (!response.ok) {
-      throw new Error(`Booking webhook failed: ${response.status}`);
+      console.warn(`Booking webhook failed: ${response.status} ${response.statusText}`);
+      return; // Don't throw, just warn
     }
     console.log('Booking webhook sent to GHL successfully');
   } catch (error) {
-    console.error('Booking GHL webhook failed:', error);
-    throw error;
+    console.warn('Booking GHL webhook failed (non-blocking):', error.message);
+    // Don't throw - this should be non-blocking
   }
 }
 
@@ -445,7 +461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Booking request endpoint
   app.post('/api/bookings', async (req, res) => {
     try {
-      const result = insertQuoteRequestSchema.safeParse(req.body);
+      const result = insertBookingRequestSchema.safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({
           error: fromZodError(result.error).toString()
@@ -455,19 +471,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create booking request (which is an updated quote request)
       const booking = await storage.createQuoteRequest(result.data);
       
-      // Send booking notification email (modified version of quote notification)
-      try {
-        await sendBookingEmailNotification(booking);
-      } catch (emailError) {
+      // Send booking notification email (non-blocking)
+      sendBookingEmailNotification(booking).catch(emailError => {
         console.warn('Booking email notification failed (booking still saved):', emailError);
-      }
+      });
       
-      // Send booking to GoHighLevel webhook (enhanced with booking data)
-      try {
-        await sendBookingToGHLWebhook(booking);
-      } catch (webhookError) {
+      // Send booking to GoHighLevel webhook (non-blocking)
+      sendBookingToGHLWebhook(booking).catch(webhookError => {
         console.warn('Booking webhook delivery failed (booking still saved):', webhookError);
-      }
+      });
       
       res.status(201).json(booking);
     } catch (error) {
