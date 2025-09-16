@@ -7,8 +7,8 @@ interface StickyCallButtonProps {
 }
 
 export default function StickyCallButton({ 
-  phoneNumber = "0191 123 4567", // Todo: remove mock functionality
-  whatsappNumber = "447123456789" // Todo: remove mock functionality
+  phoneNumber = "0191 821 4567",
+  whatsappNumber = "447380991629"
 }: StickyCallButtonProps) {
   return (
     <>

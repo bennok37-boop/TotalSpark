@@ -14,8 +14,8 @@ import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6
 import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
 
 export default function CarpetUpholsteryPage() {
-  const phoneNumber = "0800 123 4567";
-  const whatsappNumber = "447700123456";
+  const phoneNumber = "0191 821 4567";
+  const whatsappNumber = "447380991629";
 
   const cityLinks = [
     { name: 'Newcastle', slug: 'newcastle' },

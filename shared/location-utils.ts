@@ -24,13 +24,8 @@ export function getRegionPhoneNumber(regionSlug: string): string {
 
 // Helper function to get region-specific WhatsApp number
 export function getRegionWhatsAppNumber(regionSlug: string): string {
-  const whatsappMap: Record<string, string> = {
-    'tyne-and-wear': '447821456789',      // WhatsApp - Tyne & Wear
-    'county-durham': '447822567890',      // WhatsApp - County Durham  
-    'northumberland': '447823901234',     // WhatsApp - Northumberland
-    'tees-valley': '447824345678'         // WhatsApp - Tees Valley
-  };
-  return whatsappMap[regionSlug] || '447821456789';
+  // Single WhatsApp number for all regions
+  return '447380991629';
 }
 
 // Helper function to get nearby locations within a region
@@ -97,7 +92,7 @@ export function getLocationContactDetails(pathname: string) {
   // Default for non-city pages
   return {
     phone: '0191 821 4567',    // Default to Tyne & Wear CallRail pool
-    whatsapp: '447821456789', // Default to Tyne & Wear WhatsApp
+    whatsapp: '447380991629', // TotalSpark WhatsApp number
     location: null,
     region: null
   };

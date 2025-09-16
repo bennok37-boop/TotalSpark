@@ -16,8 +16,8 @@ import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6
 import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
 
 export default function EndOfTenancyNewcastlePage() {
-  const phoneNumber = "0191 123 4567";
-  const whatsappNumber = "447700123456";
+  const phoneNumber = "0191 821 4567";
+  const whatsappNumber = "447380991629";
 
   const newcastleAreas = [
     'Jesmond', 'Heaton', 'Gosforth', 'Byker', 'Walker',
