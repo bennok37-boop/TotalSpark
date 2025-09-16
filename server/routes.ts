@@ -75,18 +75,17 @@ Submitted: ${new Date().toLocaleString('en-GB', {
 This lead is ready to copy-paste into GoHighLevel!
   `.trim();
 
-  // Skip SendGrid API (credits exceeded) - go straight to SMTP
-  console.log('Using SendGrid SMTP relay (bypassing API due to credit limits)...');
+  // Use regular SMTP (SendGrid credits exceeded)
+  console.log('Using regular SMTP configuration (SendGrid credits exceeded)...');
   
-  // Use SendGrid SMTP (more reliable than API with credit limits)
   try {
     const smtpConfig = {
-      host: 'smtp.sendgrid.net',
-      port: 465,
-      secure: true, // Use SSL for port 465
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: false, // Use STARTTLS
       auth: {
-        user: 'apikey',
-        pass: process.env.SENDGRID_API_KEY
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
       },
       connectionTimeout: 15000,
       socketTimeout: 15000
@@ -102,9 +101,9 @@ This lead is ready to copy-paste into GoHighLevel!
       text: emailBody
     });
     
-    console.log('✅ Email notification sent successfully via SendGrid SMTP to leads@totalsparksolutions.co.uk');
+    console.log('✅ Email notification sent successfully via SMTP to leads@totalsparksolutions.co.uk');
   } catch (smtpError) {
-    console.error('Both SendGrid API and SMTP email failed. Lead saved successfully but no email sent:', smtpError);
+    console.error('SMTP email failed. Lead saved successfully but no email sent:', smtpError);
     // Don't throw - quote should still save successfully
   }
 }
@@ -153,22 +152,22 @@ Preferred Time: ${timeSlot}
 Booking Status: ${booking.bookingStatus || 'booking_requested'}
 Additional Notes: ${booking.additionalNotes || 'None provided'}
 
-⚠️ ACTION REQUIRED: Confirm booking within 2 hours!
+⚠️ ACTION REQUIRED: Confirm booking within 30 minutes!
 This is a hot lead - customer is ready to book!
 
 Booking ID: ${booking.id}
 Submitted: ${new Date().toLocaleString('en-GB')}
   `.trim();
 
-  // Use same SMTP config as regular quotes
+  // Use regular SMTP (SendGrid credits exceeded)
   try {
     const smtpConfig = {
-      host: 'smtp.sendgrid.net',
-      port: 465,
-      secure: true,
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: false, // Use STARTTLS
       auth: {
-        user: 'apikey',
-        pass: process.env.SENDGRID_API_KEY
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
       }
     };
     
@@ -245,7 +244,7 @@ async function sendBookingToGHLWebhook(booking: any) {
     }
     console.log('Booking webhook sent to GHL successfully');
   } catch (error) {
-    console.warn('Booking GHL webhook failed (non-blocking):', error.message);
+    console.warn('Booking GHL webhook failed (non-blocking):', error instanceof Error ? error.message : 'Unknown error');
     // Don't throw - this should be non-blocking
   }
 }
