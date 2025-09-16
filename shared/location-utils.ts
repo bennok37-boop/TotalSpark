@@ -15,12 +15,12 @@ export function findLocationBySlug(slug: string) {
 // Helper function to get region-specific phone number
 export function getRegionPhoneNumber(regionSlug: string): string {
   const phoneMap: Record<string, string> = {
-    'tyne-and-wear': '0191 821 4567',     // CallRail tracking pool - Tyne & Wear
+    'tyne-and-wear': '0191 743 6925',     // CallRail tracking pool - Tyne & Wear
     'county-durham': '0191 822 5678',     // CallRail tracking pool - County Durham  
     'northumberland': '01670 823 9012',   // CallRail tracking pool - Northumberland
     'tees-valley': '01642 824 3456'       // CallRail tracking pool - Tees Valley
   };
-  return phoneMap[regionSlug] || '0191 821 4567';
+  return phoneMap[regionSlug] || '0191 743 6925';
 }
 
 // Helper function to get region-specific WhatsApp number

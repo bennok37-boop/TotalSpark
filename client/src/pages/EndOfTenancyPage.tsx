@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 // Import gallery images
 import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
@@ -16,8 +17,9 @@ import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6
 import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
 
 export default function EndOfTenancyPage() {
-  const phoneNumber = "0191 821 4567";
-  const whatsappNumber = "447380991629";
+  // Get tracking numbers for call buttons
+  const trackingNumbers = useTrackingNumbers();
+  // Phone numbers now handled by useTrackingNumbers hook in components
 
   const cityLinks = [
     { name: 'Newcastle', slug: 'newcastle' },
@@ -73,7 +75,7 @@ export default function EndOfTenancyPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <Button size="lg" className="text-lg px-8" data-testid="button-call">
                   <Phone className="w-5 h-5 mr-2" />
-                  Call us today: {phoneNumber}
+                  Call us today: {trackingNumbers.phone}
                 </Button>
                 <Button variant="outline" size="lg" className="text-lg px-8" data-testid="button-whatsapp">
                   <MessageCircle className="w-5 h-5 mr-2" />
@@ -375,7 +377,7 @@ export default function EndOfTenancyPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button size="lg" variant="secondary" className="text-lg px-8" data-testid="button-call-final">
                 <Phone className="w-5 h-5 mr-2" />
-                Call us today: {phoneNumber}
+                Call us today: {trackingNumbers.phone}
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-whatsapp-final">
                 <MessageCircle className="w-5 h-5 mr-2" />
@@ -396,10 +398,7 @@ export default function EndOfTenancyPage() {
       </main>
       <QuoteForm />
       <Footer />
-      <StickyCallButton 
-        phoneNumber={phoneNumber}
-        whatsappNumber={whatsappNumber}
-      />
+      <StickyCallButton />
     </div>
   );
 }

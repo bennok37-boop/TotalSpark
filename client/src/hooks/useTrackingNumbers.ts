@@ -30,12 +30,12 @@ function getSessionId(): string {
 export function useTrackingNumbers(): TrackingNumbers {
   const [location] = useLocation();
   const [trackingData, setTrackingData] = useState<TrackingNumbers>({
-    phone: '0191 821 4567', // Default fallback while loading
+    phone: '0191 743 6925', // Default fallback while loading - updated to new Tyne & Wear number
     whatsapp: '447380991629',
     location: null,
     region: null,
     trackingMetadata: {
-      selectedNumber: '0191 821 4567',
+      selectedNumber: '0191 743 6925',
       ruleType: 'global',
       timestamp: Date.now()
     },
