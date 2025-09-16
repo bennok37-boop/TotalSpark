@@ -57,6 +57,14 @@ export const quoteRequests = pgTable("quote_requests", {
   // Quote result (stored as JSON)
   quoteResult: jsonb("quote_result"), // Stores the complete QuoteResult object
   
+  // Booking status and tracking
+  bookedOnline: boolean("booked_online").default(false),
+  bookingDate: timestamp("booking_date"),
+  bookingStatus: text("booking_status").default('quote_requested'), // 'quote_requested' | 'booking_requested' | 'booking_confirmed' | 'completed' | 'cancelled'
+  preferredDate: text("preferred_date"),
+  preferredTimeSlot: text("preferred_time_slot"), // 'morning' | 'afternoon' | 'evening' | 'flexible'
+  leadSource: text("lead_source").default('website'), // 'website' | 'phone' | 'email' | 'referral'
+  
   createdAt: timestamp("created_at").defaultNow(),
 });
 

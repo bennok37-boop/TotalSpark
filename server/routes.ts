@@ -109,6 +109,155 @@ This lead is ready to copy-paste into GoHighLevel!
   }
 }
 
+// Booking-specific email notification function
+async function sendBookingEmailNotification(booking: any) {
+  const serviceDisplayName = getServiceDisplayName(booking.service);
+  const addOnsText = formatAddOns(booking);
+  const tagsText = generateGHLTags(booking).join(', ');
+  const estimateText = booking.quoteResult 
+    ? `£${booking.quoteResult.estimateRange?.low || 0} - £${booking.quoteResult.estimateRange?.high || 0}`
+    : 'Quote calculation pending';
+
+  const bookingDate = booking.preferredDate ? new Date(booking.preferredDate).toLocaleDateString('en-GB') : 'Not specified';
+  const timeSlot = booking.preferredTimeSlot || 'Not specified';
+
+  const emailSubject = `🗓️ BOOKING REQUEST: ${serviceDisplayName} - ${booking.address.split(',').pop()?.trim() || 'Location'} (${bookingDate})`;
+  
+  const emailBody = `
+🔥 BOOKING REQUEST NOTIFICATION
+═══════════════════════════════════════
+
+⭐ CUSTOMER WANTS TO BOOK ONLINE!
+Service Date: ${bookingDate}
+Time Preference: ${timeSlot}
+Lead Source: ${booking.leadSource || 'website'} (${booking.bookedOnline ? 'ONLINE BOOKING' : 'Phone booking'})
+
+📍 CONTACT DETAILS
+Name: ${booking.name}
+Email: ${booking.email}
+Phone: ${booking.phone}
+Address: ${booking.address}
+Postcode: ${booking.postcode || 'Not provided'}
+
+🏠 SERVICE REQUIREMENTS
+Service: ${serviceDisplayName}
+${booking.bedrooms ? `Bedrooms: ${booking.bedrooms}` : ''}
+${booking.bathrooms ? `Bathrooms: ${booking.bathrooms}` : ''}
+
+💷 QUOTE ESTIMATE
+Range: ${estimateText}
+
+🗓️ BOOKING DETAILS
+Preferred Date: ${bookingDate}
+Preferred Time: ${timeSlot}
+Booking Status: ${booking.bookingStatus || 'booking_requested'}
+Additional Notes: ${booking.additionalNotes || 'None provided'}
+
+⚠️ ACTION REQUIRED: Confirm booking within 2 hours!
+This is a hot lead - customer is ready to book!
+
+Booking ID: ${booking.id}
+Submitted: ${new Date().toLocaleString('en-GB')}
+  `.trim();
+
+  // Use same SMTP config as regular quotes
+  try {
+    const smtpConfig = {
+      host: 'smtp.sendgrid.net',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'apikey',
+        pass: process.env.SENDGRID_API_KEY
+      }
+    };
+    
+    const transporter = nodemailer.createTransport(smtpConfig);
+    
+    await transporter.sendMail({
+      from: '"TotalSpark Booking System" <noreply@totalsparksolutions.co.uk>',
+      to: 'leads@totalsparksolutions.co.uk',
+      subject: emailSubject,
+      text: emailBody,
+      priority: 'high'
+    });
+    
+    console.log('✅ Booking email notification sent successfully');
+  } catch (error) {
+    console.error('Booking email notification failed:', error);
+    throw error;
+  }
+}
+
+// Enhanced GHL webhook for booking requests
+async function sendBookingToGHLWebhook(booking: any) {
+  const ghlData = generateGHLWebhookData(booking);
+  
+  const bookingData = {
+    ...ghlData,
+    // Enhanced booking-specific data
+    booking_status: booking.bookingStatus || 'booking_requested',
+    preferred_date: booking.preferredDate,
+    preferred_time_slot: booking.preferredTimeSlot,
+    booked_online: booking.bookedOnline || false,
+    lead_source: booking.leadSource || 'website',
+    booking_notes: booking.additionalNotes,
+    tags: [
+      ...generateGHLTags(booking),
+      'Booking_Request',
+      'Online_Booking'
+    ]
+  };
+
+  console.log('Booking GHL Data:', JSON.stringify(bookingData, null, 2));
+  
+  const webhookUrl = process.env.GHL_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.log('No GHL_WEBHOOK_URL configured - booking webhook data logged for setup');
+    return;
+  }
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bookingData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Booking webhook failed: ${response.status}`);
+    }
+    console.log('Booking webhook sent to GHL successfully');
+  } catch (error) {
+    console.error('Booking GHL webhook failed:', error);
+    throw error;
+  }
+}
+
+// Helper function to generate GHL webhook data (used by both quote and booking webhooks)
+function generateGHLWebhookData(data: any) {
+  return {
+    first_name: data.name.split(' ')[0] || '',
+    last_name: data.name.split(' ').slice(1).join(' ') || '',
+    email: data.email,
+    phone: data.phone,
+    address1: data.address,
+    postal_code: data.postcode || '',
+    website: 'TotalSpark Solutions',
+    source: 'Website Form',
+    service_type: getServiceDisplayName(data.service),
+    service_category: data.service,
+    bedrooms: data.bedrooms || 'Not specified',
+    add_ons: formatAddOns(data),
+    urgent_request: data.urgent || false,
+    weekend_request: data.weekend || false,
+    notes: data.additionalDetails || '',
+    tags: generateGHLTags(data),
+    quote_id: data.id,
+    submitted_at: new Date().toISOString()
+  };
+}
+
 // GoHighLevel webhook integration function
 async function sendToGHLWebhook(quote: any) {
   // Format the data for GoHighLevel integration
@@ -289,6 +438,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(quote);
     } catch (error) {
       console.error('Error fetching quote request:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // Booking request endpoint
+  app.post('/api/bookings', async (req, res) => {
+    try {
+      const result = insertQuoteRequestSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({
+          error: fromZodError(result.error).toString()
+        });
+      }
+
+      // Create booking request (which is an updated quote request)
+      const booking = await storage.createQuoteRequest(result.data);
+      
+      // Send booking notification email (modified version of quote notification)
+      try {
+        await sendBookingEmailNotification(booking);
+      } catch (emailError) {
+        console.warn('Booking email notification failed (booking still saved):', emailError);
+      }
+      
+      // Send booking to GoHighLevel webhook (enhanced with booking data)
+      try {
+        await sendBookingToGHLWebhook(booking);
+      } catch (webhookError) {
+        console.warn('Booking webhook delivery failed (booking still saved):', webhookError);
+      }
+      
+      res.status(201).json(booking);
+    } catch (error) {
+      console.error('Error creating booking request:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

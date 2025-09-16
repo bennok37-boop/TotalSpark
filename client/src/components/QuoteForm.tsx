@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin, Camera, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Calculator, CheckCircle, Phone, MessageCircle, Clock, Users, Search, MapPin, Camera, X, Calendar } from 'lucide-react';
 import { ObjectUploader } from '@/components/ObjectUploader';
 import type { UploadResult } from "@uppy/core";
 import { useMutation } from '@tanstack/react-query';
@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
 
-type FormStep = 1 | 2 | 3;
+type FormStep = 1 | 2 | 3 | 4 | 5;
 
 interface QuoteFormData {
   // Contact details
@@ -85,6 +85,11 @@ export default function QuoteForm() {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [bookingData, setBookingData] = useState({
+    preferredDate: '',
+    preferredTimeSlot: 'morning',
+    additionalNotes: ''
+  });
   const [formData, setFormData] = useState<QuoteFormData>({
     name: '',
     email: '',
@@ -483,6 +488,47 @@ export default function QuoteForm() {
     if (quoteResult) {
       submitQuoteMutation.mutate({ ...formData, quoteResult });
     }
+  };
+
+  // Booking submission mutation
+  const bookingMutation = useMutation({
+    mutationFn: async (bookingRequestData: any) => {
+      return apiRequest('POST', '/api/bookings', bookingRequestData);
+    },
+    onSuccess: () => {
+      setStep(5);
+      toast({
+        title: "Booking Request Submitted!",
+        description: "We'll confirm your appointment within 2 hours via phone or text."
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Booking Error",
+        description: "Failed to submit booking request. Please try again or call us directly.",
+        variant: "destructive"
+      });
+      console.error('Booking submission error:', error);
+    }
+  });
+
+  const handleBookingSubmit = () => {
+    if (!bookingData.preferredDate) return;
+    
+    const bookingRequestData = {
+      // Include original quote data
+      ...formData,
+      quoteResult,
+      // Add booking-specific fields
+      preferredDate: bookingData.preferredDate,
+      preferredTimeSlot: bookingData.preferredTimeSlot,
+      additionalNotes: bookingData.additionalNotes,
+      bookedOnline: true,
+      bookingStatus: 'booking_requested',
+      leadSource: 'website'
+    };
+    
+    bookingMutation.mutate(bookingRequestData);
   };
 
   const serviceTypes = [
@@ -1264,9 +1310,37 @@ export default function QuoteForm() {
                       </div>
                     )}
                   </div>
+                  {/* Booking Options */}
+                  <div className="bg-muted/30 rounded-lg p-6 mb-6">
+                    <h4 className="text-lg font-semibold mb-4 text-center">Ready to Book Your Cleaning?</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Button 
+                        variant="default" 
+                        className="w-full" 
+                        onClick={() => setStep(4)}
+                        data-testid="button-book-online"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Book Online Now
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        data-testid="button-call-to-book"
+                      >
+                        <Phone className="w-4 h-4 mr-2" />
+                        Call to Book
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center mt-2">
+                      Book online for faster scheduling or call us to discuss your requirements
+                    </p>
+                  </div>
+
+                  {/* Contact Options */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Button 
-                      variant="default" 
+                      variant="outline" 
                       className="w-full"
                       data-testid="button-call-direct"
                     >
@@ -1347,6 +1421,138 @@ export default function QuoteForm() {
                       New Quote
                     </Button>
                   </div>
+                </div>
+              ) : step === 4 ? (
+                // Booking Step
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-2">Book Your Cleaning Service</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Choose your preferred date and time for the cleaning service
+                    </p>
+                    {quoteResult && (
+                      <div className="bg-muted/30 rounded-lg p-4 mb-6">
+                        <p className="text-sm text-muted-foreground mb-1">Your Quote</p>
+                        <p className="text-xl font-bold text-primary">
+                          £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleBookingSubmit();
+                  }} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="preferred-date">Preferred Date</Label>
+                        <Input
+                          id="preferred-date"
+                          type="date"
+                          value={bookingData.preferredDate}
+                          min={new Date().toISOString().split('T')[0]}
+                          onChange={(e) => setBookingData(prev => ({...prev, preferredDate: e.target.value}))}
+                          required
+                          data-testid="input-preferred-date"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="time-slot">Preferred Time</Label>
+                        <Select value={bookingData.preferredTimeSlot} onValueChange={(value) => setBookingData(prev => ({...prev, preferredTimeSlot: value}))}>
+                          <SelectTrigger data-testid="select-time-slot">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="morning">Morning (8am - 12pm)</SelectItem>
+                            <SelectItem value="afternoon">Afternoon (12pm - 5pm)</SelectItem>
+                            <SelectItem value="evening">Evening (5pm - 8pm)</SelectItem>
+                            <SelectItem value="flexible">Flexible</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="booking-notes">Additional Notes (Optional)</Label>
+                      <Textarea
+                        id="booking-notes"
+                        placeholder="Any special requirements or instructions..."
+                        value={bookingData.additionalNotes}
+                        onChange={(e) => setBookingData(prev => ({...prev, additionalNotes: e.target.value}))}
+                        data-testid="textarea-booking-notes"
+                      />
+                    </div>
+                    
+                    <div className="flex gap-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep(3)}
+                        className="flex-1"
+                        data-testid="button-back-to-quote"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Quote
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="flex-1"
+                        disabled={!bookingData.preferredDate}
+                        data-testid="button-submit-booking"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Request Booking
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+              ) : step === 5 ? (
+                // Booking Confirmation
+                <div className="text-center space-y-6">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle className="w-8 h-8 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-2">Booking Request Submitted!</h3>
+                    <p className="text-muted-foreground mb-4">
+                      We've received your booking request and will confirm your appointment within 2 hours.
+                    </p>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                      <p className="text-sm text-green-700 font-medium">What happens next?</p>
+                      <ul className="text-xs text-green-600 mt-2 space-y-1">
+                        <li>✓ Confirmation call/text within 2 hours</li>
+                        <li>✓ Final quote confirmed after property assessment</li>
+                        <li>✓ Cleaning team arrives on scheduled date</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => {
+                      setStep(1);
+                      // Reset all form state
+                      setFormData({
+                        name: '', email: '', phone: '', address: '', postcode: '', additionalDetails: '',
+                        service: '', bedrooms: '', bathrooms: 1, toilets: 1, livingRooms: 1, area_m2: 0,
+                        propertyType: '', condition: '', secondKitchen: false, internalStairs: false,
+                        furnished: false, occupied: false, hmoRooms: 0, wasteBags: 0,
+                        commercialType: '', commercialRooms: 0, commercialToilets: 0,
+                        carpetRooms: 0, stairs: 0, rugs: 0, sofa2: 0, sofa3: 0, armchair: 0, mattress: 0,
+                        oven: false, fridge: false, windows: 0, cabinets: false, limescale: false,
+                        addOnCarpets: false, addOnUpholstery: false,
+                        urgent: false, weekend: false, stairsNoLift: false,
+                        bundleCarpetsWithEoT: false, vat: false, jobImages: []
+                      });
+                      setBookingData({ preferredDate: '', preferredTimeSlot: 'morning', additionalNotes: '' });
+                      setUploadedImages([]);
+                      setQuoteResult(null);
+                    }}
+                    className="w-full"
+                    data-testid="button-new-quote"
+                  >
+                    Request Another Quote
+                  </Button>
                 </div>
               ) : null}
             </CardContent>
