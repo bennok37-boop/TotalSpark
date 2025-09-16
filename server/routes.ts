@@ -9,7 +9,7 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 // Email notification service
 async function sendEmailNotification(quote: any) {
   // Hostinger SMTP configuration
-  const transporter = nodemailer.createTransport({
+  const smtpConfig = {
     host: process.env.SMTP_HOST || 'smtp.hostinger.com',
     port: parseInt(process.env.SMTP_PORT || '465'),
     secure: true, // Use SSL for port 465
@@ -20,7 +20,18 @@ async function sendEmailNotification(quote: any) {
     // Add timeouts to prevent hanging
     connectionTimeout: 10000,
     socketTimeout: 10000
+  };
+  
+  // Debug log (without password)
+  console.log('SMTP Config:', { 
+    host: smtpConfig.host, 
+    port: smtpConfig.port, 
+    secure: smtpConfig.secure, 
+    user: smtpConfig.auth.user,
+    passwordSet: !!smtpConfig.auth.pass && smtpConfig.auth.pass !== 'your-hostinger-password'
   });
+  
+  const transporter = nodemailer.createTransport(smtpConfig);
 
   const serviceDisplayName = getServiceDisplayName(quote.service);
   const addOnsText = formatAddOns(quote);
