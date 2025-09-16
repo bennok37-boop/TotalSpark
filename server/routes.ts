@@ -8,30 +8,6 @@ import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 
 // Email notification service
 async function sendEmailNotification(quote: any) {
-  // Hostinger SMTP configuration
-  const smtpConfig = {
-    host: process.env.SMTP_HOST || 'smtp.hostinger.com',
-    port: parseInt(process.env.SMTP_PORT || '465'),
-    secure: true, // Use SSL for port 465
-    auth: {
-      user: process.env.SMTP_USER || 'leads@totalsparksolutions.co.uk',
-      pass: process.env.SMTP_PASS || 'your-hostinger-password'
-    },
-    // Add timeouts to prevent hanging
-    connectionTimeout: 10000,
-    socketTimeout: 10000
-  };
-  
-  // Debug log (without password)
-  console.log('SMTP Config:', { 
-    host: smtpConfig.host, 
-    port: smtpConfig.port, 
-    secure: smtpConfig.secure, 
-    user: smtpConfig.auth.user,
-    passwordSet: !!smtpConfig.auth.pass && smtpConfig.auth.pass !== 'your-hostinger-password'
-  });
-  
-  const transporter = nodemailer.createTransport(smtpConfig);
 
   const serviceDisplayName = getServiceDisplayName(quote.service);
   const addOnsText = formatAddOns(quote);
@@ -90,19 +66,77 @@ Submitted: ${new Date().toLocaleString('en-GB', {
 This lead is ready to copy-paste into GoHighLevel!
   `.trim();
 
+  // Try webhook email service first (most reliable)
+  const emailWebhookUrl = process.env.EMAIL_WEBHOOK_URL;
+  if (emailWebhookUrl) {
+    try {
+      const emailData = {
+        to: 'leads@totalsparksolutions.co.uk',
+        from: 'noreply@totalsparksolutions.co.uk',
+        subject: emailSubject,
+        body: emailBody,
+        replyTo: quote.email,
+        // Additional data for automation
+        leadData: {
+          name: quote.name,
+          email: quote.email,
+          phone: quote.phone,
+          service: getServiceDisplayName(quote.service),
+          urgent: quote.urgent || false,
+          weekend: quote.weekend || false,
+          estimate: estimateText
+        }
+      };
+      
+      const response = await fetch(emailWebhookUrl, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'User-Agent': 'TotalSpark-Solutions/1.0'
+        },
+        body: JSON.stringify(emailData),
+        signal: AbortSignal.timeout(10000)
+      });
+      
+      if (response.ok) {
+        console.log('Email notification sent successfully via webhook to leads@totalsparksolutions.co.uk');
+        return; // Success - no need to try SMTP
+      }
+    } catch (webhookError) {
+      console.warn('Webhook email failed, trying SMTP backup:', webhookError);
+    }
+  }
+  
+  // Fallback: Try SMTP (currently having auth issues)
   try {
+    const smtpConfig = {
+      host: process.env.SMTP_HOST || 'smtp.hostinger.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.SMTP_USER || 'leads@totalsparksolutions.co.uk',
+        pass: process.env.SMTP_PASS || 'your-hostinger-password'
+      },
+      authMethod: 'LOGIN',
+      connectionTimeout: 10000,
+      socketTimeout: 10000
+    };
+    
+    const transporter = nodemailer.createTransport(smtpConfig);
+    
     await transporter.sendMail({
       from: `"TotalSpark Solutions" <leads@totalsparksolutions.co.uk>`,
       to: 'leads@totalsparksolutions.co.uk',
-      replyTo: quote.email, // Customer can reply directly to lead
+      replyTo: quote.email,
       subject: emailSubject,
       text: emailBody
     });
     
-    console.log('Lead notification email sent successfully to leads@totalsparksolutions.co.uk');
-  } catch (error) {
-    console.error('Email notification failed:', error);
-    // Don't throw - we don't want to fail the quote submission if email fails
+    console.log('Email notification sent successfully via SMTP to leads@totalsparksolutions.co.uk');
+  } catch (smtpError) {
+    console.error('Both webhook and SMTP email failed. Lead saved successfully but no email sent:', smtpError);
+    // Don't throw - quote should still save successfully
   }
 }
 
@@ -306,6 +340,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Webhook error:', error);
       res.status(500).json({ error: 'Webhook processing failed' });
+    }
+  });
+
+  // Email webhook endpoint for automation platforms (Zapier/Make.com) 
+  app.post('/webhook/email', async (req, res) => {
+    try {
+      console.log('Email webhook received for lead:', {
+        to: req.body.to,
+        subject: req.body.subject,
+        leadName: req.body.leadData?.name,
+        service: req.body.leadData?.service,
+        urgent: req.body.leadData?.urgent
+      });
+      
+      res.status(200).json({ 
+        success: true, 
+        message: 'Email webhook received - ready for automation platform to send email',
+        emailData: req.body,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Email webhook error:', error);
+      res.status(500).json({ error: 'Email webhook processing failed' });
     }
   });
 
