@@ -8,6 +8,7 @@ import BeforeAfterGallery from '@/components/BeforeAfterGallery';
 import FAQSection from '@/components/FAQSection';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
+import SEOHead from '@/components/SEOHead';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +16,12 @@ import { Input } from '@/components/ui/input';
 import { MapPin, Search } from 'lucide-react';
 import { Link } from 'wouter';
 import { REGIONS, searchLocations, type LocationData } from '@shared/locations';
+import { 
+  createOrganizationSchema, 
+  createLocalBusinessSchema, 
+  generateKeywords, 
+  createCanonicalUrl 
+} from '@/utils/seo';
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +32,25 @@ export default function HomePage() {
   const handleHeroQuoteRequest = (email: string) => {
     setHeroEmail(email);
   };
+
+  // SEO configuration
+  const pageTitle = "Professional Cleaning Services | North East UK | DBS Checked & Insured";
+  const pageDescription = "Expert cleaning services across Newcastle, Leeds, York, Sunderland & Middlesbrough. End-of-tenancy, commercial & deep cleaning. DBS checked, fully insured with deposit-back guarantee.";
+  const pageKeywords = generateKeywords([
+    "cleaning services",
+    "professional cleaners", 
+    "end of tenancy cleaning",
+    "commercial cleaning",
+    "deep cleaning",
+    "carpet cleaning",
+    "North East England"
+  ]);
+  
+  // Structured data for homepage
+  const structuredData = [
+    createOrganizationSchema(),
+    createLocalBusinessSchema()
+  ];
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -52,6 +78,14 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonicalUrl={createCanonicalUrl('/')}
+        ogType="website"
+        structuredData={structuredData}
+      />
       <Header />
       <main>
         <HeroSection 

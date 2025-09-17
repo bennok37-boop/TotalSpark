@@ -6,9 +6,12 @@ interface SEOHeadProps {
   canonicalUrl?: string;
   ogTitle?: string;
   ogDescription?: string;
-  ogType?: string;
+  ogType?: 'website' | 'article' | 'service';
   ogImage?: string;
   keywords?: string;
+  author?: string;
+  robots?: string;
+  structuredData?: Record<string, any> | Record<string, any>[];
 }
 
 export default function SEOHead({
@@ -19,11 +22,15 @@ export default function SEOHead({
   ogDescription,
   ogType = 'website',
   ogImage,
-  keywords
+  keywords,
+  author = 'TotalSpark Solutions',
+  robots = 'index,follow',
+  structuredData
 }: SEOHeadProps) {
   useEffect(() => {
-    // Update document title
-    document.title = title;
+    // Ensure title includes company name if not already present
+    const fullTitle = title.includes('TotalSpark') ? title : `${title} | TotalSpark Solutions`;
+    document.title = fullTitle;
 
     // Helper function to update or create meta tags
     const updateMetaTag = (name: string, content: string, property?: boolean) => {
@@ -54,14 +61,23 @@ export default function SEOHead({
 
     // Update basic meta tags
     updateMetaTag('description', description);
+    updateMetaTag('author', author);
+    updateMetaTag('robots', robots);
+    
     if (keywords) {
       updateMetaTag('keywords', keywords);
     }
 
     // Update Open Graph tags
-    updateMetaTag('og:title', ogTitle || title, true);
+    updateMetaTag('og:title', ogTitle || fullTitle, true);
     updateMetaTag('og:description', ogDescription || description, true);
     updateMetaTag('og:type', ogType, true);
+    updateMetaTag('og:site_name', 'TotalSpark Solutions', true);
+    updateMetaTag('og:locale', 'en_GB', true);
+    
+    // Set current URL for OG if not provided
+    const currentUrl = canonicalUrl || window.location.href;
+    updateMetaTag('og:url', currentUrl, true);
     
     if (ogImage) {
       updateMetaTag('og:image', ogImage, true);
@@ -74,14 +90,31 @@ export default function SEOHead({
 
     // Update Twitter Card tags
     updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', ogTitle || title);
+    updateMetaTag('twitter:title', ogTitle || fullTitle);
     updateMetaTag('twitter:description', ogDescription || description);
     
     if (ogImage) {
       updateMetaTag('twitter:image', ogImage);
     }
 
-  }, [title, description, canonicalUrl, ogTitle, ogDescription, ogType, ogImage, keywords]);
+    // Add theme colors
+    updateMetaTag('theme-color', '#0ea5e9');
+    updateMetaTag('msapplication-TileColor', '#0ea5e9');
+
+    // Handle structured data
+    if (structuredData) {
+      // Remove existing structured data scripts
+      const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
+      existingScripts.forEach(script => script.remove());
+
+      // Add new structured data
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(Array.isArray(structuredData) ? structuredData : [structuredData]);
+      document.head.appendChild(script);
+    }
+
+  }, [title, description, canonicalUrl, ogTitle, ogDescription, ogType, ogImage, keywords, author, robots, structuredData]);
 
   return null; // This component doesn't render anything
 }
