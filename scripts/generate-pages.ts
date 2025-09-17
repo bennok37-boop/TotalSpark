@@ -21,8 +21,7 @@ function generatePageComponent(
 ): string {
   const componentName = getComponentName(serviceData.location.name, serviceType);
 
-  return `import { useEffect } from 'react';
-import { Link } from 'wouter';
+  return `import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,29 +32,48 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
+import SEOHead from '@/components/SEOHead';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { 
+  createLocalBusinessSchema, 
+  createServiceSchema,
+  generateKeywords, 
+  createCanonicalUrl 
+} from '@/utils/seo';
 
 export default function ${componentName}() {
   // Get tracking numbers for this location
   const trackingNumbers = useTrackingNumbers();
   
-  // Set page title and meta description
-  useEffect(() => {
-    document.title = ${safeString(serviceData.metaTitle)};
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', ${safeString(serviceData.metaDescription)});
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = ${safeString(serviceData.metaDescription)};
-      document.head.appendChild(meta);
-    }
-  }, []);
+  // SEO configuration for this location and service
+  const pageTitle = ${safeString(serviceData.metaTitle)};
+  const pageDescription = ${safeString(serviceData.metaDescription)};
+  const cityName = ${safeString(serviceData.location.name)};
+  const serviceName = ${safeString(serviceDisplayName)};
+  const pageKeywords = generateKeywords([
+    serviceName.toLowerCase(),
+    "professional cleaners", 
+    "DBS checked",
+    "insured cleaning service"
+  ], cityName);
+  
+  // Structured data for this location and service
+  const structuredData = [
+    createLocalBusinessSchema(cityName),
+    createServiceSchema(serviceName, cityName)
+  ];
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonicalUrl={createCanonicalUrl(\`/\${${safeString(serviceType)}}-\${${safeString(serviceData.location.slug)}}\`)}
+        ogType="service"
+        structuredData={structuredData}
+      />
       <Header />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">
@@ -295,7 +313,7 @@ function generateRouteConfig(): string {
     allLocations.forEach(location => {
       routes.push(`  { 
     path: "/${service.urlSegment}-${location.slug}", 
-    component: lazy(() => import("@/pages/${location.name.replace(/[^a-zA-Z0-9]/g, '')}${service.type.split('-').map(word => 
+    component: lazy(() => import("@/pages/generated/${location.name.replace(/[^a-zA-Z0-9]/g, '')}${service.type.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join('')}Page")) 
   }`);

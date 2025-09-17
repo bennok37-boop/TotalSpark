@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,29 +9,48 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
+import SEOHead from '@/components/SEOHead';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { 
+  createLocalBusinessSchema, 
+  createServiceSchema,
+  generateKeywords, 
+  createCanonicalUrl 
+} from '@/utils/seo';
 
 export default function BarnardCastleCommercialCleaningPage() {
   // Get tracking numbers for this location
   const trackingNumbers = useTrackingNumbers();
   
-  // Set page title and meta description
-  useEffect(() => {
-    document.title = "Commercial Cleaning Services Barnard Castle | Office & Business Cleaning | County Durham";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', "Professional commercial cleaning in Barnard Castle. Office cleaning & business services. Serving Bishop Auckland, Darlington & County Durham businesses. Get quote today.");
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = "Professional commercial cleaning in Barnard Castle. Office cleaning & business services. Serving Bishop Auckland, Darlington & County Durham businesses. Get quote today.";
-      document.head.appendChild(meta);
-    }
-  }, []);
+  // SEO configuration for this location and service
+  const pageTitle = "Commercial Cleaning Services Barnard Castle | Office & Business Cleaning | County Durham";
+  const pageDescription = "Professional commercial cleaning in Barnard Castle. Office cleaning & business services. Serving Bishop Auckland, Darlington & County Durham businesses. Get quote today.";
+  const cityName = "Barnard Castle";
+  const serviceName = "Commercial Cleaning";
+  const pageKeywords = generateKeywords([
+    serviceName.toLowerCase(),
+    "professional cleaners", 
+    "DBS checked",
+    "insured cleaning service"
+  ], cityName);
+  
+  // Structured data for this location and service
+  const structuredData = [
+    createLocalBusinessSchema(cityName),
+    createServiceSchema(serviceName, cityName)
+  ];
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"barnard-castle"}`)}
+        ogType="service"
+        structuredData={structuredData}
+      />
       <Header />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">

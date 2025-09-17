@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,29 +9,48 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
+import SEOHead from '@/components/SEOHead';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { 
+  createLocalBusinessSchema, 
+  createServiceSchema,
+  generateKeywords, 
+  createCanonicalUrl 
+} from '@/utils/seo';
 
 export default function EaglescliffeDeepCleaningPage() {
   // Get tracking numbers for this location
   const trackingNumbers = useTrackingNumbers();
   
-  // Set page title and meta description
-  useEffect(() => {
-    document.title = "Deep Cleaning Services Eaglescliffe | Complete Property Restoration | Tees Valley";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', "Professional deep cleaning in Eaglescliffe. Complete property restoration & spring cleaning. Serving Yarm, Ingleby Barwick, Stockton-on-Tees & Tees Valley. Transform your space.");
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = "Professional deep cleaning in Eaglescliffe. Complete property restoration & spring cleaning. Serving Yarm, Ingleby Barwick, Stockton-on-Tees & Tees Valley. Transform your space.";
-      document.head.appendChild(meta);
-    }
-  }, []);
+  // SEO configuration for this location and service
+  const pageTitle = "Deep Cleaning Services Eaglescliffe | Complete Property Restoration | Tees Valley";
+  const pageDescription = "Professional deep cleaning in Eaglescliffe. Complete property restoration & spring cleaning. Serving Yarm, Ingleby Barwick, Stockton-on-Tees & Tees Valley. Transform your space.";
+  const cityName = "Eaglescliffe";
+  const serviceName = "Deep Cleaning";
+  const pageKeywords = generateKeywords([
+    serviceName.toLowerCase(),
+    "professional cleaners", 
+    "DBS checked",
+    "insured cleaning service"
+  ], cityName);
+  
+  // Structured data for this location and service
+  const structuredData = [
+    createLocalBusinessSchema(cityName),
+    createServiceSchema(serviceName, cityName)
+  ];
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonicalUrl={createCanonicalUrl(`/${"deep-cleaning"}-${"eaglescliffe"}`)}
+        ogType="service"
+        structuredData={structuredData}
+      />
       <Header />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">

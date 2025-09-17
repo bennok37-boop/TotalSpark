@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,29 +9,48 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
+import SEOHead from '@/components/SEOHead';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
+import { 
+  createLocalBusinessSchema, 
+  createServiceSchema,
+  generateKeywords, 
+  createCanonicalUrl 
+} from '@/utils/seo';
 
 export default function BlythCommercialCleaningPage() {
   // Get tracking numbers for this location
   const trackingNumbers = useTrackingNumbers();
   
-  // Set page title and meta description
-  useEffect(() => {
-    document.title = "Commercial Cleaning Services Blyth | Office & Business Cleaning | Northumberland";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', "Professional commercial cleaning in Blyth. Office cleaning & business services. Serving Ashington, Cramlington, Whitley Bay & Northumberland businesses. Get quote today.");
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = "Professional commercial cleaning in Blyth. Office cleaning & business services. Serving Ashington, Cramlington, Whitley Bay & Northumberland businesses. Get quote today.";
-      document.head.appendChild(meta);
-    }
-  }, []);
+  // SEO configuration for this location and service
+  const pageTitle = "Commercial Cleaning Services Blyth | Office & Business Cleaning | Northumberland";
+  const pageDescription = "Professional commercial cleaning in Blyth. Office cleaning & business services. Serving Ashington, Cramlington, Whitley Bay & Northumberland businesses. Get quote today.";
+  const cityName = "Blyth";
+  const serviceName = "Commercial Cleaning";
+  const pageKeywords = generateKeywords([
+    serviceName.toLowerCase(),
+    "professional cleaners", 
+    "DBS checked",
+    "insured cleaning service"
+  ], cityName);
+  
+  // Structured data for this location and service
+  const structuredData = [
+    createLocalBusinessSchema(cityName),
+    createServiceSchema(serviceName, cityName)
+  ];
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"blyth"}`)}
+        ogType="service"
+        structuredData={structuredData}
+      />
       <Header />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 py-16 lg:py-24">
@@ -54,10 +72,14 @@ export default function BlythCommercialCleaningPage() {
                 <Phone className="mr-2 h-5 w-5" />
                 Get Free Quote Now
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-6" data-testid="button-call-now">
+              <a 
+                href={`tel:${trackingNumbers.phone.replace(/\s/g, '')}`}
+                className="inline-flex items-center justify-center h-14 px-8 bg-transparent border-2 border-foreground text-foreground hover:bg-foreground hover:text-background rounded-md font-medium text-lg transition-colors"
+                data-testid="button-call-now"
+              >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Call {trackingNumbers.phone}
-              </Button>
+              </a>
             </div>
             
             {/* Trust Signals */}
@@ -185,7 +207,7 @@ export default function BlythCommercialCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£25"}</div>
-                  <Button className="w-full" data-testid="button-book-0">
+                  <Button className="w-full" onClick={scrollToQuoteForm} data-testid="button-book-0">
                     Book Now
                   </Button>
                 </CardContent>
@@ -198,7 +220,7 @@ export default function BlythCommercialCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£45"}</div>
-                  <Button className="w-full" data-testid="button-book-1">
+                  <Button className="w-full" onClick={scrollToQuoteForm} data-testid="button-book-1">
                     Book Now
                   </Button>
                 </CardContent>
@@ -211,7 +233,7 @@ export default function BlythCommercialCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£75"}</div>
-                  <Button className="w-full" data-testid="button-book-2">
+                  <Button className="w-full" onClick={scrollToQuoteForm} data-testid="button-book-2">
                     Book Now
                   </Button>
                 </CardContent>
@@ -224,7 +246,7 @@ export default function BlythCommercialCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"£35"}</div>
-                  <Button className="w-full" data-testid="button-book-3">
+                  <Button className="w-full" onClick={scrollToQuoteForm} data-testid="button-book-3">
                     Book Now
                   </Button>
                 </CardContent>
@@ -237,7 +259,7 @@ export default function BlythCommercialCleaningPage() {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="text-3xl font-bold text-primary mb-4">{"POA"}</div>
-                  <Button className="w-full" data-testid="button-book-4">
+                  <Button className="w-full" onClick={scrollToQuoteForm} data-testid="button-book-4">
                     Book Now
                   </Button>
                 </CardContent>
@@ -428,10 +450,14 @@ export default function BlythCommercialCleaningPage() {
                 <Phone className="mr-2 h-5 w-5" />
                 Get Free Quote
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-final-call">
+              <a 
+                href={`tel:${trackingNumbers.phone.replace(/\s/g, '')}`}
+                className="inline-flex items-center justify-center h-14 px-8 bg-transparent border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary rounded-md font-medium text-lg transition-colors"
+                data-testid="button-final-call"
+              >
                 <MessageCircle className="mr-2 h-5 w-5" />
                 Call {trackingNumbers.phone}
-              </Button>
+              </a>
             </div>
           </div>
         </div>
