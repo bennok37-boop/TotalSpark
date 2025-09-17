@@ -49,6 +49,7 @@ export default function EasingtonCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"cleaning"}-${"easington"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

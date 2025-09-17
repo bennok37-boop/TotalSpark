@@ -49,6 +49,7 @@ export default function SeahamDeepCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"deep-cleaning"}-${"seaham"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

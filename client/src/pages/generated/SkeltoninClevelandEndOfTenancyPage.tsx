@@ -49,6 +49,7 @@ export default function SkeltoninClevelandEndOfTenancyPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"end-of-tenancy"}-${"skelton-in-cleveland"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

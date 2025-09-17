@@ -49,6 +49,7 @@ export default function HartlepoolDeepCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"deep-cleaning"}-${"hartlepool"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

@@ -49,6 +49,7 @@ export default function HordenCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"cleaning"}-${"horden"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

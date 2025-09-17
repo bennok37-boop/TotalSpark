@@ -49,6 +49,7 @@ export default function GuisboroughEndOfTenancyPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"end-of-tenancy"}-${"guisborough"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

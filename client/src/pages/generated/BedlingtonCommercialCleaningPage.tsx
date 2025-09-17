@@ -49,6 +49,7 @@ export default function BedlingtonCommercialCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"bedlington"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

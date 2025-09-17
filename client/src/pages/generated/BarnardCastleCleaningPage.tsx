@@ -49,6 +49,7 @@ export default function BarnardCastleCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"cleaning"}-${"barnard-castle"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

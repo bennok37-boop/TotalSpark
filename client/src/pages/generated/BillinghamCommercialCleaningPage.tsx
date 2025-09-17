@@ -49,6 +49,7 @@ export default function BillinghamCommercialCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"billingham"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

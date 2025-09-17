@@ -49,6 +49,7 @@ export default function BedlingtonDeepCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"deep-cleaning"}-${"bedlington"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

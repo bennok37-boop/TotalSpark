@@ -49,6 +49,7 @@ export default function CorbridgeDeepCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"deep-cleaning"}-${"corbridge"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

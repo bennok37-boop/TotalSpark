@@ -49,6 +49,7 @@ export default function HexhamEndOfTenancyPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"end-of-tenancy"}-${"hexham"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

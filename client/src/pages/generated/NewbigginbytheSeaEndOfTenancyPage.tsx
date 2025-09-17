@@ -49,6 +49,7 @@ export default function NewbigginbytheSeaEndOfTenancyPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"end-of-tenancy"}-${"newbiggin-by-the-sea"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

@@ -49,6 +49,7 @@ export default function WoolerEndOfTenancyPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"end-of-tenancy"}-${"wooler"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

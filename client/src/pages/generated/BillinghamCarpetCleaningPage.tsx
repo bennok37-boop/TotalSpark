@@ -49,6 +49,7 @@ export default function BillinghamCarpetCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"carpet-cleaning"}-${"billingham"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

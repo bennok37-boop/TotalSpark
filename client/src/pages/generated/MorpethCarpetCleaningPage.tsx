@@ -49,6 +49,7 @@ export default function MorpethCarpetCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"carpet-cleaning"}-${"morpeth"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

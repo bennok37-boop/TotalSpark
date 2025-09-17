@@ -49,6 +49,7 @@ export default function MiddlesbroughCarpetCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"carpet-cleaning"}-${"middlesbrough"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

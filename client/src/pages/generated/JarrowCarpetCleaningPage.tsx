@@ -49,6 +49,7 @@ export default function JarrowCarpetCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"carpet-cleaning"}-${"jarrow"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

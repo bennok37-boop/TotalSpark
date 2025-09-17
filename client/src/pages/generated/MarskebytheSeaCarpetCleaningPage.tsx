@@ -49,6 +49,7 @@ export default function MarskebytheSeaCarpetCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"carpet-cleaning"}-${"marske-by-the-sea"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

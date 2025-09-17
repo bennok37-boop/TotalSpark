@@ -49,6 +49,7 @@ export default function LongbentonCommercialCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"longbenton"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

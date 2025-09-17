@@ -49,6 +49,7 @@ export default function StanleyCommercialCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"stanley"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

@@ -49,6 +49,7 @@ export default function HebburnCommercialCleaningPage() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(`/${"commercial-cleaning"}-${"hebburn"}`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />

@@ -72,6 +72,7 @@ export default function ${componentName}() {
         keywords={pageKeywords}
         canonicalUrl={createCanonicalUrl(\`/\${${safeString(serviceType)}}-\${${safeString(serviceData.location.slug)}}\`)}
         ogType="service"
+        ogImage="/og-image.jpg"
         structuredData={structuredData}
       />
       <Header />
