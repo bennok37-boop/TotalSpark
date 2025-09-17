@@ -13,6 +13,7 @@ interface HeroSectionProps {
   subtitle?: string;
   phoneNumber?: string;
   whatsappNumber?: string;
+  onQuoteRequest?: (email: string) => void;
 }
 
 export default function HeroSection({ 
@@ -20,7 +21,8 @@ export default function HeroSection({
   title, 
   subtitle, 
   phoneNumber,
-  whatsappNumber
+  whatsappNumber,
+  onQuoteRequest
 }: HeroSectionProps) {
   const [email, setEmail] = useState('');
   
@@ -33,8 +35,14 @@ export default function HeroSection({
   const defaultSubtitle = subtitle || `Trusted by over 1,000 customers across ${city}. DBS-checked, fully insured cleaners with our deposit-back guarantee.`;
 
   const handleQuoteRequest = () => {
-    console.log('Quote request started for:', email); // Todo: remove mock functionality
-    scrollToQuoteForm();
+    if (email.trim()) {
+      console.log('Quote request started for:', email);
+      onQuoteRequest?.(email);
+      scrollToQuoteForm();
+    } else {
+      // If no email provided, just scroll to form
+      scrollToQuoteForm();
+    }
   };
 
   return (

@@ -20,6 +20,11 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<LocationData[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [heroEmail, setHeroEmail] = useState('');
+  
+  const handleHeroQuoteRequest = (email: string) => {
+    setHeroEmail(email);
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -53,6 +58,7 @@ export default function HomePage() {
           city="North East England"
           title="Professional Cleaning Services Across the North East"
           subtitle="End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds. Serving Newcastle, Sunderland, Durham, Middlesbrough & all surrounding areas."
+          onQuoteRequest={handleHeroQuoteRequest}
         />
         <ProofStrip />
         <ServiceCards />
@@ -131,7 +137,7 @@ export default function HomePage() {
           </div>
         </section>
         <BeforeAfterGallery />
-        <QuoteForm />
+        <QuoteForm initialData={heroEmail ? { email: heroEmail } : undefined} />
         <FAQSection />
       </main>
       <Footer />

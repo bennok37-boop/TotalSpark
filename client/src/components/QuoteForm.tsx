@@ -82,7 +82,12 @@ interface QuoteFormData {
   jobImages: string[];
 }
 
-export default function QuoteForm() {
+interface QuoteFormProps {
+  initialData?: Partial<QuoteFormData>;
+}
+
+export default function QuoteForm(props: QuoteFormProps = {}) {
+  const { initialData } = props;
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -96,8 +101,8 @@ export default function QuoteForm() {
   const { phone: phoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
   
   const [formData, setFormData] = useState<QuoteFormData>({
-    name: '',
-    email: '',
+    name: initialData?.name || '',
+    email: initialData?.email || '',
     phone: '',
     address: '',
     postcode: '',
