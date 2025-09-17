@@ -2,11 +2,12 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://totalsparksolutions.co.uk/sitemap.xml
+Sitemap: https://totalsparksolutions.co.uk/api/sitemap.xml
 
-# Disallow admin and private areas
+# Disallow admin and private areas  
 Disallow: /admin/
 Disallow: /api/
+Allow: /api/sitemap.xml
 Disallow: /.well-known/
 
 # Allow important pages for SEO

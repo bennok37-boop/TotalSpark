@@ -7,6 +7,8 @@ import { storage } from "./storage";
 import { insertQuoteRequestSchema, insertBookingRequestSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
+import fs from 'fs';
+import path from 'path';
 
 // Initialize email services - Prefer Resend for reliability
 let resend: Resend | null = null;
@@ -608,6 +610,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Email webhook error:', error);
       res.status(500).json({ error: 'Email webhook processing failed' });
+    }
+  });
+
+  // Dynamic sitemap generation for all 365 location pages plus core pages
+  app.get('/api/sitemap.xml', (req, res) => {
+    try {
+      const siteUrl = process.env.SITE_URL || 'https://totalsparksolutions.co.uk';
+      const lastMod = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      // Use process.cwd() for more reliable path resolution in Vite dev environment
+      const routesPath = path.resolve(process.cwd(), 'client/src/routes/generated-routes.ts');
+      let generatedRoutes: string[] = [];
+      
+      console.log('📄 Sitemap: Reading routes from:', routesPath);
+      console.log('📄 File exists:', fs.existsSync(routesPath));
+      
+      try {
+        const routesContent = fs.readFileSync(routesPath, 'utf-8');
+        console.log('📄 File size:', routesContent.length, 'characters');
+        
+        // Extract path values from the routes file using more robust regex
+        const pathMatches = routesContent.match(/path:\s*"([^"]+)"/g);
+        console.log('📄 Regex matches found:', pathMatches ? pathMatches.length : 0);
+        
+        if (pathMatches) {
+          generatedRoutes = pathMatches.map(match => {
+            // Extract the actual path from: path: "/some-path"
+            const pathMatch = match.match(/path:\s*"([^"]+)"/);
+            return pathMatch ? pathMatch[1] : '';
+          }).filter(path => path.length > 0);
+          
+          console.log('📄 Extracted routes:', generatedRoutes.length);
+          console.log('📄 First 5 routes:', generatedRoutes.slice(0, 5));
+        }
+      } catch (fileError) {
+        console.error('❌ Could not read generated routes for sitemap:', fileError);
+        // Fallback - return sitemap with just static pages
+      }
+      
+      // Core static pages with additional important pages
+      const staticPages = [
+        '/', // homepage
+        '/quote', // quote form page
+        '/about', // about page
+        '/areas', // areas page
+        '/carpet-upholstery', // carpet cleaning page
+        '/commercial-cleaning', // commercial cleaning
+        '/deep-cleaning', // deep cleaning
+        '/end-of-tenancy', // end of tenancy
+        '/complaints', // complaints page
+        '/guarantee', // guarantee page
+      ];
+      
+      // Combine all pages
+      const allPages = [...staticPages, ...generatedRoutes];
+      console.log('📄 Total pages for sitemap:', allPages.length);
+      
+      // Generate XML sitemap with proper formatting
+      const urlEntries = allPages.map(page => {
+        const priority = page === '/' ? '1.0' : 
+                        page === '/quote' ? '0.9' : 
+                        staticPages.includes(page) ? '0.7' : '0.8';
+        
+        return `  <url>
+    <loc>${siteUrl}${page}</loc>
+    <lastmod>${lastMod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
+      }).join('\n');
+
+      const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntries}
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml');
+      res.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+      res.send(sitemapXml);
+      
+      console.log(`✅ Sitemap generated successfully with ${allPages.length} URLs (${generatedRoutes.length} generated + ${staticPages.length} static)`);
+      
+    } catch (error) {
+      console.error('❌ Error generating sitemap:', error);
+      res.set('Content-Type', 'text/plain');
+      res.status(500).send(`Error generating sitemap: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   });
 
