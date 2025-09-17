@@ -36,7 +36,6 @@ export default function HeroSection({
 
   const handleQuoteRequest = () => {
     if (email.trim()) {
-      console.log('Quote request started for:', email);
       onQuoteRequest?.(email);
       scrollToQuoteForm();
     } else {
