@@ -23,7 +23,7 @@ export const BUSINESS_INFO: BusinessInfo = {
   description: "Professional cleaning services across North East England. End-of-tenancy, commercial, and deep cleaning with DBS-checked staff and deposit-back guarantee.",
   url: "https://totalsparksolutions.co.uk",
   telephone: "03300435459", // Using the main business number for schema consistency
-  email: "info@totalsparksolutions.co.uk",
+  email: "hello@totalsparksolutions.co.uk",
   address: {
     streetAddress: "Business Centre",
     addressLocality: "Newcastle upon Tyne",

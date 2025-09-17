@@ -17,7 +17,7 @@ export default function Header() {
   const { phone: phoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
 
   // Business contact information
-  const businessEmail = 'info@totalsparksolutions.co.uk';
+  const businessEmail = 'hello@totalsparksolutions.co.uk';
 
   // Helper function to copy text to clipboard
   const copyToClipboard = async (text: string) => {
