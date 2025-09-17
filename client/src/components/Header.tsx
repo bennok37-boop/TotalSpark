@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Phone, Menu, X, MapPin, ChevronDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Phone, Menu, X, MapPin, ChevronDown, Mail, MessageCircle, Copy } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
@@ -10,9 +11,22 @@ import logoImage from '@assets/4_1757953109291.png';
 export default function Header() {
   const [location, navigate] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   // Get CallRail tracking numbers based on current context
   const { phone: phoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
+
+  // Business contact information
+  const businessEmail = 'info@totalsparksolutions.co.uk';
+
+  // Helper function to copy text to clipboard
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      console.warn('Failed to copy to clipboard:', err);
+    }
+  };
 
   const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
 
@@ -120,14 +134,127 @@ export default function Header() {
               About
             </Link>
 
-            <Button 
-              variant="ghost"
-              onClick={scrollToQuoteForm}
-              className={`text-sm font-medium hover:text-primary transition-colors p-0 h-auto ${location === '/' ? 'text-primary' : 'text-muted-foreground'}`}
-              data-testid="link-contact"
-            >
-              Contact
-            </Button>
+            <Popover open={isContactOpen} onOpenChange={setIsContactOpen}>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="ghost"
+                  className={`text-sm font-medium hover:text-primary transition-colors p-0 h-auto ${isContactOpen ? 'text-primary' : 'text-muted-foreground'}`}
+                  data-testid="button-contact"
+                >
+                  Contact
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <h3 className="font-semibold text-lg mb-2">Contact TotalSpark Solutions</h3>
+                    <p className="text-sm text-muted-foreground">Get in touch with our professional cleaning team</p>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Phone className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="font-medium">Call Us</p>
+                        <p className="text-sm text-muted-foreground">{phoneNumber}</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard(phoneNumber)}
+                        data-testid="button-copy-phone"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                      <Button 
+                        size="sm"
+                        asChild
+                        data-testid="button-call-phone"
+                      >
+                        <a href={`tel:${phoneNumber.replace(/\s/g, '')}`}>
+                          <Phone className="w-3 h-3" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <Mail className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="font-medium">Email Us</p>
+                        <p className="text-sm text-muted-foreground">{businessEmail}</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard(businessEmail)}
+                        data-testid="button-copy-email"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                      <Button 
+                        size="sm"
+                        asChild
+                        data-testid="button-email"
+                      >
+                        <a href={`mailto:${businessEmail}`}>
+                          <Mail className="w-3 h-3" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* WhatsApp */}
+                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <MessageCircle className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="font-medium">WhatsApp</p>
+                        <p className="text-sm text-muted-foreground">+{whatsappNumber}</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => copyToClipboard(`+${whatsappNumber}`)}
+                        data-testid="button-copy-whatsapp"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
+                      <Button 
+                        size="sm"
+                        asChild
+                        data-testid="button-whatsapp"
+                      >
+                        <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                          <MessageCircle className="w-3 h-3" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Quick Quote Button */}
+                  <Button 
+                    className="w-full" 
+                    onClick={() => {
+                      scrollToQuoteForm();
+                      setIsContactOpen(false);
+                    }}
+                    data-testid="button-quick-quote"
+                  >
+                    Get Free Quote
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </nav>
 
           {/* Contact Info */}
@@ -228,16 +355,127 @@ export default function Header() {
                 About
               </Link>
 
-              <Button 
-                variant="ghost"
-                onClick={() => {
-                  scrollToQuoteForm();
-                  setIsMenuOpen(false);
-                }}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors p-0 h-auto w-auto justify-start"
-              >
-                Contact
-              </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="ghost"
+                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors p-0 h-auto w-auto justify-start"
+                    data-testid="button-contact-mobile"
+                  >
+                    Contact
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 mx-4">
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h3 className="font-semibold text-lg mb-2">Contact TotalSpark Solutions</h3>
+                      <p className="text-sm text-muted-foreground">Get in touch with our professional cleaning team</p>
+                    </div>
+
+                    {/* Phone */}
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Phone className="w-5 h-5 text-primary" />
+                        <div>
+                          <p className="font-medium">Call Us</p>
+                          <p className="text-sm text-muted-foreground">{phoneNumber}</p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-1">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => copyToClipboard(phoneNumber)}
+                          data-testid="button-copy-phone-mobile"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </Button>
+                        <Button 
+                          size="sm"
+                          asChild
+                          data-testid="button-call-phone-mobile"
+                        >
+                          <a href={`tel:${phoneNumber.replace(/\s/g, '')}`}>
+                            <Phone className="w-3 h-3" />
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Email */}
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Mail className="w-5 h-5 text-primary" />
+                        <div>
+                          <p className="font-medium">Email Us</p>
+                          <p className="text-sm text-muted-foreground">{businessEmail}</p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-1">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => copyToClipboard(businessEmail)}
+                          data-testid="button-copy-email-mobile"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </Button>
+                        <Button 
+                          size="sm"
+                          asChild
+                          data-testid="button-email-mobile"
+                        >
+                          <a href={`mailto:${businessEmail}`}>
+                            <Mail className="w-3 h-3" />
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* WhatsApp */}
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <MessageCircle className="w-5 h-5 text-primary" />
+                        <div>
+                          <p className="font-medium">WhatsApp</p>
+                          <p className="text-sm text-muted-foreground">+{whatsappNumber}</p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-1">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => copyToClipboard(`+${whatsappNumber}`)}
+                          data-testid="button-copy-whatsapp-mobile"
+                        >
+                          <Copy className="w-3 h-3" />
+                        </Button>
+                        <Button 
+                          size="sm"
+                          asChild
+                          data-testid="button-whatsapp-mobile"
+                        >
+                          <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                            <MessageCircle className="w-3 h-3" />
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Quick Quote Button */}
+                    <Button 
+                      className="w-full" 
+                      onClick={() => {
+                        scrollToQuoteForm();
+                        setIsMenuOpen(false);
+                      }}
+                      data-testid="button-quick-quote-mobile"
+                    >
+                      Get Free Quote
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               <a 
                 href={`tel:${phoneNumber}`} 
