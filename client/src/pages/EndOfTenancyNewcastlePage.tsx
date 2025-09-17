@@ -8,8 +8,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
+import SEOHead from '@/components/SEOHead';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
+import { 
+  createLocalBusinessSchema, 
+  createServiceSchema,
+  createFAQSchema,
+  generateKeywords, 
+  createCanonicalUrl 
+} from '@/utils/seo';
 
 // Import gallery images
 import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
@@ -21,6 +29,17 @@ export default function EndOfTenancyNewcastlePage() {
   const trackingNumbers = useTrackingNumbers();
   const phoneNumber = trackingNumbers.phone;
   const whatsappNumber = trackingNumbers.whatsapp;
+
+  // SEO configuration for Newcastle end of tenancy page
+  const pageTitle = "End of Tenancy Cleaning Newcastle | Deposit Back Guarantee | TotalSpark Solutions";
+  const pageDescription = "Professional end of tenancy cleaning in Newcastle upon Tyne. Deposit back guarantee. DBS-checked cleaners. Covers Jesmond, Heaton, Gosforth & all Newcastle areas. Book today!";
+  const pageKeywords = generateKeywords([
+    "end of tenancy cleaning",
+    "deposit back guarantee", 
+    "move out cleaning",
+    "exit cleaning",
+    "tenancy cleaning"
+  ], "Newcastle upon Tyne");
 
   const newcastleAreas = [
     'Jesmond', 'Heaton', 'Gosforth', 'Byker', 'Walker',
@@ -67,8 +86,23 @@ export default function EndOfTenancyNewcastlePage() {
     }
   ];
 
+  // Structured data for Newcastle-specific service (after FAQ definition)
+  const structuredData = [
+    createLocalBusinessSchema("Newcastle upon Tyne"),
+    createServiceSchema("End of Tenancy Cleaning", "Newcastle upon Tyne"),
+    createFAQSchema(newcastleFaqs.map(faq => ({ question: faq.q, answer: faq.a })))
+  ];
+
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={pageTitle}
+        description={pageDescription}
+        keywords={pageKeywords}
+        canonicalUrl={createCanonicalUrl('/end-of-tenancy-cleaning-newcastle')}
+        ogType="service"
+        structuredData={structuredData}
+      />
       <Header />
       <main>
         {/* Hero Section - Newcastle Focused */}

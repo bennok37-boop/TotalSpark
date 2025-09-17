@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://totalsparksolutions.co.uk/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /.well-known/
+
+# Allow important pages for SEO
+Allow: /
+Allow: /cleaning-*
+Allow: /end-of-tenancy-*
+Allow: /commercial-cleaning*
+Allow: /deep-cleaning*
+Allow: /carpet-upholstery-cleaning*
+
+# Common crawl rules
+Crawl-delay: 1
