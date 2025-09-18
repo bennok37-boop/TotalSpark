@@ -1155,9 +1155,14 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
                         <div className="text-center space-y-4">
                           <div className="space-y-2">
                             <div className="text-3xl font-bold text-primary">
-                              £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
+                              {formData.service === 'deep' ? 
+                                `£${quoteResult.total.toFixed(2)} - Fixed Price` : 
+                                `£${quoteResult.estimateRange.low} - £${quoteResult.estimateRange.high}`
+                              }
                             </div>
-                            <div className="text-sm text-muted-foreground">Estimated Price Range</div>
+                            <div className="text-sm text-muted-foreground">
+                              {formData.service === 'deep' ? 'Fixed Price Quote' : 'Estimated Price Range'}
+                            </div>
                           </div>
                           
                           <Separator />
@@ -1311,12 +1316,20 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
                     </p>
                     {quoteResult && (
                       <div className="bg-chart-2/10 border border-chart-2/20 rounded-lg p-4 mb-6">
-                        <p className="text-sm text-muted-foreground mb-1">Your Estimated Quote</p>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          {formData.service === 'deep' ? 'Your Fixed Price Quote' : 'Your Estimated Quote'}
+                        </p>
                         <p className="text-3xl font-bold text-chart-2" data-testid="text-final-price">
-                          £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
+                          {formData.service === 'deep' ? 
+                            `£${quoteResult.total.toFixed(2)} - Fixed Price` : 
+                            `£${quoteResult.estimateRange.low} - £${quoteResult.estimateRange.high}`
+                          }
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Final price confirmed after property assessment
+                          {formData.service === 'deep' ? 
+                            'Fixed pricing - no hidden costs or surprises' : 
+                            'Final price confirmed after property assessment'
+                          }
                         </p>
                       </div>
                     )}
@@ -1448,9 +1461,14 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
                     </p>
                     {quoteResult && (
                       <div className="bg-muted/30 rounded-lg p-4 mb-6">
-                        <p className="text-sm text-muted-foreground mb-1">Your Quote</p>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          {formData.service === 'deep' ? 'Your Fixed Price Quote' : 'Your Quote'}
+                        </p>
                         <p className="text-xl font-bold text-primary">
-                          £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
+                          {formData.service === 'deep' ? 
+                            `£${quoteResult.total.toFixed(2)} - Fixed Price` : 
+                            `£${quoteResult.estimateRange.low} - £${quoteResult.estimateRange.high}`
+                          }
                         </p>
                       </div>
                     )}

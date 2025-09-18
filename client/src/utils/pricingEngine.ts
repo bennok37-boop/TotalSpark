@@ -18,12 +18,12 @@ const PRICING = {
   },
   deep: {
     base: { 
-      studio: { price: 100, hours: 3 }, 
-      "1": { price: 100, hours: 4 }, 
-      "2": { price: 150, hours: 6 }, 
-      "3": { price: 200, hours: 8 }, 
-      "4": { price: 260, hours: 10 }, 
-      "5plus": { price: 320, hours: 12 } 
+      studio: { price: 100 }, 
+      "1": { price: 120 }, 
+      "2": { price: 180 }, 
+      "3": { price: 240 }, 
+      "4": { price: 300 }, 
+      "5plus": { price: 360 } 
     }
   },
   propertyTypeFactor: {
@@ -196,8 +196,8 @@ export function computeQuote(input: QuoteInput): QuoteResult {
   };
 
   // SERVICE LOGIC
-  if (input.service === "endOfTenancy" || input.service === "deep") {
-    const table = cfg[input.service].base;
+  if (input.service === "endOfTenancy") {
+    const table = cfg.endOfTenancy.base;
     const key = (input.bedrooms === "5plus" || input.bedrooms === "5+") ? "5plus"
                : (input.bedrooms === "studio" ? "studio" : String(input.bedrooms || ""));
     const base = table[key as keyof typeof table];
@@ -205,11 +205,44 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     if (base) {
       // Apply domestic scaling factors
       const scaled = applyDomesticScaling(base.price, base.hours);
-      add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"})`, scaled.scaledPrice);
+      add(`End of Tenancy clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"})`, scaled.scaledPrice);
       baseHours = scaled.scaledHours;
     }
+  } else if (input.service === "deep") {
+    // Deep cleaning uses fixed pricing - no hourly calculations
+    const table = cfg.deep.base;
+    const key = (input.bedrooms === "5plus" || input.bedrooms === "5+") ? "5plus"
+               : (input.bedrooms === "studio" ? "studio" : String(input.bedrooms || ""));
+    const base = table[key as keyof typeof table];
+    
+    if (base) {
+      // Apply basic property type and condition factors only - no hourly scaling
+      const pType = cfg.propertyTypeFactor[input.propertyType || "flat"] ?? 1.00;
+      const cond = cfg.conditionFactor[input.condition || "standard"] ?? 1.00;
+      let pct = 1.0 * pType * cond;
+      
+      // Bathrooms scaling for fixed pricing
+      const baths = Math.max(1, Number(input.bathrooms || 1));
+      const extraBaths = Math.max(0, baths - 1);
+      const bathPct = Math.min(cfg.domesticExtras.extraBathroomCapPct, extraBaths * cfg.domesticExtras.extraBathroomPct);
+      pct *= (1 + bathPct);
+      
+      // Additional property factors
+      if (input.secondKitchen) pct *= (1 + cfg.domesticExtras.secondKitchenPct);
+      if (input.internalStairs) pct *= (1 + cfg.domesticExtras.internalStairsPct);
+      if (input.furnished) pct *= (1 + cfg.domesticExtras.furnishedPct);
+      if (input.occupied) pct *= (1 + cfg.domesticExtras.occupiedPct);
+      
+      const fixedPrice = base.price * pct;
+      add(`Deep clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"}) - Fixed Price`, fixedPrice);
+      // Set a reasonable baseHours for crew calculation (deep cleaning typically 2-4 hours depending on size)
+      baseHours = Math.max(2, Number(key === "studio" ? 2 : key === "1" ? 3 : key === "2" ? 4 : key === "3" ? 5 : key === "4" ? 6 : 7));
+    }
 
-    // Add-ons
+  }
+
+  // Shared add-ons for domestic services (endOfTenancy and deep)
+  if (input.service === "endOfTenancy" || input.service === "deep") {
     if (input.addons?.oven) add("Oven deep clean", cfg.addons.oven);
     if (input.addons?.fridge) add("Fridge/Freezer clean", cfg.addons.fridgeFreezer);
     if (input.addons?.cabinets) add("Inside kitchen cabinets", cfg.addons.cabinetsInside);
@@ -224,15 +257,16 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     // HMO and waste removal
     if (Number(input.hmoRooms) > 0) add(`HMO handover pack x${input.hmoRooms}`, Number(input.hmoRooms) * cfg.domesticExtras.hmoRoomPackEach);
     if (Number(input.wasteBags) > 0) add(`Waste bag removal x${input.wasteBags}`, Number(input.wasteBags) * cfg.domesticExtras.wasteBag);
+  }
 
-    // Bundle discount logic
-    if (input.bundleCarpetsWithEoT && input.service === "endOfTenancy" && input.items) {
-      const it = input.items, c = cfg.carpets;
-      const carpetTotal = (it.carpetRooms||0)*c.room + (it.stairs||0)*c.stairs + (it.rugs||0)*c.rug + (it.sofa2||0)*c.sofa2 + (it.sofa3||0)*c.sofa3 + (it.armchair||0)*c.armchair + (it.mattress||0)*c.mattress;
-      if (carpetTotal > 0) add("Bundle discount (carpets with End of Tenancy)", -carpetTotal * cfg.modifiers.bundleCarpetWithEoTDiscountPct);
-    }
+  // Bundle discount logic (only for end of tenancy)
+  if (input.bundleCarpetsWithEoT && input.service === "endOfTenancy" && input.items) {
+    const it = input.items, c = cfg.carpets;
+    const carpetTotal = (it.carpetRooms||0)*c.room + (it.stairs||0)*c.stairs + (it.rugs||0)*c.rug + (it.sofa2||0)*c.sofa2 + (it.sofa3||0)*c.sofa3 + (it.armchair||0)*c.armchair + (it.mattress||0)*c.mattress;
+    if (carpetTotal > 0) add("Bundle discount (carpets with End of Tenancy)", -carpetTotal * cfg.modifiers.bundleCarpetWithEoTDiscountPct);
+  }
 
-  } else if (input.service === "commercial") {
+  if (input.service === "commercial") {
     const catKey = input.commercialType || "office";
     const cat = cfg.commercial.categories[catKey] || cfg.commercial.categories.office;
     const m2ph = cat.m2PerHour;
