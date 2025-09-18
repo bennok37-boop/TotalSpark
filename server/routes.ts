@@ -78,6 +78,9 @@ ${tagsText}
 📝 ADDITIONAL NOTES
 ${quote.additionalDetails || 'None provided'}
 
+📷 JOB IMAGES
+${quote.jobImages && quote.jobImages.length > 0 ? `${quote.jobImages.length} image(s) uploaded (see attachments)` : 'No images provided'}
+
 ═══════════════════════════════════════
 Quote ID: ${quote.id}
 Submitted: ${new Date().toLocaleString('en-GB', { 
@@ -91,10 +94,40 @@ This lead is ready to copy-paste into GoHighLevel!
 
   const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
   
+  // Prepare attachments from job images
+  let attachments = [];
+  if (quote.jobImages && quote.jobImages.length > 0) {
+    try {
+      for (let i = 0; i < quote.jobImages.length; i++) {
+        const imageUrl = quote.jobImages[i];
+        console.log(`📷 Fetching image ${i + 1}/${quote.jobImages.length}: ${imageUrl}`);
+        
+        // Fetch the image data
+        const response = await fetch(imageUrl);
+        if (response.ok) {
+          const imageBuffer = await response.arrayBuffer();
+          const filename = `job-image-${i + 1}.jpg`;
+          
+          attachments.push({
+            filename: filename,
+            content: Buffer.from(imageBuffer),
+            contentType: 'image/jpeg'
+          });
+          console.log(`✅ Image ${i + 1} prepared for attachment`);
+        } else {
+          console.warn(`⚠️ Failed to fetch image ${i + 1}: ${response.status}`);
+        }
+      }
+    } catch (attachmentError) {
+      console.warn('⚠️ Failed to prepare image attachments:', attachmentError);
+      // Continue with email without attachments
+    }
+  }
+  
   // Try Resend first (if configured)
   if (resend) {
     try {
-      console.log(`📧 Sending quote email via Resend to: ${targetEmail}`);
+      console.log(`📧 Sending quote email via Resend to: ${targetEmail} ${attachments.length > 0 ? `with ${attachments.length} attachments` : ''}`);
       
       const result = await resend.emails.send({
         from: 'onboarding@resend.dev',
@@ -106,7 +139,8 @@ This lead is ready to copy-paste into GoHighLevel!
           <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">New Quote Request - TotalSpark Solutions</h2>
           <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace;">${emailBody}</pre>
           <p style="color: #666; font-size: 12px; margin-top: 20px;">This email was automatically generated from the TotalSpark Solutions website.</p>
-        </div>`
+        </div>`,
+        attachments: attachments.length > 0 ? attachments : undefined
       });
       
       if (result.error) {
@@ -146,7 +180,8 @@ This lead is ready to copy-paste into GoHighLevel!
       to: targetEmail,
       replyTo: quote.email,
       subject: emailSubject,
-      text: emailBody
+      text: emailBody,
+      attachments: attachments.length > 0 ? attachments : undefined
     });
     
     console.log(`✅ Quote email sent successfully via SMTP`);
@@ -200,6 +235,9 @@ Preferred Time: ${timeSlot}
 Booking Status: ${booking.bookingStatus || 'booking_requested'}
 Additional Notes: ${booking.additionalNotes || 'None provided'}
 
+📷 JOB IMAGES
+${booking.jobImages && booking.jobImages.length > 0 ? `${booking.jobImages.length} image(s) uploaded (see attachments)` : 'No images provided'}
+
 ⚠️ ACTION REQUIRED: Confirm booking within 30 minutes!
 This is a hot lead - customer is ready to book!
 
@@ -208,6 +246,36 @@ Submitted: ${new Date().toLocaleString('en-GB')}
   `.trim();
 
   const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
+  
+  // Prepare attachments from job images (same logic as quote emails)
+  let attachments = [];
+  if (booking.jobImages && booking.jobImages.length > 0) {
+    try {
+      for (let i = 0; i < booking.jobImages.length; i++) {
+        const imageUrl = booking.jobImages[i];
+        console.log(`📷 Fetching booking image ${i + 1}/${booking.jobImages.length}: ${imageUrl}`);
+        
+        // Fetch the image data
+        const response = await fetch(imageUrl);
+        if (response.ok) {
+          const imageBuffer = await response.arrayBuffer();
+          const filename = `booking-image-${i + 1}.jpg`;
+          
+          attachments.push({
+            filename: filename,
+            content: Buffer.from(imageBuffer),
+            contentType: 'image/jpeg'
+          });
+          console.log(`✅ Booking image ${i + 1} prepared for attachment`);
+        } else {
+          console.warn(`⚠️ Failed to fetch booking image ${i + 1}: ${response.status}`);
+        }
+      }
+    } catch (attachmentError) {
+      console.warn('⚠️ Failed to prepare booking image attachments:', attachmentError);
+      // Continue with email without attachments
+    }
+  }
   
   // Try Resend first (if configured)
   if (resend) {
@@ -224,7 +292,8 @@ Submitted: ${new Date().toLocaleString('en-GB')}
           <h2 style="color: #333; border-bottom: 2px solid #28a745; padding-bottom: 10px;">New Booking Request - TotalSpark Solutions</h2>
           <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace;">${emailBody}</pre>
           <p style="color: #666; font-size: 12px; margin-top: 20px;">This email was automatically generated from the TotalSpark Solutions website.</p>
-        </div>`
+        </div>`,
+        attachments: attachments.length > 0 ? attachments : undefined
       });
       
       if (result.error) {
@@ -262,7 +331,8 @@ Submitted: ${new Date().toLocaleString('en-GB')}
       replyTo: booking.email,
       subject: emailSubject,
       text: emailBody,
-      priority: 'high'
+      priority: 'high',
+      attachments: attachments.length > 0 ? attachments : undefined
     });
     
     console.log(`✅ Booking email sent successfully via SMTP`);

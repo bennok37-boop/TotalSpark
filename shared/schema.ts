@@ -57,6 +57,9 @@ export const quoteRequests = pgTable("quote_requests", {
   // Quote result (stored as JSON)
   quoteResult: jsonb("quote_result"), // Stores the complete QuoteResult object
   
+  // Job images
+  jobImages: jsonb("job_images").default([]), // Array of image URLs
+  
   // Booking status and tracking
   bookedOnline: boolean("booked_online").default(false),
   bookingDate: timestamp("booking_date"),
