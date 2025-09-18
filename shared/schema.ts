@@ -3,6 +3,35 @@ import { pgTable, text, varchar, integer, timestamp, boolean, jsonb } from "driz
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Security: URL validation for job images to prevent SSRF attacks
+const jobImageUrlSchema = z.union([
+  // Allow local object storage paths
+  z.string().startsWith('/objects/', "Local object paths must start with /objects/"),
+  // Allow external URLs from approved storage domains only
+  z.string().url().refine((url) => {
+    try {
+      const parsedUrl = new URL(url);
+      const allowedHosts = [
+        'storage.googleapis.com',
+        'storage.cloud.google.com'
+      ];
+      
+      return allowedHosts.includes(parsedUrl.hostname);
+    } catch {
+      return false;
+    }
+  }, {
+    message: "External URLs must be from approved storage domains (Google Cloud Storage)"
+  })
+], {
+  errorMap: () => ({
+    message: "Image URLs must be either local object paths (/objects/...) or from approved storage domains"
+  })
+});
+
+// Job images array with security validation and limits
+const jobImagesSchema = z.array(jobImageUrlSchema).max(5, "Maximum 5 images allowed").default([]);
+
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
@@ -79,6 +108,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const insertQuoteRequestSchema = createInsertSchema(quoteRequests).omit({
   id: true,
   createdAt: true,
+}).extend({
+  jobImages: jobImagesSchema,
 });
 
 // Booking request schema with additional validation for booking-specific fields

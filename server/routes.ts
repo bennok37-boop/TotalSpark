@@ -29,6 +29,261 @@ if (process.env.RESEND_API_KEY) {
   console.log('⚠️  No RESEND_API_KEY found - using SMTP fallback');
 }
 
+// Security: Secure image fetching with SSRF protection and resource limits
+async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1024 * 1024, redirectDepth: number = 0): Promise<{ buffer: Buffer; contentType: string } | null> {
+  // Prevent infinite redirect loops
+  if (redirectDepth > 3) {
+    console.warn(`🚫 Too many redirects (${redirectDepth})`);
+    return null;
+  }
+  try {
+    // Validate URL format and allowed domains
+    let validatedUrl: string;
+    
+    if (imageUrl.startsWith('/objects/')) {
+      // Handle local object storage paths - convert to signed URL
+      console.log(`🔗 Local object path detected: ${imageUrl}`);
+      try {
+        const objectStorageService = new ObjectStorageService();
+        const objectFile = await objectStorageService.getObjectEntityFile(imageUrl);
+        
+        // Get a signed URL for secure access
+        const [signedUrls] = await objectFile.getSignedUrl({
+          action: 'read',
+          expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        });
+        
+        // Validate the signed URL for security
+        const signedUrlParsed = new URL(signedUrls);
+        if (signedUrlParsed.protocol !== 'https:') {
+          console.warn(`🚫 Signed URL is not HTTPS: ${signedUrlParsed.protocol}`);
+          return null;
+        }
+        
+        const allowedHosts = [
+          'storage.googleapis.com',
+          'storage.cloud.google.com'
+        ];
+        
+        if (!allowedHosts.includes(signedUrlParsed.hostname)) {
+          console.warn(`🚫 Signed URL from unauthorized domain: ${signedUrlParsed.hostname}`);
+          return null;
+        }
+        
+        validatedUrl = signedUrls;
+        console.log(`🔗 Generated signed URL for local object from ${signedUrlParsed.hostname}`);
+      } catch (localError) {
+        console.warn(`🚫 Failed to handle local object path: ${localError.message}`);
+        return null;
+      }
+    } else {
+      // Validate external URLs
+      const parsedUrl = new URL(imageUrl);
+      
+      // Enforce HTTPS only
+      if (parsedUrl.protocol !== 'https:') {
+        console.warn(`🚫 Non-HTTPS URL rejected: ${parsedUrl.protocol}`);
+        return null;
+      }
+      
+      const allowedHosts = [
+        'storage.googleapis.com',
+        'storage.cloud.google.com'
+      ];
+      
+      if (!allowedHosts.includes(parsedUrl.hostname)) {
+        console.warn(`🚫 Blocked URL from unauthorized domain: ${parsedUrl.hostname}`);
+        return null;
+      }
+      
+      validatedUrl = imageUrl;
+    }
+
+    // Log safely without exposing sensitive query parameters
+    const logUrl = new URL(validatedUrl);
+    console.log(`🔒 Fetching validated image from ${logUrl.hostname}${logUrl.pathname}`);
+    
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    try {
+      // Secure redirect handling - disable automatic redirects
+      const response = await fetch(validatedUrl, { 
+        signal: controller.signal,
+        redirect: 'manual',
+        headers: {
+          'User-Agent': 'TotalSpark/1.0'
+        }
+      });
+      
+      // Handle redirects manually and validate
+      if (response.status >= 300 && response.status < 400) {
+        const location = response.headers.get('location');
+        if (!location) {
+          console.warn(`🚫 Redirect without location header`);
+          return null;
+        }
+        
+        // Validate redirect URL against allowlist (handle both absolute and relative)
+        try {
+          // Handle relative redirects by resolving against the current URL
+          const redirectUrl = new URL(location, validatedUrl);
+          
+          if (redirectUrl.protocol !== 'https:') {
+            console.warn(`🚫 Redirect to non-HTTPS URL rejected: ${redirectUrl.protocol}`);
+            return null;
+          }
+          
+          const allowedHosts = [
+            'storage.googleapis.com',
+            'storage.cloud.google.com'
+          ];
+          
+          if (!allowedHosts.includes(redirectUrl.hostname)) {
+            console.warn(`🚫 Redirect to unauthorized domain: ${redirectUrl.hostname}`);
+            return null;
+          }
+          
+          console.log(`🔄 Following validated redirect to: ${redirectUrl.hostname}`);
+          // Recursively fetch with the validated redirect URL (with depth limit)
+          return await fetchImageSecurely(redirectUrl.href, maxSizeBytes, redirectDepth + 1);
+        } catch (redirectError) {
+          console.warn(`🚫 Invalid redirect URL: ${location}`);
+          return null;
+        }
+      }
+      
+      if (!response.ok) {
+        console.warn(`🚫 Image fetch failed: ${response.status}`);
+        return null;
+      }
+      
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.startsWith('image/')) {
+        console.warn(`🚫 Invalid content type: ${contentType}`);
+        return null;
+      }
+      
+      // Check content-length if available
+      const contentLength = response.headers.get('content-length');
+      if (contentLength && parseInt(contentLength) > maxSizeBytes) {
+        console.warn(`🚫 Image too large: ${contentLength} bytes (max: ${maxSizeBytes})`);
+        return null;
+      }
+      
+      // Stream the response with size checking to avoid memory exhaustion
+      const reader = response.body?.getReader();
+      if (!reader) {
+        console.warn(`🚫 Unable to read response body`);
+        return null;
+      }
+      
+      const chunks: Uint8Array[] = [];
+      let totalSize = 0;
+      
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) break;
+          
+          if (value) {
+            totalSize += value.length;
+            
+            // Check size limit during streaming
+            if (totalSize > maxSizeBytes) {
+              console.warn(`🚫 Image too large during streaming: ${totalSize} bytes`);
+              return null;
+            }
+            
+            chunks.push(value);
+          }
+        }
+      } finally {
+        reader.releaseLock();
+      }
+      
+      // Combine all chunks
+      const combinedArray = new Uint8Array(totalSize);
+      let offset = 0;
+      for (const chunk of chunks) {
+        combinedArray.set(chunk, offset);
+        offset += chunk.length;
+      }
+      
+      console.log(`✅ Successfully fetched image: ${totalSize} bytes`);
+      return {
+        buffer: Buffer.from(combinedArray),
+        contentType: contentType
+      };
+      
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      // Log timeout without exposing sensitive query parameters
+      try {
+        const logUrl = new URL(validatedUrl || imageUrl);
+        console.warn(`⏰ Image fetch timeout for ${logUrl.hostname}${logUrl.pathname}`);
+      } catch {
+        console.warn(`⏰ Image fetch timeout for request`);
+      }
+    } else {
+      console.warn(`🚫 Image fetch error: ${error.message}`);
+    }
+    return null;
+  }
+}
+
+// Security: Fetch multiple images safely with concurrency limits
+async function fetchImagesSecurely(imageUrls: string[]): Promise<Array<{filename: string; content: Buffer; contentType?: string}>> {
+  const maxConcurrency = 3;
+  const maxTotalSize = 15 * 1024 * 1024; // 15MB total limit
+  const attachments = [];
+  let totalSize = 0;
+  
+  console.log(`🔒 Fetching ${imageUrls.length} images with security controls`);
+  
+  // Process images in parallel with concurrency limit
+  const chunks = [];
+  for (let i = 0; i < imageUrls.length; i += maxConcurrency) {
+    chunks.push(imageUrls.slice(i, i + maxConcurrency));
+  }
+  
+  for (const chunk of chunks) {
+    const results = await Promise.allSettled(
+      chunk.map((url, index) => fetchImageSecurely(url))
+    );
+    
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled' && result.value) {
+        const imageData = result.value;
+        
+        if (totalSize + imageData.buffer.length > maxTotalSize) {
+          console.warn(`🚫 Skipping image - would exceed total size limit`);
+          return;
+        }
+        
+        totalSize += imageData.buffer.length;
+        
+        attachments.push({
+          filename: `job-image-${attachments.length + 1}.jpg`,
+          content: imageData.buffer,
+          contentType: imageData.contentType
+        });
+        
+        console.log(`✅ Added image ${attachments.length}: ${imageData.buffer.length} bytes`);
+      }
+    });
+  }
+  
+  console.log(`🔒 Prepared ${attachments.length}/${imageUrls.length} images (${totalSize} bytes total)`);
+  return attachments;
+}
+
 // Email notification service - Resend primary, SMTP fallback
 async function sendEmailNotification(quote: any) {
 
@@ -94,33 +349,15 @@ This lead is ready to copy-paste into GoHighLevel!
 
   const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
   
-  // Prepare attachments from job images
+  // Prepare attachments from job images using secure fetching
   let attachments = [];
   if (quote.jobImages && quote.jobImages.length > 0) {
     try {
-      for (let i = 0; i < quote.jobImages.length; i++) {
-        const imageUrl = quote.jobImages[i];
-        console.log(`📷 Fetching image ${i + 1}/${quote.jobImages.length}: ${imageUrl}`);
-        
-        // Fetch the image data
-        const response = await fetch(imageUrl);
-        if (response.ok) {
-          const imageBuffer = await response.arrayBuffer();
-          const filename = `job-image-${i + 1}.jpg`;
-          
-          attachments.push({
-            filename: filename,
-            content: Buffer.from(imageBuffer),
-            contentType: 'image/jpeg'
-          });
-          console.log(`✅ Image ${i + 1} prepared for attachment`);
-        } else {
-          console.warn(`⚠️ Failed to fetch image ${i + 1}: ${response.status}`);
-        }
-      }
+      attachments = await fetchImagesSecurely(quote.jobImages);
     } catch (attachmentError) {
       console.warn('⚠️ Failed to prepare image attachments:', attachmentError);
       // Continue with email without attachments
+      attachments = [];
     }
   }
   
@@ -129,6 +366,13 @@ This lead is ready to copy-paste into GoHighLevel!
     try {
       console.log(`📧 Sending quote email via Resend to: ${targetEmail} ${attachments.length > 0 ? `with ${attachments.length} attachments` : ''}`);
       
+      // Convert attachments to base64 format for Resend
+      const resendAttachments = attachments.map(att => ({
+        filename: att.filename,
+        content: att.content.toString('base64'),
+        type: att.contentType || 'image/jpeg'
+      }));
+
       const result = await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: targetEmail,
@@ -140,7 +384,7 @@ This lead is ready to copy-paste into GoHighLevel!
           <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace;">${emailBody}</pre>
           <p style="color: #666; font-size: 12px; margin-top: 20px;">This email was automatically generated from the TotalSpark Solutions website.</p>
         </div>`,
-        attachments: attachments.length > 0 ? attachments : undefined
+        attachments: resendAttachments.length > 0 ? resendAttachments : undefined
       });
       
       if (result.error) {
@@ -247,33 +491,15 @@ Submitted: ${new Date().toLocaleString('en-GB')}
 
   const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
   
-  // Prepare attachments from job images (same logic as quote emails)
+  // Prepare attachments from job images using secure fetching
   let attachments = [];
   if (booking.jobImages && booking.jobImages.length > 0) {
     try {
-      for (let i = 0; i < booking.jobImages.length; i++) {
-        const imageUrl = booking.jobImages[i];
-        console.log(`📷 Fetching booking image ${i + 1}/${booking.jobImages.length}: ${imageUrl}`);
-        
-        // Fetch the image data
-        const response = await fetch(imageUrl);
-        if (response.ok) {
-          const imageBuffer = await response.arrayBuffer();
-          const filename = `booking-image-${i + 1}.jpg`;
-          
-          attachments.push({
-            filename: filename,
-            content: Buffer.from(imageBuffer),
-            contentType: 'image/jpeg'
-          });
-          console.log(`✅ Booking image ${i + 1} prepared for attachment`);
-        } else {
-          console.warn(`⚠️ Failed to fetch booking image ${i + 1}: ${response.status}`);
-        }
-      }
+      attachments = await fetchImagesSecurely(booking.jobImages);
     } catch (attachmentError) {
       console.warn('⚠️ Failed to prepare booking image attachments:', attachmentError);
       // Continue with email without attachments
+      attachments = [];
     }
   }
   
@@ -282,6 +508,13 @@ Submitted: ${new Date().toLocaleString('en-GB')}
     try {
       console.log(`📧 Sending booking email via Resend to: ${targetEmail}`);
       
+      // Convert attachments to base64 format for Resend
+      const resendAttachments = attachments.map(att => ({
+        filename: att.filename,
+        content: att.content.toString('base64'),
+        type: att.contentType || 'image/jpeg'
+      }));
+
       const result = await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: targetEmail,
@@ -293,7 +526,7 @@ Submitted: ${new Date().toLocaleString('en-GB')}
           <pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-family: monospace;">${emailBody}</pre>
           <p style="color: #666; font-size: 12px; margin-top: 20px;">This email was automatically generated from the TotalSpark Solutions website.</p>
         </div>`,
-        attachments: attachments.length > 0 ? attachments : undefined
+        attachments: resendAttachments.length > 0 ? resendAttachments : undefined
       });
       
       if (result.error) {
