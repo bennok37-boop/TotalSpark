@@ -1,4 +1,4 @@
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,19 @@ export default function CarpetUpholsteryPage() {
   const trackingNumbers = useTrackingNumbers();
   const phoneNumber = trackingNumbers.phone;
   const whatsappNumber = trackingNumbers.whatsapp;
+  const [, setLocation] = useLocation();
+
+  const handleCallClick = () => {
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
+  const handleWhatsAppClick = () => {
+    window.open(`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=Hi, I'd like to enquire about carpet and upholstery cleaning services`, '_blank');
+  };
+
+  const handleQuoteClick = () => {
+    setLocation('/quote?service=carpet-upholstery');
+  };
 
   const cityLinks = [
     { name: 'Newcastle', slug: 'newcastle' },
@@ -72,15 +85,15 @@ export default function CarpetUpholsteryPage() {
                 Bring your carpets, sofas, and soft furnishings back to life with professional steam cleaning.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <Button size="lg" className="text-lg px-8" data-testid="button-call">
+                <Button size="lg" className="text-lg px-8" onClick={handleCallClick} data-testid="button-call">
                   <Phone className="w-5 h-5 mr-2" />
                   Call today: {phoneNumber}
                 </Button>
-                <Button variant="outline" size="lg" className="text-lg px-8" data-testid="button-whatsapp">
+                <Button variant="outline" size="lg" className="text-lg px-8" onClick={handleWhatsAppClick} data-testid="button-whatsapp">
                   <MessageCircle className="w-5 h-5 mr-2" />
                   WhatsApp Chat
                 </Button>
-                <Button variant="secondary" size="lg" className="text-lg px-8" data-testid="button-quote">
+                <Button variant="secondary" size="lg" className="text-lg px-8" onClick={handleQuoteClick} data-testid="button-quote">
                   Book My Clean
                 </Button>
               </div>
@@ -215,7 +228,7 @@ export default function CarpetUpholsteryPage() {
               </Card>
             </div>
             <div className="text-center mt-8">
-              <Button size="lg" data-testid="button-book-clean">Book Carpet & Upholstery Clean</Button>
+              <Button size="lg" onClick={handleQuoteClick} data-testid="button-book-clean">Book Carpet & Upholstery Clean</Button>
             </div>
           </div>
         </section>
@@ -354,15 +367,15 @@ export default function CarpetUpholsteryPage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Refresh Your Home?</h2>
             <p className="text-xl mb-8 opacity-90">Book your carpet & upholstery clean today</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" variant="secondary" className="text-lg px-8" data-testid="button-call-final">
+              <Button size="lg" variant="secondary" className="text-lg px-8" onClick={handleCallClick} data-testid="button-call-final">
                 <Phone className="w-5 h-5 mr-2" />
                 Call today: {phoneNumber}
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" data-testid="button-whatsapp-final">
+              <Button size="lg" variant="outline" className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" onClick={handleWhatsAppClick} data-testid="button-whatsapp-final">
                 <MessageCircle className="w-5 h-5 mr-2" />
                 WhatsApp
               </Button>
-              <Button size="lg" variant="secondary" className="text-lg px-8" data-testid="button-quote-final">
+              <Button size="lg" variant="secondary" className="text-lg px-8" onClick={handleQuoteClick} data-testid="button-quote-final">
                 Book My Clean
               </Button>
             </div>
