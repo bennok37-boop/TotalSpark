@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import { Card, CardContent } from '@/components/ui/card';
+import { CookieSettingsLink } from '@/components/CookieSettingsLink';
 
 export default function PrivacyPage() {
   return (
@@ -132,17 +133,116 @@ export default function PrivacyPage() {
 
                 <Card>
                   <CardContent className="p-8">
-                    <h2 className="text-2xl font-bold mb-4">6. Cookies and Tracking</h2>
-                    <div className="space-y-4 text-muted-foreground">
-                      <p className="text-sm">Our website uses cookies to improve your browsing experience:</p>
-                      <ul className="list-disc list-inside space-y-2 text-sm">
-                        <li>Essential cookies for website functionality</li>
-                        <li>Analytics cookies to understand website usage</li>
-                        <li>Marketing cookies for targeted advertising (with consent)</li>
-                      </ul>
-                      <p className="text-sm mt-4">
-                        You can control cookie preferences through your browser settings.
+                    <h2 className="text-2xl font-bold mb-4">6. Cookies and Tracking Technologies</h2>
+                    <div className="space-y-6 text-muted-foreground">
+                      <p className="text-sm">
+                        We use cookies and similar tracking technologies to provide and improve our services. 
+                        Below is detailed information about each type of cookie and how you can control them.
                       </p>
+                      
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-3">Cookie Categories</h3>
+                        <div className="space-y-4">
+                          <div className="pl-4 border-l-2 border-primary/20">
+                            <h4 className="font-medium text-foreground mb-1">Essential Cookies (Always Active)</h4>
+                            <p className="text-sm mb-2">
+                              Required for basic website functionality and cannot be disabled. These cookies enable core features such as security, accessibility, and form submission.
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-xs">
+                              <li>Authentication and security tokens</li>
+                              <li>Load balancing and server routing</li>
+                              <li>Form submission and error handling</li>
+                            </ul>
+                          </div>
+                          
+                          <div className="pl-4 border-l-2 border-blue-200">
+                            <h4 className="font-medium text-foreground mb-1">Functional Cookies</h4>
+                            <p className="text-sm mb-2">
+                              Remember your preferences and settings to provide enhanced functionality and personalized features.
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-xs">
+                              <li>Language and region preferences</li>
+                              <li>Website theme and display settings</li>
+                              <li>Previous form inputs and preferences</li>
+                            </ul>
+                          </div>
+                          
+                          <div className="pl-4 border-l-2 border-orange-200">
+                            <h4 className="font-medium text-foreground mb-1">Phone Number Tracking</h4>
+                            <p className="text-sm mb-2">
+                              Display different tracking phone numbers to measure which marketing channels and campaigns are most effective.
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-xs">
+                              <li>CallRail phone number assignment</li>
+                              <li>Campaign source identification</li>
+                              <li>Marketing attribution tracking</li>
+                            </ul>
+                          </div>
+                          
+                          <div className="pl-4 border-l-2 border-green-200">
+                            <h4 className="font-medium text-foreground mb-1">Analytics Cookies</h4>
+                            <p className="text-sm mb-2">
+                              Help us understand how visitors interact with our website by collecting anonymous information about usage patterns.
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-xs">
+                              <li>Page views and navigation patterns</li>
+                              <li>Time spent on pages</li>
+                              <li>Device and browser information</li>
+                              <li>Referral source tracking</li>
+                            </ul>
+                          </div>
+                          
+                          <div className="pl-4 border-l-2 border-purple-200">
+                            <h4 className="font-medium text-foreground mb-1">Marketing Cookies</h4>
+                            <p className="text-sm mb-2">
+                              Used to deliver relevant advertising and measure the effectiveness of marketing campaigns across different platforms.
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-xs">
+                              <li>Retargeting and remarketing pixels</li>
+                              <li>Conversion tracking for ads</li>
+                              <li>Social media integration</li>
+                              <li>Email campaign effectiveness</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-3">Managing Your Consent</h3>
+                        <p className="text-sm mb-3">
+                          You have full control over your cookie preferences. You can:
+                        </p>
+                        <ul className="list-disc list-inside space-y-2 text-sm">
+                          <li><strong>Update preferences anytime:</strong> Use the cookie settings banner that appears on first visit</li>
+                          <li><strong>Granular control:</strong> Enable or disable specific categories based on your preferences</li>
+                          <li><strong>Withdraw consent:</strong> Change your mind at any time - consent is not permanent</li>
+                          <li><strong>Browser controls:</strong> Use your browser's cookie settings for additional control</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-3">Third-Party Cookies</h3>
+                        <p className="text-sm mb-3">
+                          Some cookies are placed by third-party services that appear on our pages. We use:
+                        </p>
+                        <ul className="list-disc list-inside space-y-2 text-sm">
+                          <li><strong>Google Fonts:</strong> For website typography and font loading</li>
+                          <li><strong>CallRail:</strong> For phone number tracking and call analytics</li>
+                          <li><strong>Email Services:</strong> For contact form submissions and communications</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg">
+                        <h3 className="font-semibold text-foreground mb-2">Important: Consent Management</h3>
+                        <p className="text-sm mb-4">
+                          Your consent choices are stored locally in your browser for 30 days. After this period, 
+                          you'll be asked to confirm your preferences again. We never share your consent preferences 
+                          with third parties - they remain private to you and our website.
+                        </p>
+                        <div className="flex justify-center">
+                          <CookieSettingsLink />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
