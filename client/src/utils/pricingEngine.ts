@@ -18,12 +18,12 @@ const PRICING = {
   },
   deep: {
     base: { 
-      studio: { price: 100 }, 
-      "1": { price: 120 }, 
-      "2": { price: 180 }, 
-      "3": { price: 240 }, 
-      "4": { price: 300 }, 
-      "5plus": { price: 360 } 
+      studio: { price: 100, hours: 3 }, 
+      "1": { price: 120, hours: 4 }, 
+      "2": { price: 180, hours: 5 }, 
+      "3": { price: 240, hours: 7 }, 
+      "4": { price: 300, hours: 9 }, 
+      "5plus": { price: 360, hours: 11 } 
     }
   },
   propertyTypeFactor: {
@@ -209,36 +209,17 @@ export function computeQuote(input: QuoteInput): QuoteResult {
       baseHours = scaled.scaledHours;
     }
   } else if (input.service === "deep") {
-    // Deep cleaning uses fixed pricing - no hourly calculations
     const table = cfg.deep.base;
     const key = (input.bedrooms === "5plus" || input.bedrooms === "5+") ? "5plus"
                : (input.bedrooms === "studio" ? "studio" : String(input.bedrooms || ""));
     const base = table[key as keyof typeof table];
     
     if (base) {
-      // Apply basic property type and condition factors only - no hourly scaling
-      const pType = cfg.propertyTypeFactor[input.propertyType || "flat"] ?? 1.00;
-      const cond = cfg.conditionFactor[input.condition || "standard"] ?? 1.00;
-      let pct = 1.0 * pType * cond;
-      
-      // Bathrooms scaling for fixed pricing
-      const baths = Math.max(1, Number(input.bathrooms || 1));
-      const extraBaths = Math.max(0, baths - 1);
-      const bathPct = Math.min(cfg.domesticExtras.extraBathroomCapPct, extraBaths * cfg.domesticExtras.extraBathroomPct);
-      pct *= (1 + bathPct);
-      
-      // Additional property factors
-      if (input.secondKitchen) pct *= (1 + cfg.domesticExtras.secondKitchenPct);
-      if (input.internalStairs) pct *= (1 + cfg.domesticExtras.internalStairsPct);
-      if (input.furnished) pct *= (1 + cfg.domesticExtras.furnishedPct);
-      if (input.occupied) pct *= (1 + cfg.domesticExtras.occupiedPct);
-      
-      const fixedPrice = base.price * pct;
-      add(`Deep clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"}) - Fixed Price`, fixedPrice);
-      // Set a reasonable baseHours for crew calculation (deep cleaning typically 2-4 hours depending on size)
-      baseHours = Math.max(2, Number(key === "studio" ? 2 : key === "1" ? 3 : key === "2" ? 4 : key === "3" ? 5 : key === "4" ? 6 : 7));
+      // Apply domestic scaling factors
+      const scaled = applyDomesticScaling(base.price, base.hours);
+      add(`Deep clean (${key === "5plus" ? "5+" : key} ${key === "studio" ? "" : "beds"})`, scaled.scaledPrice);
+      baseHours = scaled.scaledHours;
     }
-
   }
 
   // Shared add-ons for domestic services (endOfTenancy and deep)
