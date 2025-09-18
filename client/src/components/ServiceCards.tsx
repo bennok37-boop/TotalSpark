@@ -28,7 +28,7 @@ const services = [
     icon: Sparkles,
     title: "Deep Cleaning",
     description: "Intensive one-off cleaning service for homes that need extra attention. Perfect for spring cleaning or special occasions.",
-    price: "From £15/hour",
+    price: "From £120",
     features: ["Top to bottom clean", "Eco-friendly products", "Same-day service"],
     slug: "deep-cleaning",
     popular: false
