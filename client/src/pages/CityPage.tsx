@@ -22,14 +22,11 @@ import carpetImage from '@assets/stock_images/professional_carpet__0a1e5eba.jpg'
 import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
 import livingRoomImage from '@assets/stock_images/clean_modern_living__f0d3e4c8.jpg';
 
-type Location = {
-  name: string;
-  slug: string;
-};
+import { LocationData } from '@shared/locations';
 
 
 // Dynamic content generator for any location
-function generateCityPageContent(location: Location, region: typeof REGIONS[keyof typeof REGIONS]) {
+function generateCityPageContent(location: LocationData, region: typeof REGIONS[keyof typeof REGIONS]) {
   const nearbyLocations = getNearbyLocations(location, region);
   const nearbyNames = nearbyLocations.slice(0, 6).map(loc => loc.name);
   const nearbyAreas = nearbyLocations.slice(0, 8).map(loc => ({ name: loc.name, slug: loc.slug }));
