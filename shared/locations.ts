@@ -555,6 +555,20 @@ export const REGIONS: Record<string, RegionData> = {
         nearby: ["Guisborough", "Saltburn-by-the-Sea", "Brotton", "New Skelton"]
       }
     ]
+  },
+  "west-yorkshire": {
+    name: "West Yorkshire",
+    slug: "west-yorkshire", 
+    description: "Major cities and towns across West Yorkshire including Leeds and surrounding areas",
+    locations: [
+      {
+        name: "Leeds",
+        slug: "leeds",
+        phone: "0113 456 7890",
+        region: "West Yorkshire",
+        nearby: ["Bradford", "Wakefield", "Huddersfield", "York"]
+      }
+    ]
   }
 };
 

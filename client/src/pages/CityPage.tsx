@@ -17,10 +17,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { MapPin, Clock, Users, Shield, Award, CheckCircle, Phone } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
 import { findLocationBySlug, getRegionPhoneNumber, getRegionWhatsAppNumber, getNearbyLocations } from '@shared/location-utils';
-import heroImage from '@assets/stock_images/professional_kitchen_3d7b3119.jpg';
-import carpetImage from '@assets/stock_images/professional_carpet__0a1e5eba.jpg';
-import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
-import livingRoomImage from '@assets/stock_images/clean_modern_living__f0d3e4c8.jpg';
 
 import { LocationData } from '@shared/locations';
 
@@ -170,34 +166,7 @@ export default function CityPage() {
         </section>
 
         {/* 5. Before/After Gallery */}
-        <section className="py-16 bg-muted">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">See the Difference</h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Real transformations from our recent cleaning projects in {city.name}.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {city.galleryItems.map((item, index) => (
-                <Card key={index} className="overflow-hidden hover-elevate transition-all duration-300">
-                  <div className="relative h-64">
-                    <img 
-                      src={index === 0 ? livingRoomImage : index === 1 ? kitchenImage : carpetImage} 
-                      alt={`${item.title} - ${item.subtitle}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 text-white">
-                      <h3 className="font-semibold text-lg">{item.title}</h3>
-                      <p className="text-white/90 text-sm">{item.subtitle}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
+        <BeforeAfterGallery citySlug={locationData.location.slug} limit={3} />
 
         {/* 6. Local Trust Signals */}
         <section className="py-16 bg-background">
