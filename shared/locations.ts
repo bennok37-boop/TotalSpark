@@ -567,6 +567,13 @@ export const REGIONS: Record<string, RegionData> = {
         phone: "0113 456 7890",
         region: "West Yorkshire",
         nearby: ["Bradford", "Wakefield", "Huddersfield", "York"]
+      },
+      {
+        name: "York",
+        slug: "york",
+        phone: "01904 567 890",
+        region: "West Yorkshire", 
+        nearby: ["Leeds", "Harrogate", "Selby", "Malton"]
       }
     ]
   }

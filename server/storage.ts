@@ -93,45 +93,45 @@ export class MemStorage implements IStorage {
   }
 
   private seedBeforeAfterPairs() {
-    // Real city-specific before/after transformation images
+    // Real city-specific before/after transformation images showing same spaces dirty vs clean
     const seedPairs: InsertBeforeAfterPair[] = [
       {
         citySlug: 'newcastle-upon-tyne',
         service: 'deep',
-        beforeSrc: '/attached_assets/generated_images/Newcastle_living_room_before_cleaning_ab86b02b.png',
-        afterSrc: '/attached_assets/generated_images/Newcastle_living_room_after_cleaning_ad958ab4.png',
+        beforeSrc: '/attached_assets/generated_images/Messy_Newcastle_living_room_7db9f580.png',
+        afterSrc: '/attached_assets/generated_images/Clean_Newcastle_living_room_5001ab49.png',
         title: 'Newcastle Living Room Deep Clean',
         caption: 'Complete living room transformation - from cluttered mess to spotless comfort'
       },
       {
         citySlug: 'leeds',
         service: 'deep',
-        beforeSrc: '/attached_assets/generated_images/Leeds_kitchen_before_cleaning_2e0d8d60.png',
-        afterSrc: '/attached_assets/generated_images/Leeds_kitchen_after_cleaning_b8bf05f5.png',
+        beforeSrc: '/attached_assets/generated_images/Messy_Leeds_kitchen_93b8ad6e.png',
+        afterSrc: '/attached_assets/generated_images/Clean_Leeds_kitchen_d40edaae.png',
         title: 'Leeds Kitchen Deep Clean',
         caption: 'Kitchen restoration - from grease and grime to sparkling surfaces'
       },
       {
         citySlug: 'york',
         service: 'deep',
-        beforeSrc: '/attached_assets/generated_images/York_bathroom_before_cleaning_0bb8bd79.png',
-        afterSrc: '/attached_assets/generated_images/York_bathroom_after_cleaning_216364c2.png',
+        beforeSrc: '/attached_assets/generated_images/Dirty_York_bathroom_d8bf81f9.png',
+        afterSrc: '/attached_assets/generated_images/Clean_York_bathroom_e19abd8d.png',
         title: 'York Bathroom Deep Clean',
         caption: 'Bathroom renovation - from soap scum to pristine shine'
       },
       {
         citySlug: 'sunderland',
         service: 'endOfTenancy',
-        beforeSrc: '/attached_assets/generated_images/Sunderland_bedroom_before_cleaning_02c6509f.png',
-        afterSrc: '/attached_assets/generated_images/Sunderland_bedroom_after_cleaning_5f1b7a76.png',
+        beforeSrc: '/attached_assets/generated_images/Messy_Sunderland_bedroom_9590095c.png',
+        afterSrc: '/attached_assets/generated_images/Clean_Sunderland_bedroom_46db1d8c.png',
         title: 'Sunderland End of Tenancy Clean',
         caption: 'Move-out cleaning - from tenant mess to landlord-ready condition'
       },
       {
         citySlug: 'middlesbrough',
         service: 'commercial',
-        beforeSrc: '/attached_assets/generated_images/Middlesbrough_office_before_cleaning_8732c6b7.png',
-        afterSrc: '/attached_assets/generated_images/Middlesbrough_office_after_cleaning_cfb0c8fa.png',
+        beforeSrc: '/attached_assets/generated_images/Messy_Middlesbrough_office_aeede406.png',
+        afterSrc: '/attached_assets/generated_images/Clean_Middlesbrough_office_ac4da46b.png',
         title: 'Middlesbrough Office Commercial Clean',
         caption: 'Workplace transformation - from cluttered chaos to professional space'
       }
