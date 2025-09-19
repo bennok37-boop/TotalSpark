@@ -17,10 +17,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { MapPin, Clock, Users, Shield, Award, CheckCircle, Phone } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
 import { findLocationBySlug, getRegionPhoneNumber, getRegionWhatsAppNumber, getNearbyLocations } from '@shared/location-utils';
-import heroImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
-import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
-import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
-import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
+import heroImage from '@assets/stock_images/professional_kitchen_3d7b3119.jpg';
+import carpetImage from '@assets/stock_images/professional_carpet__0a1e5eba.jpg';
+import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
+import livingRoomImage from '@assets/stock_images/clean_modern_living__f0d3e4c8.jpg';
 
 type Location = {
   name: string;

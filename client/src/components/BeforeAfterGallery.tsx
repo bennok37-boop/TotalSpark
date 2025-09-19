@@ -1,8 +1,8 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
-import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
-import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
+import carpetImage from '@assets/stock_images/professional_carpet__d09de93c.jpg';
+import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
+import livingRoomImage from '@assets/stock_images/clean_modern_living__9562ecd9.jpg';
 
 const galleryItems = [
   {
@@ -11,7 +11,7 @@ const galleryItems = [
     afterImage: carpetImage,
     title: "Carpet Deep Clean",
     location: "Newcastle Family Home",
-    service: "Deep Cleaning"
+    service: "Carpet Cleaning"
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const galleryItems = [
     id: 3,
     beforeImage: livingRoomImage,
     afterImage: livingRoomImage,
-    title: "Living Room Refresh",
+    title: "Full Property Clean",
     location: "York Townhouse",
     service: "Deep Cleaning"
   }
