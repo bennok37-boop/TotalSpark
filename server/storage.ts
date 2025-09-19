@@ -93,31 +93,47 @@ export class MemStorage implements IStorage {
   }
 
   private seedBeforeAfterPairs() {
-    // Placeholder - will be populated with actual image pairs later
+    // Real city-specific before/after transformation images
     const seedPairs: InsertBeforeAfterPair[] = [
       {
         citySlug: 'newcastle-upon-tyne',
-        service: 'endOfTenancy',
-        beforeSrc: '/placeholder-before.jpg',
-        afterSrc: '/placeholder-after.jpg',
-        title: 'Newcastle End of Tenancy Clean',
-        caption: 'Complete property transformation for deposit return'
+        service: 'deep',
+        beforeSrc: '@assets/generated_images/Newcastle_living_room_before_cleaning_ab86b02b.png',
+        afterSrc: '@assets/generated_images/Newcastle_living_room_after_cleaning_ad958ab4.png',
+        title: 'Newcastle Living Room Deep Clean',
+        caption: 'Complete living room transformation - from cluttered mess to spotless comfort'
       },
       {
         citySlug: 'leeds',
         service: 'deep',
-        beforeSrc: '/placeholder-before.jpg',
-        afterSrc: '/placeholder-after.jpg',
-        title: 'Leeds Deep Clean',
-        caption: 'Comprehensive house cleaning service'
+        beforeSrc: '@assets/generated_images/Leeds_kitchen_before_cleaning_2e0d8d60.png',
+        afterSrc: '@assets/generated_images/Leeds_kitchen_after_cleaning_b8bf05f5.png',
+        title: 'Leeds Kitchen Deep Clean',
+        caption: 'Kitchen restoration - from grease and grime to sparkling surfaces'
       },
       {
         citySlug: 'york',
+        service: 'deep',
+        beforeSrc: '@assets/generated_images/York_bathroom_before_cleaning_0bb8bd79.png',
+        afterSrc: '@assets/generated_images/York_bathroom_after_cleaning_216364c2.png',
+        title: 'York Bathroom Deep Clean',
+        caption: 'Bathroom renovation - from soap scum to pristine shine'
+      },
+      {
+        citySlug: 'sunderland',
+        service: 'endOfTenancy',
+        beforeSrc: '@assets/generated_images/Sunderland_bedroom_before_cleaning_02c6509f.png',
+        afterSrc: '@assets/generated_images/Sunderland_bedroom_after_cleaning_5f1b7a76.png',
+        title: 'Sunderland End of Tenancy Clean',
+        caption: 'Move-out cleaning - from tenant mess to landlord-ready condition'
+      },
+      {
+        citySlug: 'middlesbrough',
         service: 'commercial',
-        beforeSrc: '/placeholder-before.jpg',
-        afterSrc: '/placeholder-after.jpg',
-        title: 'York Office Clean',
-        caption: 'Professional commercial space restoration'
+        beforeSrc: '@assets/generated_images/Middlesbrough_office_before_cleaning_8732c6b7.png',
+        afterSrc: '@assets/generated_images/Middlesbrough_office_after_cleaning_cfb0c8fa.png',
+        title: 'Middlesbrough Office Commercial Clean',
+        caption: 'Workplace transformation - from cluttered chaos to professional space'
       }
     ];
 
