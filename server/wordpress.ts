@@ -5,21 +5,26 @@ import path from "path";
 // WordPress integration for TotalSpark Solutions
 export function setupWordPressIntegration(app: Express) {
   
-  // Serve WordPress files
-  app.use('/wordpress', express.static(path.resolve(import.meta.dirname, '../wordpress')));
+  console.log('🔌 WordPress integration layer configured');
+  console.log('📦 WordPress files prepared for installation');
+  console.log('⚠️  WordPress not serving files - requires proper PHP/MySQL setup');
+  console.log('💡 React app using fallback data until WordPress is installed');
   
-  // WordPress PHP handler (would need PHP runtime in production)
-  console.log('🔌 WordPress integration configured');
-  console.log('📁 WordPress files available at /wordpress/');
-  console.log('🔗 WordPress admin would be at /wordpress/wp-admin/');
-  console.log('🔗 WordPress API available at /wordpress/wp-json/');
+  // SECURITY: Do NOT serve WordPress files as static content in production
+  // This would expose wp-config.php and other sensitive files
   
-  // In a real production environment, you would:
-  // 1. Configure Apache/Nginx to handle PHP files
-  // 2. Set up MySQL/PostgreSQL database
-  // 3. Configure WordPress with proper database credentials
-  // 4. Install and activate the required plugins
+  // For development/testing only - commented out for security
+  if (process.env.NODE_ENV === 'development' && process.env.UNSAFE_SERVE_WP_FILES === 'true') {
+    console.log('⚠️  UNSAFE: Serving WordPress files statically for development only');
+    app.use('/wordpress', express.static(path.resolve(import.meta.dirname, '../wordpress')));
+  }
   
-  // For now, we serve the static WordPress files and the React app
-  // can use the WordPress API endpoints when WordPress is properly installed
+  // Production setup would involve:
+  // 1. Install WordPress on separate subdomain or server
+  // 2. Configure VITE_WORDPRESS_URL environment variable
+  // 3. WordPress admin at https://your-wp-install/wp-admin/
+  // 4. WordPress API at https://your-wp-install/wp-json/
+  // 5. Install Advanced Custom Fields plugin
+  // 6. Activate TotalSpark theme and plugin
+  // 7. Import content using the TotalSpark admin panel
 }
