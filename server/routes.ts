@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 import { Resend } from 'resend';
 import { storage } from "./storage";
-import { insertQuoteRequestSchema, insertBookingRequestSchema } from "@shared/schema";
+import { insertQuoteRequestSchema, insertBookingRequestSchema, CITY_SLUGS, SERVICE_TYPES } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
 import fs from 'fs';
@@ -840,6 +840,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(quote);
     } catch (error) {
       console.error('Error fetching quote request:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // GET /api/media/before-after - Fetch city-specific before/after image pairs
+  app.get('/api/media/before-after', async (req, res) => {
+    try {
+      const { city, service } = req.query;
+      
+      // Validate parameters
+      const citySlug = typeof city === 'string' && CITY_SLUGS.includes(city as any) ? city : undefined;
+      const serviceType = typeof service === 'string' && SERVICE_TYPES.includes(service as any) ? service : undefined;
+      
+      const pairs = await storage.listBeforeAfterPairs({ 
+        citySlug: citySlug as any, 
+        service: serviceType as any 
+      });
+      
+      res.json(pairs);
+    } catch (error) {
+      console.error('Error fetching before/after pairs:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   });

@@ -49,6 +49,7 @@ export class MemStorage implements IStorage {
     const quote: QuoteRequest = {
       ...insertQuote,
       id,
+      postcode: insertQuote.postcode ?? null,
       createdAt: new Date()
     };
     this.quoteRequests.set(id, quote);
@@ -82,6 +83,9 @@ export class MemStorage implements IStorage {
     const pair: BeforeAfterPair = {
       ...insertPair,
       id,
+      caption: insertPair.caption ?? null,
+      takenAt: insertPair.takenAt ?? null,
+      tags: insertPair.tags ?? null,
       createdAt: new Date()
     };
     this.beforeAfterPairs.set(id, pair);
