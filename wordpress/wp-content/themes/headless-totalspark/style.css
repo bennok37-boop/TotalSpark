@@ -1,0 +1,32 @@
+/*
+Theme Name: TotalSpark Headless
+Description: Headless WordPress theme for TotalSpark Solutions cleaning service website
+Version: 1.0
+Author: TotalSpark Solutions
+*/
+
+/* Minimal styles since this is a headless theme */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f0f0f0;
+}
+
+.headless-notice {
+    background: #e74c3c;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+.admin-info {
+    background: #3498db;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
