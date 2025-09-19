@@ -51,6 +51,7 @@ export class MemStorage implements IStorage {
       id,
       postcode: insertQuote.postcode ?? null,
       additionalDetails: insertQuote.additionalDetails ?? null,
+      bedrooms: insertQuote.bedrooms ?? null,
       createdAt: new Date()
     };
     this.quoteRequests.set(id, quote);

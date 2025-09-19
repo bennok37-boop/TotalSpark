@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { setupWordPressIntegration } from "./wordpress";
 import path from "path";
 
 const app = express();
@@ -9,6 +10,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // Serve attached assets (images, files) as static content
 app.use('/attached_assets', express.static(path.resolve(import.meta.dirname, '..', 'attached_assets')));
+
+// Setup WordPress integration
+setupWordPressIntegration(app);
 
 app.use((req, res, next) => {
   const start = Date.now();

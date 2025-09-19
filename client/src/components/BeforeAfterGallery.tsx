@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useBeforeAfterPairs } from "@/hooks/useWordPressContent";
 import { BeforeAfterPair } from '@shared/schema';
 import BeforeAfterSlider from './BeforeAfterSlider';
 
@@ -24,21 +24,14 @@ const cityDisplayNames: Record<string, string> = {
 };
 
 export default function BeforeAfterGallery({ citySlug, service, limit = 3 }: BeforeAfterGalleryProps) {
-  const { data: beforeAfterPairs = [], isLoading, error } = useQuery<BeforeAfterPair[]>({
-    queryKey: ['/api/media/before-after', citySlug, service],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      if (citySlug) params.append('city', citySlug);
-      if (service) params.append('service', service);
-      
-      const response = await fetch(`/api/media/before-after?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch before/after pairs');
-      return response.json();
-    }
+  // Use WordPress API with fallback to existing data
+  const { data: beforeAfterPairs = [], isLoading, error } = useBeforeAfterPairs({
+    citySlug: citySlug as any,
+    service: service as any
   });
 
   // Limit the number of pairs displayed
-  const displayPairs = beforeAfterPairs.slice(0, limit);
+  const displayPairs = beforeAfterPairs ? beforeAfterPairs.slice(0, limit) : [];
   if (error) {
     return (
       <section className="py-16" data-testid="section-before-after-gallery">
