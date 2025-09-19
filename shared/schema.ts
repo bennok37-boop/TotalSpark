@@ -100,6 +100,20 @@ export const quoteRequests = pgTable("quote_requests", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Before/After media table
+export const beforeAfterPairs = pgTable("before_after_pairs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  citySlug: text("city_slug").notNull(),
+  service: text("service").notNull(),
+  beforeSrc: text("before_src").notNull(),
+  afterSrc: text("after_src").notNull(),
+  title: text("title").notNull(),
+  caption: text("caption"),
+  takenAt: timestamp("taken_at"),
+  tags: text("tags").array(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -122,20 +136,31 @@ export const insertBookingRequestSchema = insertQuoteRequestSchema.extend({
   leadSource: z.string().default('website')
 });
 
+export const insertBeforeAfterPairSchema = createInsertSchema(beforeAfterPairs).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertQuoteRequest = z.infer<typeof insertQuoteRequestSchema>;
 export type InsertBookingRequest = z.infer<typeof insertBookingRequestSchema>;
 export type QuoteRequest = typeof quoteRequests.$inferSelect;
+export type BeforeAfterPair = typeof beforeAfterPairs.$inferSelect;
+export type InsertBeforeAfterPair = z.infer<typeof insertBeforeAfterPairSchema>;
 
 // City and service types
 export const CITIES = ['Newcastle', 'Leeds', 'Sunderland', 'York', 'Durham', 'Middlesbrough'] as const;
 export const SERVICE_TYPES = ['endOfTenancy', 'deep', 'commercial', 'carpets'] as const;
 export const BEDROOM_OPTIONS = ['studio', '1', '2', '3', '4', '5plus'] as const;
 
+// City slugs for before/after images (matching location data)
+export const CITY_SLUGS = ['newcastle-upon-tyne', 'leeds', 'york', 'sunderland', 'middlesbrough'] as const;
+
 export type City = typeof CITIES[number];
 export type ServiceType = typeof SERVICE_TYPES[number];
 export type BedroomOption = typeof BEDROOM_OPTIONS[number];
+export type CitySlug = typeof CITY_SLUGS[number];
 
 // Quote result type for JSON storage
 export type QuoteResultBreakdown = {
