@@ -1,98 +1,95 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import carpetImage from '@assets/stock_images/professional_carpet__d09de93c.jpg';
-import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
-import livingRoomImage from '@assets/stock_images/clean_modern_living__9562ecd9.jpg';
+import { useQuery } from '@tanstack/react-query';
+import { BeforeAfterPair } from '@shared/schema';
+import BeforeAfterSlider from './BeforeAfterSlider';
 
-const galleryItems = [
-  {
-    id: 1,
-    beforeImage: carpetImage,
-    afterImage: carpetImage,
-    title: "Carpet Deep Clean",
-    location: "Newcastle Family Home",
-    service: "Carpet Cleaning"
-  },
-  {
-    id: 2,
-    beforeImage: kitchenImage,
-    afterImage: kitchenImage,
-    title: "Kitchen Restoration",
-    location: "Leeds Apartment",
-    service: "End of Tenancy"
-  },
-  {
-    id: 3,
-    beforeImage: livingRoomImage,
-    afterImage: livingRoomImage,
-    title: "Full Property Clean",
-    location: "York Townhouse",
-    service: "Deep Cleaning"
+interface BeforeAfterGalleryProps {
+  citySlug?: string;
+  service?: string;
+  limit?: number;
+}
+
+const serviceDisplayNames: Record<string, string> = {
+  endOfTenancy: 'End of Tenancy',
+  deep: 'Deep Cleaning',
+  commercial: 'Commercial Cleaning',
+  carpets: 'Carpet Cleaning'
+};
+
+const cityDisplayNames: Record<string, string> = {
+  'newcastle-upon-tyne': 'Newcastle',
+  'leeds': 'Leeds',
+  'york': 'York', 
+  'sunderland': 'Sunderland',
+  'middlesbrough': 'Middlesbrough'
+};
+
+export default function BeforeAfterGallery({ citySlug, service, limit = 3 }: BeforeAfterGalleryProps) {
+  const { data: beforeAfterPairs = [], isLoading, error } = useQuery<BeforeAfterPair[]>({
+    queryKey: ['/api/media/before-after', citySlug, service],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (citySlug) params.append('city', citySlug);
+      if (service) params.append('service', service);
+      
+      const response = await fetch(`/api/media/before-after?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch before/after pairs');
+      return response.json();
+    }
+  });
+
+  // Limit the number of pairs displayed
+  const displayPairs = beforeAfterPairs.slice(0, limit);
+  if (error) {
+    return (
+      <section className="py-16" data-testid="section-before-after-gallery">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-muted-foreground">Unable to load before/after gallery at this time.</p>
+        </div>
+      </section>
+    );
   }
-];
 
-export default function BeforeAfterGallery() {
   return (
     <section className="py-16" data-testid="section-before-after-gallery">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">See the Difference</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Real transformations from our recent cleaning projects across North East England.
+            Real transformations from our recent cleaning projects across North East England. Drag the slider to see the before and after results.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {galleryItems.map((item) => (
-            <Card key={item.id} className="overflow-hidden hover-elevate transition-all duration-300" data-testid={`card-gallery-${item.id}`}>
-              <div className="relative">
-                {/* Before/After Image */}
-                <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={item.beforeImage} 
-                    alt={`Before and after: ${item.title}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                  
-                  {/* Before/After Labels */}
-                  <div className="absolute top-4 left-4">
-                    <Badge variant="secondary" className="bg-white/90 text-black">
-                      Before & After
-                    </Badge>
-                  </div>
-                  
-                  <div className="absolute bottom-4 right-4">
-                    <Badge className="bg-chart-2 text-white">
-                      {item.service}
-                    </Badge>
-                  </div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="animate-pulse" data-testid={`skeleton-gallery-${index + 1}`}>
+                <div className="bg-muted h-64 rounded-t-lg"></div>
+                <div className="p-6 space-y-2">
+                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-3 bg-muted rounded w-1/2"></div>
                 </div>
               </div>
-
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-2" data-testid={`text-gallery-title-${item.id}`}>
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground text-sm mb-4" data-testid={`text-gallery-location-${item.id}`}>
-                  {item.location}
-                </p>
-                
-                {/* Results */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Completion Time:</span>
-                    <span className="font-medium">4 hours</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Customer Rating:</span>
-                    <span className="font-medium text-yellow-600">★★★★★</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : displayPairs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayPairs.map((pair) => (
+              <BeforeAfterSlider
+                key={pair.id}
+                beforeSrc={pair.beforeSrc}
+                afterSrc={pair.afterSrc}
+                title={pair.title}
+                caption={pair.caption || undefined}
+                cityName={cityDisplayNames[pair.citySlug] || pair.citySlug}
+                serviceName={serviceDisplayNames[pair.service] || pair.service}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">No transformations available for this area yet.</p>
+          </div>
+        )}
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 text-center">
