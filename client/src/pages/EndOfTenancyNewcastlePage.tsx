@@ -20,9 +20,12 @@ import {
 } from '@/utils/seo';
 
 // Import gallery images
-import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
-import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
-import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
+// import livingRoomImage from '@assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
+// import kitchenImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
+// import carpetImage from '@assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
+const livingRoomImage = '/attached_assets/generated_images/Clean_apartment_living_room_e6d5a885.png';
+const kitchenImage = '/attached_assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
+const carpetImage = '/attached_assets/generated_images/Carpet_cleaning_before_after_2f2d0ceb.png';
 
 export default function EndOfTenancyNewcastlePage() {
   // Get tracking numbers for Newcastle (Tyne & Wear region)
