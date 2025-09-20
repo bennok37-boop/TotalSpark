@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { initAnalytics } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { useConsent } from "@/contexts/ConsentContext";
+import { initializeCallTracking } from "@/lib/callTracking";
 import HomePage from "@/pages/HomePage";
 import CityPage from "@/pages/CityPage";
 import AreasPage from "@/pages/AreasPage";
@@ -77,6 +78,33 @@ function App() {
     const analyticsConsent = hasConsented && (preferences.analytics || preferences.marketing);
     initAnalytics(analyticsConsent);
   }, [hasConsented, preferences]);
+
+  // Initialize dynamic call tracking with city/service-based numbers
+  useEffect(() => {
+    const callTrackingConfig = {
+      fallbackNumber: '03300 435459',
+      trackingNumbers: {
+        'newcastle-upon-tyne_end-of-tenancy': '03300 435460',
+        'newcastle-upon-tyne_deep': '03300 435461', 
+        'newcastle-upon-tyne_commercial': '03300 435462',
+        'newcastle-upon-tyne_carpet': '03300 435463',
+        'sunderland_end-of-tenancy': '03300 435464',
+        'sunderland_deep': '03300 435465',
+        'middlesbrough_end-of-tenancy': '03300 435466',
+        'durham_end-of-tenancy': '03300 435467',
+        'gateshead_end-of-tenancy': '03300 435468',
+        // City-level defaults
+        'newcastle-upon-tyne': '03300 435460',
+        'sunderland': '03300 435464',
+        'middlesbrough': '03300 435466',
+        'durham': '03300 435467',
+        'gateshead': '03300 435468',
+        'default': '03300 435459'
+      }
+    };
+    
+    initializeCallTracking(callTrackingConfig);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

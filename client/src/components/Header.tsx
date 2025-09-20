@@ -8,6 +8,7 @@ import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import logoImage from '@assets/4_1757953109291.png';
 import { trackCallClick, trackWhatsAppClick, trackChatOpen } from '@/lib/analytics';
+import { getCallTracker } from '@/lib/callTracking';
 
 export default function Header() {
   const [location, navigate] = useLocation();
@@ -280,25 +281,30 @@ export default function Header() {
               className="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
               onClick={(e) => {
                 e.preventDefault();
-                trackCallClick({
-                  phone_number: phoneNumber,
-                  call_source: 'header',
-                  city: 'general',
-                  service_type: 'general'
-                });
-                trackChatOpen({
-                  chat_type: 'phone',
-                  trigger_source: 'header_phone'
-                });
-                // Small delay for tracking before navigation
-                setTimeout(() => {
-                  window.location.href = `tel:${phoneNumber.replace(/\s/g, '')}`;
-                }, 100);
+                const callTracker = getCallTracker();
+                if (callTracker) {
+                  callTracker.handlePhoneClick('header');
+                } else {
+                  trackCallClick({
+                    phone_number: phoneNumber,
+                    call_source: 'header',
+                    city: 'general',
+                    service_type: 'general'
+                  });
+                  trackChatOpen({
+                    chat_type: 'phone',
+                    trigger_source: 'header_phone'
+                  });
+                  // Small delay for tracking before navigation
+                  setTimeout(() => {
+                    window.location.href = `tel:${phoneNumber.replace(/\s/g, '')}`;
+                  }, 100);
+                }
               }}
               data-testid="link-phone"
             >
               <Phone className="w-4 h-4" />
-              <span className="font-semibold">{phoneNumber}</span>
+              <span className="font-semibold" data-dynamic-phone>{phoneNumber}</span>
             </a>
             <Button 
               onClick={scrollToQuoteForm}
@@ -531,7 +537,7 @@ export default function Header() {
                 data-testid="link-phone-mobile"
               >
                 <Phone className="w-4 h-4" />
-                <span className="font-semibold">{phoneNumber}</span>
+                <span className="font-semibold" data-dynamic-phone>{phoneNumber}</span>
               </a>
 
               <Button 
