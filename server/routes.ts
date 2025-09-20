@@ -1107,6 +1107,126 @@ ${urlEntries}
     }
   });
 
+  // Root-level sitemap.xml for Google Search Console submission
+  app.get('/sitemap.xml', (req, res) => {
+    try {
+      // Get the current domain from the request
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+      const host = req.headers.host || req.headers['x-forwarded-host'];
+      const baseUrl = `${protocol}://${host}`;
+      
+      console.log(`📄 Generating sitemap for domain: ${baseUrl}`);
+      
+      const lastMod = new Date().toISOString().split('T')[0];
+      
+      // Core pages with priorities
+      const pages = [
+        { url: '/', priority: '1.0' },
+        { url: '/quote', priority: '0.9' },
+        { url: '/end-of-tenancy-cleaning', priority: '0.9' },
+        { url: '/deep-cleaning', priority: '0.9' },
+        { url: '/commercial-cleaning', priority: '0.9' },
+        { url: '/carpet-upholstery-cleaning', priority: '0.9' },
+        { url: '/end-of-tenancy-cleaning-newcastle', priority: '0.8' },
+        { url: '/about', priority: '0.7' },
+        { url: '/areas', priority: '0.8' },
+        { url: '/reviews', priority: '0.7' },
+        { url: '/insurance', priority: '0.6' },
+        { url: '/guarantee', priority: '0.6' },
+        { url: '/privacy', priority: '0.3' },
+        { url: '/terms', priority: '0.3' },
+        { url: '/complaints', priority: '0.3' },
+      ];
+
+      // Add city pages
+      const cities = [
+        'newcastle-upon-tyne', 'sunderland', 'middlesbrough', 'durham', 'gateshead',
+        'south-shields', 'north-shields', 'darlington', 'hartlepool', 'stockton-on-tees',
+        'washington', 'consett', 'stanley', 'chester-le-street', 'houghton-le-spring',
+        'seaham', 'peterlee', 'newton-aycliffe', 'spennymoor', 'ferryhill',
+        'bishop-auckland', 'crook', 'morpeth', 'cramlington', 'hexham',
+        'alnwick', 'berwick-upon-tweed', 'prudhoe', 'ponteland', 'wallsend',
+        'tynemouth', 'whitley-bay', 'blyth', 'killingworth', 'longbenton'
+      ];
+
+      cities.forEach(city => {
+        pages.push({ url: `/cleaning/${city}`, priority: '0.7' });
+      });
+
+      // Add service-city combinations for major cities
+      const services = ['end-of-tenancy-cleaning', 'deep-cleaning', 'commercial-cleaning', 'carpet-cleaning'];
+      const majorCities = ['newcastle-upon-tyne', 'sunderland', 'middlesbrough', 'durham', 'gateshead'];
+      
+      services.forEach(service => {
+        majorCities.forEach(city => {
+          pages.push({ url: `/${service}/${city}`, priority: '0.6' });
+        });
+      });
+
+      const urlEntries = pages.map(page => `  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <lastmod>${lastMod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`).join('\n');
+
+      const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntries}
+</urlset>`;
+
+      console.log(`✅ Generated sitemap with ${pages.length} URLs`);
+      
+      res.set({
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=3600' // Cache for 1 hour
+      });
+      res.send(sitemapXml);
+    } catch (error) {
+      console.error('❌ Sitemap generation error:', error);
+      res.status(500).send('Sitemap generation failed');
+    }
+  });
+
+  // Root-level robots.txt for search engines
+  app.get('/robots.txt', (req, res) => {
+    try {
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+      const host = req.headers.host || req.headers['x-forwarded-host'];
+      const baseUrl = `${protocol}://${host}`;
+      
+      const robotsTxt = `User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: ${baseUrl}/sitemap.xml
+
+# Disallow admin and api paths
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /wordpress/
+
+# Allow important pages
+Allow: /cleaning/
+Allow: /end-of-tenancy-cleaning/
+Allow: /deep-cleaning/
+Allow: /commercial-cleaning/
+Allow: /carpet-upholstery-cleaning/`;
+
+      console.log(`📄 Generated robots.txt for domain: ${baseUrl}`);
+      
+      res.set({
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'public, max-age=3600'
+      });
+      res.send(robotsTxt);
+    } catch (error) {
+      console.error('❌ Robots.txt generation error:', error);
+      res.status(500).send('Robots.txt generation failed');
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
