@@ -70,7 +70,7 @@ export default function Footer() {
                   <SiInstagram className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://www.facebook.com/totalsparksolutions"
+                  href="https://www.facebook.com/profile.php?id=61573170203568"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-background/60 hover:text-primary transition-colors"
