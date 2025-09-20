@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
+import { trackQuoteRequest, trackConversion } from '@/lib/analytics';
 
 type FormStep = 1 | 2 | 3 | 4 | 5;
 
@@ -251,6 +252,41 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
       return apiRequest('POST', '/api/quotes', submitData);
     },
     onSuccess: () => {
+      // Track quote request conversion
+      const serviceLabels = {
+        endOfTenancy: 'End of Tenancy',
+        deep: 'Deep Cleaning', 
+        commercial: 'Commercial',
+        carpets: 'Carpet & Upholstery'
+      };
+      
+      // Extract city from address (basic extraction)
+      const extractCityFromAddress = (address: string): string => {
+        const commonCities = ['Newcastle', 'Sunderland', 'Middlesbrough', 'Durham', 'Gateshead'];
+        const foundCity = commonCities.find(city => 
+          address.toLowerCase().includes(city.toLowerCase())
+        );
+        return foundCity || 'unknown';
+      };
+
+      // Get numeric bedrooms value
+      const getBedrooms = (bedrooms: string): number => {
+        if (bedrooms === 'studio') return 0;
+        if (bedrooms === '5plus') return 5;
+        return parseInt(bedrooms) || 0;
+      };
+      
+      trackQuoteRequest({
+        service_type: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
+        city: extractCityFromAddress(formData.address),
+        property_type: formData.propertyType || 'unknown',
+        bedrooms: getBedrooms(formData.bedrooms),
+        contact_method: 'website_form',
+        estimated_price: quoteResult?.total || 0
+      });
+      
+      trackConversion('quote_submitted', quoteResult?.total || 0);
+      
       setStep(3);
       toast({
         title: "Quote Submitted!",

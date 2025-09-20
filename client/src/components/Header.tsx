@@ -7,6 +7,7 @@ import { REGIONS } from '@shared/locations';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import logoImage from '@assets/4_1757953109291.png';
+import { trackPhoneCall, trackWhatsApp } from '@/lib/analytics';
 
 export default function Header() {
   const [location, navigate] = useLocation();
@@ -234,7 +235,12 @@ export default function Header() {
                         asChild
                         data-testid="button-whatsapp"
                       >
-                        <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                        <a 
+                          href={`https://wa.me/${whatsappNumber}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          onClick={() => trackWhatsApp('header')}
+                        >
                           <MessageCircle className="w-3 h-3" />
                         </a>
                       </Button>
@@ -262,6 +268,10 @@ export default function Header() {
             <a 
               href={`tel:${phoneNumber}`} 
               className="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                trackPhoneCall(phoneNumber, 'header');
+              }}
               data-testid="link-phone"
             >
               <Phone className="w-4 h-4" />
@@ -455,7 +465,12 @@ export default function Header() {
                           asChild
                           data-testid="button-whatsapp-mobile"
                         >
-                          <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                          <a 
+                            href={`https://wa.me/${whatsappNumber}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            onClick={() => trackWhatsApp('mobile')}
+                          >
                             <MessageCircle className="w-3 h-3" />
                           </a>
                         </Button>

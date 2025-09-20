@@ -5,6 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ConsentProvider } from "@/contexts/ConsentContext";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { useEffect } from "react";
+import { initAnalytics } from "@/lib/analytics";
+import { useAnalytics } from "@/hooks/use-analytics";
+import { useConsent } from "@/contexts/ConsentContext";
 import HomePage from "@/pages/HomePage";
 import CityPage from "@/pages/CityPage";
 import AreasPage from "@/pages/AreasPage";
@@ -25,6 +29,9 @@ import { ServiceLocationRouter } from "@/routes/ServiceLocationRouter";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  // Track page views for SPA navigation
+  useAnalytics();
+  
   return (
     <Switch>
       <Route path="/" component={HomePage} />
@@ -54,6 +61,23 @@ function Router() {
 }
 
 function App() {
+  const { preferences, hasConsented } = useConsent();
+
+  // Initialize analytics when app loads and user has consented
+  useEffect(() => {
+    const gtmId = import.meta.env.VITE_GTM_ID;
+    const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+    
+    if (!gtmId && !gaId) {
+      console.warn('Analytics not configured. Add VITE_GTM_ID or VITE_GA_MEASUREMENT_ID to environment variables.');
+      return;
+    }
+
+    // Only initialize analytics if user has consented to analytics/marketing
+    const analyticsConsent = hasConsented && (preferences.analytics || preferences.marketing);
+    initAnalytics(analyticsConsent);
+  }, [hasConsented, preferences]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
