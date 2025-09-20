@@ -10,9 +10,12 @@ import StickyCallButton from '@/components/StickyCallButton';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 // Import gallery images
-import livingRoomImage from '@assets/stock_images/professional_house_c_9c27b829.jpg';
-import kitchenImage from '@assets/stock_images/professional_house_c_62a1095a.jpg';
-import carpetImage from '@assets/stock_images/professional_bathroo_944593f2.jpg';
+// import livingRoomImage from '@assets/stock_images/professional_house_c_9c27b829.jpg';
+// import kitchenImage from '@assets/stock_images/professional_house_c_62a1095a.jpg';
+// import carpetImage from '@assets/stock_images/professional_bathroo_944593f2.jpg';
+const livingRoomImage = '/attached_assets/stock_images/professional_house_c_9c27b829.jpg';
+const kitchenImage = '/attached_assets/stock_images/professional_house_c_62a1095a.jpg';
+const carpetImage = '/attached_assets/stock_images/professional_bathroo_944593f2.jpg';
 
 export default function DeepCleaningPage() {
   // Get tracking numbers from CallRail system

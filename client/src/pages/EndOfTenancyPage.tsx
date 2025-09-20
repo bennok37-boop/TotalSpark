@@ -12,9 +12,12 @@ import { scrollToQuoteForm } from '@/utils/scroll';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 
 // Import gallery images
-import livingRoomImage from '@assets/stock_images/clean_modern_living__9562ecd9.jpg';
-import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
-import carpetImage from '@assets/stock_images/professional_carpet__d09de93c.jpg';
+// import livingRoomImage from '@assets/stock_images/clean_modern_living__9562ecd9.jpg';
+// import kitchenImage from '@assets/stock_images/professional_kitchen_2ae5ee29.jpg';
+// import carpetImage from '@assets/stock_images/professional_carpet__d09de93c.jpg';
+const livingRoomImage = '/attached_assets/stock_images/clean_modern_living__9562ecd9.jpg';
+const kitchenImage = '/attached_assets/stock_images/professional_kitchen_2ae5ee29.jpg';
+const carpetImage = '/attached_assets/stock_images/professional_carpet__d09de93c.jpg';
 
 export default function EndOfTenancyPage() {
   // Get tracking numbers for call buttons

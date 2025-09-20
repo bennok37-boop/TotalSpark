@@ -3,7 +3,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Phone, MessageCircle, Star } from 'lucide-react';
 import { useState } from 'react';
-import heroImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
+// import heroImage from '@assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
+const heroImage = '/attached_assets/generated_images/Clean_modern_kitchen_hero_3f6d5639.png';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 

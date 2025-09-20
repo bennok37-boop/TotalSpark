@@ -1,5 +1,6 @@
 import { Shield, Award, Clock, CheckCircle } from 'lucide-react';
-import trustBadge from '@assets/generated_images/DBS_trust_badge_dc15542d.png';
+// import trustBadge from '@assets/generated_images/DBS_trust_badge_dc15542d.png';
+const trustBadge = '/attached_assets/generated_images/DBS_trust_badge_dc15542d.png';
 
 const proofPoints = [
   {

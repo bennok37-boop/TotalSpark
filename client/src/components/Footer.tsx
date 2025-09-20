@@ -22,7 +22,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <img 
-                src="@assets/4_1757953109291.png" 
+                src="/attached_assets/4_1757953109291.png" 
                 alt="TotalSpark Solutions Logo" 
                 className="w-10 h-10 object-contain"
               />

@@ -6,7 +6,8 @@ import { Phone, Menu, X, MapPin, ChevronDown, Mail, MessageCircle, Copy } from '
 import { REGIONS } from '@shared/locations';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
-import logoImage from '@assets/4_1757953109291.png';
+// import logoImage from '@assets/4_1757953109291.png';
+const logoImage = '/attached_assets/4_1757953109291.png';
 import { trackCallClick, trackWhatsAppClick, trackChatOpen } from '@/lib/analytics';
 import { getCallTracker } from '@/lib/callTracking';
 
