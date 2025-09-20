@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ConsentProvider } from "@/contexts/ConsentContext";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { useEffect } from "react";
-import { initAnalytics } from "@/lib/analytics";
+import { initAnalytics, initGA4Direct } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { useConsent } from "@/contexts/ConsentContext";
 import { initializeCallTracking } from "@/lib/callTracking";
@@ -79,6 +79,11 @@ function App() {
     // Only initialize analytics if user has consented to analytics/marketing
     const analyticsConsent = hasConsented && (preferences.analytics || preferences.marketing);
     initAnalytics(analyticsConsent, gtmId);
+
+    // Also initialize direct GA4 if measurement ID provided
+    if (gaId && analyticsConsent) {
+      initGA4Direct(gaId);
+    }
   }, [hasConsented, preferences]);
 
   // Initialize dynamic call tracking with city/service-based numbers

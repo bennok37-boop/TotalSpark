@@ -60,7 +60,7 @@ const initGTM = (gtmId: string) => {
 };
 
 // Initialize GA4 directly (if no GTM)
-const initGA4Direct = (gaId: string) => {
+export const initGA4Direct = (gaId: string) => {
   const script1 = document.createElement('script');
   script1.async = true;
   script1.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;

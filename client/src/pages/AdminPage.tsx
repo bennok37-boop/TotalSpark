@@ -109,10 +109,17 @@ export default function AdminPage() {
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">GA4 Events</CardTitle>
+                      <CardTitle className="text-base">Google Analytics 4</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-1 text-sm">
+                      <p className="text-sm text-gray-600 mb-2">
+                        GA4 ID: {import.meta.env.VITE_GA_MEASUREMENT_ID || 'Not configured'}
+                      </p>
+                      <Badge variant={import.meta.env.VITE_GA_MEASUREMENT_ID ? 'default' : 'secondary'}>
+                        {import.meta.env.VITE_GA_MEASUREMENT_ID ? 'Direct GA4 Active' : 'Via GTM Only'}
+                      </Badge>
+                      <div className="mt-3 space-y-1 text-sm">
+                        <p className="font-medium">Events Tracked:</p>
                         <p>✓ form_submit</p>
                         <p>✓ call_click</p>
                         <p>✓ whatsapp_click</p>
