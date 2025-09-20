@@ -191,6 +191,10 @@
         data.utm_campaign = urlParams.get('utm_campaign') || '';
         data.page_url = window.location.href;
         
+        // Ensure action and security are set
+        data.action = 'submit_quote';
+        data.security = totalsparkAjax.nonce;
+        
         // Track form completion
         trackQuoteCompleted(data);
         

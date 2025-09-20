@@ -1,0 +1,372 @@
+/**
+ * TotalSpark Landing Pages - WordPress Styles
+ * Provides base styling for landing page components
+ */
+
+/* Reset and base styles */
+.ts-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Hero Section */
+.ts-hero-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.ts-hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.ts-hero-subtitle {
+    font-size: 1.25rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ts-hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.ts-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+
+.ts-btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.ts-btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.ts-btn-secondary {
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+    background: transparent;
+}
+
+.ts-btn-secondary:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Proof Strip */
+.ts-proof-strip {
+    background: #f1f5f9;
+    padding: 2rem 1rem;
+    border-top: 3px solid #3b82f6;
+}
+
+.ts-proof-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.ts-proof-item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.ts-proof-item p {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+/* Features Section */
+.ts-features-section {
+    padding: 4rem 1rem;
+    background: white;
+}
+
+.ts-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.ts-feature-card {
+    background: #f8fafc;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease;
+}
+
+.ts-feature-card:hover {
+    transform: translateY(-2px);
+}
+
+.ts-feature-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+.ts-feature-card p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Quote Form */
+.ts-quote-section {
+    background: white;
+    padding: 4rem 1rem;
+}
+
+.ts-form {
+    background: #f8fafc;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.ts-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ts-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.ts-form-group input,
+.ts-form-group select,
+.ts-form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.ts-form-group input:focus,
+.ts-form-group select:focus,
+.ts-form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ts-submit-btn {
+    width: 100%;
+    background: #3b82f6;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.ts-submit-btn:hover {
+    background: #2563eb;
+}
+
+/* FAQ Section */
+.ts-faq-section {
+    padding: 4rem 1rem;
+    background: #f8fafc;
+}
+
+.ts-faq-item {
+    background: white;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ts-faq-question {
+    padding: 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: #1e293b;
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.3s ease;
+}
+
+.ts-faq-question:hover {
+    background-color: #f8fafc;
+}
+
+.ts-faq-answer {
+    padding: 0 1.5rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.ts-faq-icon {
+    float: right;
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+}
+
+/* Sticky Call Button */
+.ts-sticky-call {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.ts-sticky-call-btn {
+    display: flex;
+    align-items: center;
+    background: #10b981;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    transition: all 0.3s ease;
+}
+
+.ts-sticky-call-btn:hover {
+    background: #059669;
+    transform: scale(1.05);
+    color: white;
+    text-decoration: none;
+}
+
+/* Section headers */
+.ts-section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.ts-section-header h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #1e293b;
+}
+
+.ts-section-header p {
+    font-size: 1.2rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ts-hero-title {
+        font-size: 2rem !important;
+    }
+    
+    .ts-hero-subtitle {
+        font-size: 1.1rem !important;
+    }
+    
+    .ts-hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .ts-btn {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .ts-proof-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    .ts-features-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .ts-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .ts-form {
+        padding: 1.5rem !important;
+    }
+    
+    .ts-section-header h2 {
+        font-size: 2rem !important;
+    }
+    
+    .ts-sticky-call {
+        bottom: 10px !important;
+        right: 10px !important;
+    }
+    
+    .ts-sticky-call-btn {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .ts-phone-number {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .ts-sticky-call {
+        right: 50% !important;
+        transform: translateX(50%);
+    }
+}
+
+/* Utility classes */
+.ts-text-center { text-align: center; }
+.ts-text-left { text-align: left; }
+.ts-text-right { text-align: right; }
+
+.ts-mb-1 { margin-bottom: 0.25rem; }
+.ts-mb-2 { margin-bottom: 0.5rem; }
+.ts-mb-3 { margin-bottom: 0.75rem; }
+.ts-mb-4 { margin-bottom: 1rem; }
+
+.ts-mt-1 { margin-top: 0.25rem; }
+.ts-mt-2 { margin-top: 0.5rem; }
+.ts-mt-3 { margin-top: 0.75rem; }
+.ts-mt-4 { margin-top: 1rem; }

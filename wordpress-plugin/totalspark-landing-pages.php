@@ -181,8 +181,9 @@ class TotalSparkLandingPages {
     
     public function handle_quote_submission() {
         // Verify nonce
-        if (!wp_verify_nonce($_POST['nonce'], 'totalspark_nonce')) {
-            wp_die('Security check failed');
+        if (!wp_verify_nonce($_POST['security'], 'totalspark_nonce')) {
+            wp_send_json_error('Security check failed');
+            return;
         }
         
         // Sanitize form data

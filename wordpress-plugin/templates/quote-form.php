@@ -82,7 +82,7 @@
             <input type="hidden" name="utm_campaign" value="">
             <input type="hidden" name="page_url" value="">
             <input type="hidden" name="action" value="submit_quote">
-            <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('totalspark_nonce'); ?>">
+            <input type="hidden" name="security" value="<?php echo wp_create_nonce('totalspark_nonce'); ?>">
             
         </form>
         
