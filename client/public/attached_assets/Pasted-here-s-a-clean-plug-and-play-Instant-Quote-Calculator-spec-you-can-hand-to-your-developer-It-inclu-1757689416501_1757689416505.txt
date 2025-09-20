@@ -1,0 +1,297 @@
+here’s a clean, plug-and-play Instant Quote Calculator spec you can hand to your developer. It includes a pricing matrix, rule engine, and a production-ready JavaScript function that returns a full breakdown (totals, hours, crew size, and line items).
+
+🔢 Pricing Matrix (Baseline)
+A) End of Tenancy (fixed base by bedrooms)
+Bedrooms	Base £	Base Hours*
+Studio	100	3
+1	120	4
+2	160	6
+3	220	8
+4	280	10
+5+	340	12
+
+*Hours are for a single cleaner. Crew/time maths below.
+
+B) Deep Clean (fixed base by bedrooms)
+Bedrooms	Base £	Base Hours
+Studio	100	3
+1	100	4
+2	150	6
+3	200	8
+4	260	10
+5+	320	12
+C) Commercial / Office (hourly)
+
+Rate: £20/hour
+
+Time estimate: hours = max(2, area_m2 / 60) (≈ 60 m² per cleaner-hour)
+
+One-off commercial minimum: £120
+
+D) Carpet & Upholstery (per item)
+
+Carpet (per room): £25
+
+Stairs & landing: £30
+
+Rug (standard): £30
+
+Sofa 2-seater: £40
+
+Sofa 3-seater: £55
+
+Armchair: £20
+
+Mattress: £35
+
+➕ Add-Ons (applied to EoT/Deep; optional with Commercial)
+
+Oven deep clean: £35
+
+Fridge/Freezer clean: £20
+
+Interior windows: £3 per window (min £15, cap by count)
+
+Inside cabinets (empty): £20
+
+Limescale treatment (bathroom pack): £15
+
+⚙️ Modifiers & Business Rules
+
+Urgent (<48h): +20%
+
+Weekend: +10%
+
+Stairs (no lift, 3rd floor+): +£10
+
+Outer area call-out (outside target city radius): +£10
+
+Bundle incentive: If Carpet & Upholstery is added to End of Tenancy, take 10% off carpet line items only.
+
+Minimums: Domestic min £80; One-off Commercial min £120 (after discounts, before VAT).
+
+VAT: If VAT-registered, add 20% at the end.
+
+Estimate band: Show Low/High = ±10% around computed subtotal (before VAT).
+
+👷 Crew & Duration (for scheduling)
+
+Crew size: crew = ceil(base_hours / 4)
+
+On-site duration (hours): duration = ceil(base_hours / crew)
+
+These are suggestions; show to users after price.
+
+✅ Validation & UX
+
+Step 1 saves lead.
+
+Step 2: if service is Commercial, require area_m2; otherwise require bedrooms.
+
+Guard rails for counts (0–30 windows, 0–10 rooms, etc.).
+
+Always display: Price range, Estimated duration, Crew size, and Line item breakdown.
+
+🧩 Config (JSON-like)
+const PRICING = {
+  domesticMin: 80,
+  commercialMin: 120,
+  vatRate: 0.20,
+  estimateBand: 0.10,
+  endOfTenancy: {
+    base: { studio: {£:100,h:3}, 1:{£:120,h:4}, 2:{£:160,h:6}, 3:{£:220,h:8}, 4:{£:280,h:10}, "5plus":{£:340,h:12} }
+  },
+  deep: {
+    base: { studio:{£:100,h:3}, 1:{£:100,h:4}, 2:{£:150,h:6}, 3:{£:200,h:8}, 4:{£:260,h:10}, "5plus":{£:320,h:12} }
+  },
+  commercial: {
+    ratePerHour: 20,
+    m2PerCleanerHour: 60,
+    minHours: 2
+  },
+  carpets: {
+    room: 25, stairs: 30, rug: 30, sofa2: 40, sofa3: 55, armchair: 20, mattress: 35
+  },
+  addons: {
+    oven: 35, fridgeFreezer: 20, cabinetsInside: 20, limescalePack: 15,
+    windowsPerUnit: 3, windowsMin: 15
+  },
+  modifiers: {
+    urgentPct: 0.20,
+    weekendPct: 0.10,
+    stairsNoLift: 10,
+    outerArea: 10,
+    bundleCarpetWithEoTDiscountPct: 0.10
+  }
+};
+
+🧠 Quote Engine (drop-in JavaScript)
+function computeQuote(input) {
+  // input: {
+  //  service: "endOfTenancy" | "deep" | "commercial" | "carpets",
+  //  bedrooms: "studio"|1|2|3|4|"5plus",
+  //  area_m2: number, // commercial
+  //  items: {carpetRooms:0, stairs:0, rugs:0, sofa2:0, sofa3:0, armchair:0, mattress:0}, // carpets
+  //  addons: {oven:false, fridge:false, windows:0, cabinets:false, limescale:false},
+  //  modifiers: {urgent:false, weekend:false, stairsNoLift:false, outerArea:false},
+  //  vat: false, // true if VAT-registered
+  //  bundleCarpetsWithEoT: false
+  // }
+
+  const cfg = PRICING;
+  let lineItems = [];
+  let baseHours = 0;
+  let subtotal = 0;
+
+  const add = (label, amount) => { if (amount > 0) lineItems.push({ label, amount: +amount.toFixed(2) }); subtotal += amount; };
+
+  if (input.service === "endOfTenancy" || input.service === "deep") {
+    const table = cfg[input.service].base;
+    const key = (input.bedrooms === 5 || input.bedrooms === "5plus") ? "5plus"
+               : (input.bedrooms === "studio" ? "studio" : String(input.bedrooms));
+    const base = table[key];
+    add(`${input.service === "endOfTenancy" ? "End of Tenancy" : "Deep"} clean (${key} beds)`, base.£);
+    baseHours = base.h;
+
+    // Add-ons
+    if (input.addons?.oven) add("Oven deep clean", cfg.addons.oven);
+    if (input.addons?.fridge) add("Fridge/Freezer clean", cfg.addons.fridgeFreezer);
+    if (input.addons?.cabinets) add("Inside kitchen cabinets", cfg.addons.cabinetsInside);
+    if (input.addons?.limescale) add("Bathroom limescale pack", cfg.addons.limescale);
+    if (Number(input.addons?.windows) > 0) {
+      const win = Math.max(cfg.addons.windowsMin, input.addons.windows * cfg.addons.windowsPerUnit);
+      add(`Interior windows x${input.addons.windows}`, win);
+    }
+
+  } else if (input.service === "commercial") {
+    const hours = Math.max(cfg.commercial.minHours, (input.area_m2 || 0) / cfg.commercial.m2PerCleanerHour);
+    const cost = hours * cfg.commercial.ratePerHour;
+    add(`Commercial cleaning (${hours.toFixed(1)} hrs @ £${cfg.commercial.ratePerHour}/hr)`, cost);
+    baseHours = hours;
+
+  } else if (input.service === "carpets") {
+    const it = input.items || {};
+    add(`Carpet rooms x${it.carpetRooms||0}`, (it.carpetRooms||0) * cfg.carpets.room);
+    add(`Stairs & landing x${it.stairs||0}`, (it.stairs||0) * cfg.carpets.stairs);
+    add(`Rugs x${it.rugs||0}`, (it.rugs||0) * cfg.carpets.rug);
+    add(`Sofa 2-seater x${it.sofa2||0}`, (it.sofa2||0) * cfg.carpets.sofa2);
+    add(`Sofa 3-seater x${it.sofa3||0}`, (it.sofa3||0) * cfg.carpets.sofa3);
+    add(`Armchairs x${it.armchair||0}`, (it.armchair||0) * cfg.carpets.armchair);
+    add(`Mattresses x${it.mattress||0}`, (it.mattress||0) * cfg.carpets.mattress);
+  }
+
+  // Bundle discount: carpets with EoT only (apply to carpet lines)
+  if (input.bundleCarpetsWithEoT && input.service === "endOfTenancy" && input.items) {
+    const carpetTotal = (input.items.carpetRooms||0)*cfg.carpets.room
+      + (input.items.stairs||0)*cfg.carpets.stairs
+      + (input.items.rugs||0)*cfg.carpets.rug
+      + (input.items.sofa2||0)*cfg.carpets.sofa2
+      + (input.items.sofa3||0)*cfg.carpets.sofa3
+      + (input.items.armchair||0)*cfg.carpets.armchair
+      + (input.items.mattress||0)*cfg.carpets.mattress;
+    if (carpetTotal > 0) {
+      const disc = carpetTotal * cfg.modifiers.bundleCarpetWithEoTDiscountPct;
+      add("Bundle discount (carpets with End of Tenancy)", -disc);
+    }
+  }
+
+  // Flat surcharges
+  if (input.modifiers?.stairsNoLift) add("Access surcharge (no lift, 3rd+ floor)", cfg.modifiers.stairsNoLift);
+  if (input.modifiers?.outerArea) add("Outer area call-out", cfg.modifiers.outerArea);
+
+  // Percentage surcharges (apply after flat items)
+  let percentMultiplier = 1;
+  if (input.modifiers?.urgent) percentMultiplier *= (1 + cfg.modifiers.urgentPct);
+  if (input.modifiers?.weekend) percentMultiplier *= (1 + cfg.modifiers.weekendPct);
+  subtotal *= percentMultiplier;
+
+  // Minimums
+  const min = (input.service === "commercial") ? cfg.commercialMin
+              : (input.service === "carpets" ? cfg.domesticMin : cfg.domesticMin);
+  if (subtotal < min) {
+    add(`Minimum job value adjustment`, (min - subtotal));
+  }
+
+  // VAT
+  const vat = input.vat ? subtotal * cfg.vatRate : 0;
+  const total = subtotal + vat;
+
+  // Estimate band
+  const band = cfg.estimateBand;
+  const estLow = total * (1 - band);
+  const estHigh = total * (1 + band);
+
+  // Crew suggestion
+  const crew = Math.max(1, Math.ceil((baseHours || 0) / 4));
+  const duration = baseHours ? Math.ceil(baseHours / crew) : null;
+
+  return {
+    currency: "GBP",
+    lineItems,
+    subtotal: +subtotal.toFixed(2),
+    vat: +vat.toFixed(2),
+    total: +total.toFixed(2),
+    estimateRange: { low: +estLow.toFixed(2), high: +estHigh.toFixed(2) },
+    scheduling: { baseHours: baseHours ? +baseHours.toFixed(1) : null, crew, durationHours: duration },
+    notes: [
+      "This is an instant estimate. Final price may vary after site conditions are confirmed.",
+      "Deposit-Back or 48-hour Reclean Guarantee applies to End of Tenancy when the property is emptied and accessible."
+    ]
+  };
+}
+
+🧪 Worked Examples (so devs can test quickly)
+
+End of Tenancy, 3-bed, windows x10, oven + fridge, weekend
+
+Base £220, hours 8
+
+Windows: max(£15, 10×£3=£30) = £30
+
+Oven £35 + Fridge £20 → +£55
+
+Weekend +10% → (£220+30+55)=£305 → £335.50
+
+Domestic min passes
+
+VAT off → Total ≈ £335.50 → Range: £302–£369
+
+Deep Clean, 2-bed, urgent (<48h)
+
+Base £150, hours 6
+
+Urgent +20% → £180
+
+Range: £162–£198
+
+Commercial 600 m² one-off
+
+Hours = 600/60 = 10 → £200
+
+One-off min £120 → already exceeded
+
+VAT ON → £200 + 20% = £240
+
+Range: £216–£264
+
+Crew suggestion: 10/4 ≈ 3 cleaners, duration ≈ 4 hours
+
+EoT 2-bed + Carpets (2 rooms + stairs), bundle discount
+
+EoT base £160
+
+Carpets: (2×25) + 30 = £80 → 10% off carpets = -£8
+
+Subtotal = £160 + £80 − £8 = £232
+
+Range: £209–£255
+
+🧱 Frontend Output (recommended)
+
+Big price band: “Estimate: £302–£369 (incl. any surcharges; VAT shown separately if applicable).”
+
+Breakdown table (line items).
+
+Badge: “Est. crew: 2 cleaners · Est. time: 4 hours”
+
+CTAs: “Book this slot” · “Call now” · “WhatsApp us”

@@ -1,34 +1,12 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/public"
-      }
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "src": "api/*.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/quotes",
-      "dest": "/api/quotes.ts"
-    },
-    {
-      "src": "/api/bookings",
-      "dest": "/api/bookings.ts"
-    },
-    {
-      "src": "/api/objects/upload",
-      "dest": "/api/objects/upload.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/dist/public/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

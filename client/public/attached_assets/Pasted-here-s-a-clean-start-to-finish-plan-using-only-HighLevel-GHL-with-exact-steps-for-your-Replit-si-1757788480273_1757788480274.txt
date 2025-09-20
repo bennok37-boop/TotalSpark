@@ -1,0 +1,349 @@
+here’s a clean, start-to-finish plan using only HighLevel (GHL), with exact steps for your Replit site (including picture uploads + optional details). This avoids Zapier/Jobber. You’ll use: GHL Forms, Custom Fields, Workflows, Calendar (Stripe deposit), and Email/SMS.
+
+0) Outcome you’ll get
+
+Visitor sees estimate on your Replit page.
+
+At that same moment, GHL sends the estimate + booking link by Email + SMS.
+
+Lead can book later via your GHL Calendar (deposit via Stripe).
+
+Follow-ups (+5m / +2h / +24h / +72h) run automatically only from GHL.
+
+Photos & extra details are captured and stored in GHL.
+
+1) HighLevel: one-time setup
+1.1 Connect payments (Stripe)
+
+Settings → Integrations → Payments → Connect Stripe
+
+Later you’ll enable deposit on the GHL Calendar.
+
+1.2 Custom Fields (you’ll map your estimator + uploads here)
+
+Settings → Custom Fields → New (group them in “Quotes”)
+
+quote_id (Text)
+
+price_low (Currency)
+
+price_high (Currency)
+
+lock_until (Date)
+
+service (Dropdown: End of Tenancy, Deep, Commercial, Carpet & Upholstery)
+
+region (Dropdown: Tyne & Wear, County Durham, Northumberland, Tees Valley)
+
+city_town (Text)
+
+property_type (Dropdown: Flat, Terraced, Semi, Detached, Maisonette/Townhouse)
+
+bedrooms (Number)
+
+bathrooms (Number)
+
+condition (Dropdown: Light, Standard, Heavy, Very Heavy)
+
+quote_url (Text) ← the page the client is viewing
+
+resume_url (Text) ← deep-link back to resume
+
+notes_optional (Long Text) ← “optional details”
+
+photos_upload (File Upload) ← enables picture upload stored in GHL
+
+quote_sent (Checkbox)
+
+1.3 Pipeline
+
+Opportunities → Pipelines → New
+Stages: Lead → Quoted → Booked → Won → Lost (make this your default pipeline).
+
+1.4 Calendar (booking + deposit)
+
+Calendars → Create Calendar
+
+Name: Cleaning Bookings
+
+Collect payments ON → Deposit Fixed £30 (or 20%)
+
+Confirmation & reminders ON
+
+Copy the Public Link (you’ll use it as the Booking button URL).
+
+1.5 Forms (two lightweight forms you’ll submit from Replit)
+
+You will not display the default GHL form UI; you’ll POST to them in the background from Replit using their “Raw HTML Embed” so there’s no cross-domain/iframe issue.
+
+Form A — Lead Capture (Step 1)
+
+Fields: Name, Email, Phone, region, city_town
+
+Settings → On Submit:
+
+Move to Stage: Lead
+
+Add Tag: Lead-Captured
+
+Form B — Quote Push (Instant Send)
+
+Fields: the Custom Fields you created:
+quote_id, price_low, price_high, lock_until, service, region, city_town, property_type, bedrooms, bathrooms, condition, quote_url, resume_url, notes_optional, photos_upload
+
+Settings → On Submit:
+
+Move to Stage: Quoted
+
+Add Tag: Quote-Ready and Quoted
+
+Get the raw HTML for each form:
+Forms → (open form) → Integrate → choose Raw HTML (not the Script/iFrame).
+You’ll get a <form action="https://.../form/.../submit" method="post"> block with hidden metadata.
+Keep both snippets handy — you’ll paste them into Replit (hidden).
+
+1.6 Workflows (all in GHL, no third parties)
+
+Workflow A — Instant Quote Send (no delay)
+
+Trigger: Tag added = Quote-Ready
+
+If/Else: proceed only if quote_sent is not checked
+
+Actions (no wait):
+
+Send SMS (uses Phone)
+
+Hi {{contact.first_name}}, your estimate is £{{contact.price_low}}–£{{contact.price_high}} for {{contact.service}} in {{contact.city_town}}.
+Book & hold your price: {{contact.quote_url}}
+(Quote {{contact.quote_id}} · Locked until {{contact.lock_until}})
+
+
+Send Email (uses Email) — subject: Your TotalSpark Estimate — Quote {{contact.quote_id}}
+Include estimate band, lock date, Book & hold my price button → Calendar Link, small prep checklist.
+
+Update Field: set quote_sent = true
+
+Workflow B — Follow-ups (nudges)
+
+Trigger: Tag added = Quoted
+
+If/Else: only if Stage = Quoted
+
+Actions:
+
+Wait 5 minutes → SMS (short reminder + same quote_url)
+
+Wait 2 hours → Email (PDF optional + booking link)
+
+Wait 24 hours → SMS (“Two slots left this week in {{city_town}}…”)
+
+Wait 48 hours → SMS (“Quote {{quote_id}} expires {{lock_until}}…”)
+
+Goal/Stop: If Stage changes (Booked/Won/Lost) → End Workflow
+
+Workflow C — After booking
+
+Trigger: Appointment Confirmed (Cleaning Bookings)
+
+Actions:
+
+Update Opportunity Stage → Booked
+
+Send Booking Confirmation (Email/SMS) with date/time, deposit note, prep checklist
+
+2) Replit: exact integration (what to paste/do)
+
+You already have a working estimator + picture upload UI. We’ll add two hidden GHL forms to your page and submit them programmatically:
+
+Form A submits when Step-1 (name/email/phone) is completed → creates/updates the contact (Stage=Lead).
+
+Form B submits the moment you render the estimate on screen → pushes all quote fields (incl. photo upload link) to GHL and triggers Instant Email + SMS.
+
+2.1 Add the two Raw HTML GHL forms (hidden)
+
+In your Replit HTML for the quote page, paste both raw form blocks you copied from GHL, and hide them:
+
+<!-- Hidden GHL Lead Capture (Form A) -->
+<form id="ghl-form-lead" action="https://PUBLIC.MSGSNDR.COM/form/XXXX/submit" method="POST" style="display:none">
+  <!-- keep all hidden inputs GHL gave you -->
+  <input type="text" name="first_name">
+  <input type="email" name="email">
+  <input type="tel" name="phone">
+  <input type="text" name="custom_values[region]">
+  <input type="text" name="custom_values[city_town]">
+</form>
+
+<!-- Hidden GHL Quote Push (Form B) -->
+<form id="ghl-form-quote" action="https://PUBLIC.MSGSNDR.COM/form/YYYY/submit" method="POST" enctype="multipart/form-data" style="display:none">
+  <!-- keep GHL’s hidden fields -->
+  <input type="text" name="custom_values[quote_id]">
+  <input type="text" name="custom_values[price_low]">
+  <input type="text" name="custom_values[price_high]">
+  <input type="text" name="custom_values[lock_until]">
+  <input type="text" name="custom_values[service]">
+  <input type="text" name="custom_values[region]">
+  <input type="text" name="custom_values[city_town]">
+  <input type="text" name="custom_values[property_type]">
+  <input type="number" name="custom_values[bedrooms]">
+  <input type="number" name="custom_values[bathrooms]">
+  <input type="text" name="custom_values[condition]">
+  <input type="url"  name="custom_values[quote_url]">
+  <input type="url"  name="custom_values[resume_url]">
+  <textarea name="custom_values[notes_optional]"></textarea>
+
+  <!-- File upload field maps to your GHL File Upload custom field -->
+  <input type="file" name="custom_values[photos_upload]" multiple>
+</form>
+
+
+Important:
+
+Use the exact action URL each GHL form gives you.
+
+Keep any hidden anti-spam/meta inputs that GHL includes in the raw HTML.
+
+The name="custom_values[field_api_name]" pattern is how GHL maps to your Custom Fields.
+
+2.2 Wire Step-1 (lead capture) to Form A
+
+When your Step-1 gets valid Name+Email (and/or Phone), submit Form A in the background:
+
+<script>
+function ghlSubmitLead({ firstName, email, phone, region, city }) {
+  const f = document.getElementById('ghl-form-lead');
+  f.querySelector('input[name="first_name"]').value = firstName || '';
+  f.querySelector('input[name="email"]').value = email || '';
+  f.querySelector('input[name="phone"]').value = phone || '';
+  f.querySelector('input[name="custom_values[region]"]').value = region || '';
+  f.querySelector('input[name="custom_values[city_town]"]').value = city || '';
+  f.submit(); // silent submit to GHL
+}
+</script>
+
+
+When to call it:
+
+On “Next” from Step-1, before showing Step-2.
+
+Or on blur of Email/Phone once both are valid.
+
+2.3 Submit Form B the moment you render the estimate
+
+Right after your calculator displays the estimate band on screen, submit Form B with all fields. This is what triggers the instant Email + SMS (Workflow A) because the form adds the Quote-Ready tag and moves Stage to Quoted.
+
+<script>
+function ghFormatLockUntil(days=7){
+  const d = new Date(); d.setDate(d.getDate()+days);
+  return d.toISOString().split('T')[0]; // YYYY-MM-DD
+}
+
+function ghlSubmitQuote(payload) {
+  const g = document.getElementById('ghl-form-quote');
+
+  const set = (selector, val) => g.querySelector(selector).value = (val ?? '');
+
+  set('input[name="custom_values[quote_id]"]', payload.quoteId);
+  set('input[name="custom_values[price_low]"]', payload.estimateLow);
+  set('input[name="custom_values[price_high]"]', payload.estimateHigh);
+  set('input[name="custom_values[lock_until]"]', ghFormatLockUntil(7));
+  set('input[name="custom_values[service]"]', payload.service);
+  set('input[name="custom_values[region]"]', payload.region);
+  set('input[name="custom_values[city_town]"]', payload.city);
+  set('input[name="custom_values[property_type]"]', payload.propertyType);
+  set('input[name="custom_values[bedrooms]"]', payload.bedrooms);
+  set('input[name="custom_values[bathrooms]"]', payload.bathrooms);
+  set('input[name="custom_values[condition]"]', payload.condition);
+  set('input[name="custom_values[quote_url]"]', window.location.href);
+  set('input[name="custom_values[resume_url]"]', window.location.href + '?qid=' + encodeURIComponent(payload.quoteId));
+  g.querySelector('textarea[name="custom_values[notes_optional]"]').value = payload.notes || '';
+
+  // If you already collected photos in your own uploader:
+  // 1) Either re-use this GHL file input (let the user re-attach here), OR
+  // 2) Put a share link (Google Drive/S3) into notes_optional (simplest).
+  // If you want to pass files directly: populate the <input type="file"> programmatically is not permitted by browsers.
+  // So expose the GHL file field for users to attach (recommended).
+
+  g.submit(); // silent submit -> triggers GHL Instant Workflow
+}
+</script>
+
+
+When to call it:
+Immediately after your estimator function paints the estimate on screen, e.g.:
+
+// after computeQuote()
+ghlSubmitQuote({
+  quoteId: 'TS-' + Date.now(),
+  estimateLow: calc.estimateLow,
+  estimateHigh: calc.estimateHigh,
+  service: form.service.value,
+  region: form.region.value,
+  city: form.city_town.value,
+  propertyType: form.property_type.value,
+  bedrooms: form.bedrooms.value,
+  bathrooms: form.bathrooms.value,
+  condition: form.condition.value,
+  notes: form.notes_optional.value
+});
+
+2.4 Show your Booking button (GHL Calendar)
+
+Place a prominent button:
+
+<a class="btn btn-primary" href="https://YOUR-GHL-CALENDAR-LINK" target="_blank" rel="noopener">
+  Book & hold my price
+</a>
+
+
+The Calendar collects the Stripe deposit and sets the confirmed appointment.
+
+Your Workflow C moves Stage → Booked and sends the booking confirmation automatically.
+
+2.5 Picture uploads (two ways)
+
+Best (pure GHL):
+Show the GHL file upload field (from Form B) in your UI (don’t hide it). Users attach photos which go straight into the photos_upload custom field in GHL.
+
+Alternative (keep your uploader):
+Upload to your storage (Drive/S3) and write the share link into notes_optional. (No external tools used; still 100% GHL for comms/automation.)
+
+3) Optional: recover partials using only GHL
+
+Because we’re not using Zapier, we’ll handle partials inside the page + GHL:
+
+Step-1 auto-save: call ghlSubmitLead() as soon as Email/Phone are valid. This creates the contact (Stage=Lead) so you can follow up if they leave.
+
+If estimate shows you already submit Form B → Stage=Quoted → Instant send goes out.
+
+If they never reach estimate: create a Workflow with Trigger Tag = Lead-Captured, Wait 10 mins → SMS “Want me to finish your quote? Reply with bedrooms+bathrooms.” (Stop if Stage moves to Quoted.)
+
+4) Test plan (do this once)
+
+On Replit, fill Step-1 → confirm Form A posts (contact appears in GHL, Stage=Lead).
+
+Trigger an estimate → confirm Form B posts (contact now Stage=Quoted).
+
+Instant: you receive SMS + Email with band + booking link.
+
+Click Book & hold my price → pay deposit → appointment shows in GHL → you receive booking confirmation; Stage=Booked.
+
+Wait for scheduled follow-ups (+5m/+2h/+24h/+72h) — they should not send once Booked (Goal stops them).
+
+5) Microcopy (paste)
+
+Instant SMS:
+“Hi {{contact.first_name}}, your estimate is £{{contact.price_low}}–£{{contact.price_high}} for {{contact.service}} in {{contact.city_town}}. Book & hold: {{contact.quote_url}} (Quote {{contact.quote_id}} · Locked until {{contact.lock_until}})”
+
+Instant Email subject: Your TotalSpark Estimate — Quote {{contact.quote_id}}
+
+Deposit note (on page + email):
+“Your deposit secures the slot and is deducted from the final bill. Fully refundable up to 24h before arrival.”
+
+Important caveats
+
+Use the “Raw HTML” form embeds for Form A & B so you can POST values directly (no iframe/CORS issues).
+
+Browsers don’t allow setting file inputs via JS; if you want files to reach GHL, show the GHL file field so the user attaches there.
+
+Keep field names exactly as shown (custom_values[FIELD_API_NAME]) — this is how GHL maps them.

@@ -1,0 +1,255 @@
+here’s a clean, region-first upgrade that keeps SEO strong AND gives you landing pages for all key North East cities & towns.
+
+1) Homepage change (copy you can paste)
+
+Section title: We Cover the North East
+Subhead: From Northumberland to Tees Valley — instant quotes, fast scheduling, DBS-checked teams.
+Region chips: Tyne & Wear • County Durham • Northumberland • Tees Valley
+Prominent cities (tiles): Newcastle • Sunderland • Durham • Middlesbrough • Gateshead • Hartlepool • Stockton-on-Tees • South Shields
+Link: View all areas we cover →
+
+(Add a search box: “Find your town…” → typeahead into the landing page list below.)
+
+2) “Areas We Cover” hub (one page)
+
+H1: Cleaning Across the North East
+
+Intro + 4 region sections (anchor links)
+
+A–Z town index + search
+
+Map + “If your area isn’t listed, we likely still cover it—ask for a quote.”
+
+Final CTA: Instant Quote + WhatsApp
+
+3) Mega-menu (Locations) structure
+
+Columns by Region → Cities/Towns (scrollable on mobile).
+Keep Yorkshire as a separate “Nearby” group if you still take work there.
+
+4) Landing pages to create (slugs)
+
+Use this pattern for each: /cleaning-<slug>
+(You already have full copy templates—we’ll reuse that content structure per town.)
+
+Tyne & Wear
+
+/cleaning-newcastle-upon-tyne
+
+/cleaning-sunderland
+
+/cleaning-gateshead
+
+/cleaning-south-shields
+
+/cleaning-washington
+
+/cleaning-north-shields
+
+/cleaning-tynemouth
+
+/cleaning-whitley-bay
+
+/cleaning-wallsend
+
+/cleaning-jarrow
+
+/cleaning-hebburn
+
+/cleaning-houghton-le-spring
+
+/cleaning-boldon
+
+/cleaning-ryhope
+
+/cleaning-killingworth
+
+/cleaning-longbenton
+
+/cleaning-blaydon-on-tyne
+
+/cleaning-felling
+
+/cleaning-birtley
+
+County Durham
+
+/cleaning-durham
+
+/cleaning-chester-le-street
+
+/cleaning-consett
+
+/cleaning-stanley
+
+/cleaning-seaham
+
+/cleaning-peterlee
+
+/cleaning-newton-aycliffe
+
+/cleaning-bishop-auckland
+
+/cleaning-spennymoor
+
+/cleaning-ferryhill
+
+/cleaning-shildon
+
+/cleaning-crook
+
+/cleaning-barnard-castle
+
+/cleaning-sedgefield
+
+/cleaning-horden
+
+/cleaning-easington
+
+/cleaning-trimdon
+
+/cleaning-shotton-colliery
+
+/cleaning-wheatley-hill
+
+Northumberland
+
+/cleaning-morpeth
+
+/cleaning-ashington
+
+/cleaning-blyth
+
+/cleaning-cramlington
+
+/cleaning-alnwick
+
+/cleaning-berwick-upon-tweed
+
+/cleaning-hexham
+
+/cleaning-ponteland
+
+/cleaning-prudhoe
+
+/cleaning-bedlington
+
+/cleaning-amble
+
+/cleaning-seahouses
+
+/cleaning-rothbury
+
+/cleaning-newbiggin-by-the-sea
+
+/cleaning-wooler
+
+/cleaning-haltwhistle
+
+/cleaning-corbridge
+
+Tees Valley (Darlington, Hartlepool, Middlesbrough, Redcar & Cleveland, Stockton)
+
+/cleaning-middlesbrough
+
+/cleaning-stockton-on-tees
+
+/cleaning-thornaby
+
+/cleaning-ingleby-barwick
+
+/cleaning-yarm
+
+/cleaning-billingham
+
+/cleaning-hartlepool
+
+/cleaning-darlington
+
+/cleaning-redcar
+
+/cleaning-saltburn-by-the-sea
+
+/cleaning-guisborough
+
+/cleaning-marske-by-the-sea
+
+/cleaning-norton
+
+/cleaning-eaglescliffe
+
+/cleaning-eston
+
+/cleaning-grangetown
+
+/cleaning-loftus
+
+/cleaning-skelton-in-cleveland
+
+If you still service Leeds/York, keep them under a “Nearby: Yorkshire” group, separate from “North East”.
+
+5) How to build this fast (no dev grind)
+Option A: Static site/WordPress
+
+Create one City Landing Template (the Newcastle page you approved).
+
+Duplicate it for each slug; swap city name, local areas, phone number.
+
+Add internal links: each city page links to all 4 service pages + nearby towns.
+
+Option B: Next.js/React (dynamic)
+
+Create /areas/[slug].tsx that reads from a locations.json manifest (name, region, neighbouring areas, phone).
+
+Reuse one component for all towns (auto-inserts city name into H1, FAQs, CTA).
+
+Generate a static sitemap from the manifest.
+
+locations.json (excerpt)
+
+{
+  "tyne-and-wear": {
+    "display": "Tyne & Wear",
+    "cities": [
+      {"name":"Newcastle upon Tyne","slug":"newcastle-upon-tyne","phone":"0191 ..."},
+      {"name":"Sunderland","slug":"sunderland","phone":"0191 ..."},
+      {"name":"Gateshead","slug":"gateshead"}
+      // ...
+    ]
+  },
+  "county-durham": { "display":"County Durham", "cities":[ /* ... */ ] },
+  "northumberland": { "display":"Northumberland", "cities":[ /* ... */ ] },
+  "tees-valley": { "display":"Tees Valley", "cities":[ /* ... */ ] }
+}
+
+6) City page content template (drop-in)
+
+Use this for every town (swap {{City}} + 1–2 local references):
+
+H1: Professional Cleaning Services in {{City}}
+Subhead: End of Tenancy, Office & Deep Cleans — Instant Quotes in 60 Seconds.
+Proof strip: ⭐⭐⭐⭐⭐ • DBS-checked • Fully insured • Deposit-Back/48-hour Reclean
+Service cards: End of Tenancy • Commercial • Deep • Carpet & Upholstery
+Pricing snapshot: From £120 for 1-bed flats — get your exact price in 60 seconds.
+Geo notes: “Serving {{City}} and nearby: {{Neighbour1}}, {{Neighbour2}}, {{Neighbour3}}.”
+Local trust bullets: “Supported {{X}}+ landlords & tenants in 2025” (keep generic if no logo rights)
+FAQs: coverage, turnaround (24-48h), insurance/DBS, supplies provided, receipts for agents, nearby areas.
+Final CTA: Form + Phone (tracked for the region) + WhatsApp.
+
+7) SEO + tracking
+
+Internal links:
+
+Every town page → all 4 services
+
+Services → “Areas we cover” + top towns
+
+Nearby towns cross-link (e.g., Tynemouth ↔ North Shields ↔ Whitley Bay)
+
+Schema: keep Service + LocalBusiness with "areaServed": "North East England" and major city list.
+
+Call tracking: 1 number per region (Tyne & Wear, County Durham, Northumberland, Tees Valley).
+
+Sitemap: include all slugs; submit to GSC.
+
+Canonical: if towns share similar content, keep unique copy lines (neighbourhoods, landmarks, housing types).
