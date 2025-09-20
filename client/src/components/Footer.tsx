@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { SiLinkedin, SiInstagram, SiFacebook } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import { CITIES } from '@shared/schema';
@@ -41,6 +42,43 @@ export default function Footer() {
               <div className="flex items-center space-x-2">
                 <Clock className="w-4 h-4 text-primary" />
                 <span>Mon-Sun: 7am-9pm</span>
+              </div>
+            </div>
+            
+            {/* Social Media Links */}
+            <div className="mt-6">
+              <p className="text-sm font-medium mb-3">Follow Us</p>
+              <div className="flex space-x-4">
+                <a
+                  href="https://www.linkedin.com/company/totalspark-solutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/60 hover:text-primary transition-colors"
+                  data-testid="link-linkedin"
+                  aria-label="Follow us on LinkedIn"
+                >
+                  <SiLinkedin className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.instagram.com/totalsparksolutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/60 hover:text-primary transition-colors"
+                  data-testid="link-instagram"
+                  aria-label="Follow us on Instagram"
+                >
+                  <SiInstagram className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.facebook.com/totalsparksolutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-background/60 hover:text-primary transition-colors"
+                  data-testid="link-facebook"
+                  aria-label="Follow us on Facebook"
+                >
+                  <SiFacebook className="w-6 h-6" />
+                </a>
               </div>
             </div>
           </div>
