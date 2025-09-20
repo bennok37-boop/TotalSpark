@@ -21,6 +21,7 @@ import GuaranteePage from "@/pages/GuaranteePage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import TermsPage from "@/pages/TermsPage";
 import ComplaintsPage from "@/pages/ComplaintsPage";
+import AdminPage from "@/pages/AdminPage";
 import EndOfTenancyPage from "@/pages/EndOfTenancyPage";
 import EndOfTenancyNewcastlePage from "@/pages/EndOfTenancyNewcastlePage";
 import CommercialCleaningPage from "@/pages/CommercialCleaningPage";
@@ -47,6 +48,7 @@ function Router() {
       <Route path="/privacy" component={PrivacyPage} />
       <Route path="/terms" component={TermsPage} />
       <Route path="/complaints" component={ComplaintsPage} />
+      <Route path="/admin" component={AdminPage} />
       {/* Service pages */}
       <Route path="/end-of-tenancy-cleaning" component={EndOfTenancyPage} />
       <Route path="/end-of-tenancy-cleaning-newcastle" component={EndOfTenancyNewcastlePage} />
