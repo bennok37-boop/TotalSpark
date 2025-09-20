@@ -1,0 +1,477 @@
+COMPLETE WORDPRESS PAGES FOR TOTALSPARK SOLUTIONS
+==================================================
+
+INSTRUCTIONS:
+1. Create each page as a new WordPress page
+2. Copy the content exactly as shown
+3. Set the SEO title, meta description, and slug as specified
+4. All pages include shortcodes that will work with the TotalSpark plugin
+
+==================================================
+MAJOR CITIES - GENERAL CLEANING PAGES
+==================================================
+
+---NEWCASTLE UPON TYNE CLEANING---
+Page Title: Professional Cleaning Services Newcastle upon Tyne | Regular & One-Off | Tyne & Wear
+SEO Title: Professional Cleaning Services Newcastle upon Tyne | Regular & One-Off | Tyne & Wear
+Meta Description: Professional cleaning services in Newcastle upon Tyne. Regular domestic cleaning & one-off cleans. Serving Gateshead & Tyne & Wear. Book today.
+Slug: cleaning-newcastle-upon-tyne
+
+[ts_hero city="Newcastle upon Tyne" service="Cleaning Services" title="Professional Cleaning Services Newcastle upon Tyne – Regular & One-Off Cleans" subtitle="Trusted cleaning services across Newcastle upon Tyne, Gateshead and surrounding Tyne & Wear areas. Regular domestic cleaning, one-off cleans, and maintenance services." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Professional Cleaning Services in Newcastle upon Tyne</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Looking for reliable cleaning services in Newcastle upon Tyne?</strong> TotalSpark Solutions provides professional domestic and commercial cleaning across Newcastle, Gateshead, and the wider Tyne & Wear region.</p>
+
+<p>Our experienced team delivers:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Regular domestic cleaning</strong> - Weekly, fortnightly, or monthly schedules</li>
+<li><strong>One-off deep cleans</strong> - Perfect for spring cleaning or special occasions</li>
+<li><strong>End-of-tenancy cleaning</strong> - Deposit back guarantee included</li>
+<li><strong>Post-construction cleanup</strong> - After renovations or building work</li>
+<li><strong>Move-in/move-out cleaning</strong> - Fresh start for your new home</li>
+</ul>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">Why Choose Our Newcastle Cleaning Services?</h3>
+
+<p>Serving Newcastle upon Tyne and surrounding areas including <strong>Gateshead, Jesmond, Gosforth, Byker, Walker, and Benwell</strong>, we understand the unique cleaning needs of Tyne & Wear residents.</p>
+
+</div>
+
+[ts_quote_form city="Newcastle upon Tyne" service="cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---SUNDERLAND CLEANING---
+Page Title: Professional Cleaning Services Sunderland | Domestic & Commercial | Same Day Available
+SEO Title: Professional Cleaning Services Sunderland | Domestic & Commercial | Same Day Available
+Meta Description: Professional cleaning services in Sunderland. Regular domestic cleaning, one-off cleans & commercial services. Same day availability. Book your free quote.
+Slug: cleaning-sunderland
+
+[ts_hero city="Sunderland" service="Cleaning Services" title="Professional Cleaning Services Sunderland – Domestic & Commercial" subtitle="Trusted cleaning services across Sunderland, Roker, and surrounding areas. Regular domestic cleaning, commercial services, and one-off cleans with same day availability." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Professional Cleaning Services in Sunderland</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Need reliable cleaning services in Sunderland?</strong> TotalSpark Solutions provides professional domestic and commercial cleaning across Sunderland, including Roker, Seaburn, and Washington areas.</p>
+
+<p>Our Sunderland cleaning services include:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Weekly, fortnightly cleaning</strong> - Consistent service you can rely on</li>
+<li><strong>One-off deep cleans</strong> - Perfect before guests or after events</li>
+<li><strong>Commercial office cleaning</strong> - Professional workplace maintenance</li>
+<li><strong>End-of-tenancy cleaning</strong> - 100% deposit back guarantee</li>
+<li><strong>After-party cleanup</strong> - Get your home back to normal quickly</li>
+</ul>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">Covering All Sunderland Areas</h3>
+
+<p>We serve <strong>City Centre, Roker, Seaburn, Hendon, Millfield, Southwick, Washington, Houghton-le-Spring, and Chester-le-Street</strong> with the same high standards throughout.</p>
+
+</div>
+
+[ts_quote_form city="Sunderland" service="cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---DURHAM CLEANING---
+Page Title: Professional Cleaning Services Durham | City Centre & University Area | DBS Checked
+SEO Title: Professional Cleaning Services Durham | City Centre & University Area | DBS Checked  
+Meta Description: Professional cleaning services in Durham city centre and university area. Regular domestic cleaning and one-off cleans. DBS checked cleaners. Free quotes.
+Slug: cleaning-durham
+
+[ts_hero city="Durham" service="Cleaning Services" title="Professional Cleaning Services Durham – City Centre & University Area" subtitle="Trusted cleaning services across Durham city centre, university area, and surrounding villages. Regular domestic cleaning and one-off services with DBS checked staff." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Professional Cleaning Services in Durham</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Looking for trusted cleaning services in Durham?</strong> TotalSpark Solutions provides professional cleaning across Durham city centre, the university area, and surrounding villages.</p>
+
+<p>Popular services in Durham include:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Student accommodation cleaning</strong> - University area specialists</li>
+<li><strong>Regular house cleaning</strong> - Weekly, fortnightly service</li>
+<li><strong>Cathedral quarter cleaning</strong> - Historic area expertise</li>
+<li><strong>Village home cleaning</strong> - Serving surrounding communities</li>
+<li><strong>Holiday let preparation</strong> - Tourist accommodation ready</li>
+</ul>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">Durham Areas We Cover</h3>
+
+<p>Professional cleaning throughout <strong>Durham City Centre, Nevilles Cross, Gilesgate, Carrville, Belmont, Brandon, Langley Moor, and surrounding villages</strong>.</p>
+
+</div>
+
+[ts_quote_form city="Durham" service="cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---MIDDLESBROUGH CLEANING---
+Page Title: Professional Cleaning Services Middlesbrough | Teesside Area | Same Day Service
+SEO Title: Professional Cleaning Services Middlesbrough | Teesside Area | Same Day Service
+Meta Description: Professional cleaning services in Middlesbrough and Teesside. Domestic and commercial cleaning with same day availability. 5-star rated service.
+Slug: cleaning-middlesbrough
+
+[ts_hero city="Middlesbrough" service="Cleaning Services" title="Professional Cleaning Services Middlesbrough – Teesside's Trusted Cleaners" subtitle="Professional cleaning services across Middlesbrough and Teesside. Regular domestic cleaning, commercial services, and same day availability throughout the area." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Professional Cleaning Services in Middlesbrough</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Need professional cleaning in Middlesbrough?</strong> TotalSpark Solutions is Teesside's trusted cleaning company, serving Middlesbrough, Stockton, and the wider area with reliable, high-quality services.</p>
+
+<p>Our Middlesbrough services include:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Teesside home cleaning</strong> - Regular weekly or fortnightly service</li>
+<li><strong>Town centre office cleaning</strong> - Commercial cleaning specialists</li>
+<li><strong>One-off deep cleans</strong> - Spring cleaning and special occasions</li>
+<li><strong>End-of-tenancy cleaning</strong> - Guaranteed deposit return</li>
+<li><strong>After-building work cleanup</strong> - Post-renovation specialists</li>
+</ul>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">Covering All of Teesside</h3>
+
+<p>We provide cleaning services throughout <strong>Middlesbrough town centre, Linthorpe, Acklam, Marton, Coulby Newham, Nunthorpe, and surrounding Teesside areas</strong>.</p>
+
+</div>
+
+[ts_quote_form city="Middlesbrough" service="cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---GATESHEAD CLEANING---
+Page Title: Professional Cleaning Services Gateshead | Tyne & Wear | Regular & One-Off Cleans
+SEO Title: Professional Cleaning Services Gateshead | Tyne & Wear | Regular & One-Off Cleans
+Meta Description: Professional cleaning services in Gateshead and Tyne & Wear. Regular domestic cleaning and one-off cleans. Fully insured with 5-star service.
+Slug: cleaning-gateshead
+
+[ts_hero city="Gateshead" service="Cleaning Services" title="Professional Cleaning Services Gateshead – Tyne & Wear's Trusted Cleaners" subtitle="Professional cleaning services across Gateshead and Tyne & Wear. Regular domestic cleaning, one-off cleans, and commercial services with 5-star rated team." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Professional Cleaning Services in Gateshead</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Looking for reliable cleaning in Gateshead?</strong> TotalSpark Solutions provides professional cleaning services across Gateshead, from the town centre to Low Fell, with the same high standards throughout Tyne & Wear.</p>
+
+<p>Popular Gateshead cleaning services:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Regular home cleaning</strong> - Weekly, fortnightly schedules available</li>
+<li><strong>Quayside area cleaning</strong> - Apartment and house cleaning specialists</li>
+<li><strong>One-off spring cleans</strong> - Deep cleaning for special occasions</li>
+<li><strong>Office cleaning services</strong> - Commercial premises maintenance</li>
+<li><strong>Post-event cleanup</strong> - Party and event cleaning specialists</li>
+</ul>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">All Gateshead Areas Covered</h3>
+
+<p>Professional cleaning throughout <strong>Gateshead town centre, Low Fell, Whickham, Ryton, Blaydon, Chopwell, Rowlands Gill, and surrounding areas</strong>.</p>
+
+</div>
+
+[ts_quote_form city="Gateshead" service="cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+==================================================
+END OF TENANCY CLEANING PAGES
+==================================================
+
+---NEWCASTLE END OF TENANCY---
+Page Title: End of Tenancy Cleaning Newcastle upon Tyne | Deposit Back Guarantee | Same Day Available
+SEO Title: End of Tenancy Cleaning Newcastle upon Tyne | Deposit Back Guarantee | Same Day Available
+Meta Description: Professional end of tenancy cleaning in Newcastle upon Tyne. 100% deposit back guarantee. Same day service available. Fully insured cleaners.
+Slug: end-of-tenancy-cleaning-newcastle-upon-tyne
+
+[ts_hero city="Newcastle upon Tyne" service="End of Tenancy Cleaning" title="End of Tenancy Cleaning Newcastle upon Tyne – 100% Deposit Back Guarantee" subtitle="Professional end of tenancy cleaning in Newcastle upon Tyne with guaranteed deposit return. Same day service available across Tyne & Wear." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="end-of-tenancy"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">End of Tenancy Cleaning Newcastle upon Tyne</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Moving out of your Newcastle rental?</strong> Our professional end of tenancy cleaning service guarantees your deposit back with a comprehensive clean that meets all landlord and letting agency requirements across Tyne & Wear.</p>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">💰 100% Deposit Back Guarantee</h3>
+
+<p>We're so confident in our Newcastle end of tenancy cleaning that we offer a <strong>100% deposit back guarantee</strong>. If your landlord or letting agent isn't satisfied, we'll return to re-clean at no extra cost.</p>
+
+<p>Newcastle letting agencies we work with regularly include major firms in Jesmond, Gosforth, city centre, and throughout Tyne & Wear. Our checklist meets all their standards.</p>
+
+</div>
+
+[ts_quote_form city="Newcastle upon Tyne" service="end-of-tenancy"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---SUNDERLAND END OF TENANCY---
+Page Title: End of Tenancy Cleaning Sunderland | Deposit Back Guarantee | Same Day Service
+SEO Title: End of Tenancy Cleaning Sunderland | Deposit Back Guarantee | Same Day Service
+Meta Description: Professional end of tenancy cleaning in Sunderland. Deposit back guarantee. Same day service available. Fully insured & DBS checked cleaners.
+Slug: end-of-tenancy-cleaning-sunderland
+
+[ts_hero city="Sunderland" service="End of Tenancy Cleaning" title="End of Tenancy Cleaning Sunderland – Deposit Back Guarantee" subtitle="Professional end of tenancy cleaning in Sunderland with 100% deposit back guarantee. Same day service available across Sunderland and surrounding areas." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="end-of-tenancy"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">End of Tenancy Cleaning Sunderland</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Moving out of your Sunderland rental property?</strong> Our professional end of tenancy cleaning service guarantees your deposit back with a thorough, comprehensive clean that meets all landlord and letting agency requirements.</p>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">💰 Deposit Back Guarantee</h3>
+
+<p>We offer a <strong>100% deposit back guarantee</strong> on all Sunderland end of tenancy cleans. If your landlord or letting agent is not satisfied with our work, we'll return to re-clean the affected areas at no extra cost.</p>
+
+<p>Serving <strong>Sunderland, Roker, Seaburn, Houghton-le-Spring, Washington, and Chester-le-Street</strong>, our local team understands the standards expected by Sunderland landlords and letting agencies.</p>
+
+</div>
+
+[ts_quote_form city="Sunderland" service="end-of-tenancy"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---DURHAM END OF TENANCY---
+Page Title: End of Tenancy Cleaning Durham | University Area & City Centre | Deposit Guaranteed
+SEO Title: End of Tenancy Cleaning Durham | University Area & City Centre | Deposit Guaranteed
+Meta Description: Professional end of tenancy cleaning in Durham city centre and university area. Student accommodation specialists. Deposit back guarantee.
+Slug: end-of-tenancy-cleaning-durham
+
+[ts_hero city="Durham" service="End of Tenancy Cleaning" title="End of Tenancy Cleaning Durham – Student & Professional Properties" subtitle="Professional end of tenancy cleaning in Durham city centre and university area. Student accommodation specialists with deposit back guarantee." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="end-of-tenancy"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">End of Tenancy Cleaning Durham</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Moving out in Durham?</strong> Whether you're a student leaving university accommodation or a professional moving from city centre properties, our end of tenancy cleaning service guarantees your deposit back.</p>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">🎓 Student Accommodation Specialists</h3>
+
+<p>We understand the unique requirements of Durham University accommodation and student housing throughout the city. Our cleaning meets the high standards expected by university landlords and letting agents.</p>
+
+<p>Covering <strong>Durham city centre, university area, Nevilles Cross, and surrounding villages</strong>, we know exactly what local landlords expect.</p>
+
+</div>
+
+[ts_quote_form city="Durham" service="end-of-tenancy"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+==================================================
+DEEP CLEANING PAGES
+==================================================
+
+---NEWCASTLE DEEP CLEANING---
+Page Title: Deep Cleaning Services Newcastle upon Tyne | Spring Cleaning | One-Off Deep Clean
+SEO Title: Deep Cleaning Services Newcastle upon Tyne | Spring Cleaning | One-Off Deep Clean
+Meta Description: Professional deep cleaning services in Newcastle upon Tyne. Spring cleaning, one-off deep cleans, and intensive cleaning services. Book your free quote.
+Slug: deep-cleaning-newcastle-upon-tyne
+
+[ts_hero city="Newcastle upon Tyne" service="Deep Cleaning" title="Deep Cleaning Services Newcastle upon Tyne – Spring & One-Off Cleans" subtitle="Professional deep cleaning services in Newcastle upon Tyne. Spring cleaning, one-off deep cleans, and intensive cleaning for homes and offices across Tyne & Wear." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="deep-cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Deep Cleaning Services Newcastle upon Tyne</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Need a thorough deep clean in Newcastle?</strong> Our professional deep cleaning service tackles every corner of your home or office, leaving it spotless and fresh throughout Newcastle upon Tyne and Tyne & Wear.</p>
+
+<p>Our Newcastle deep cleaning includes:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Spring cleaning services</strong> - Complete seasonal refresh</li>
+<li><strong>One-off intensive cleans</strong> - Perfect before guests or events</li>
+<li><strong>Post-renovation cleanup</strong> - After building work specialists</li>
+<li><strong>Oven and appliance deep clean</strong> - Professional equipment used</li>
+<li><strong>Carpet and upholstery cleaning</strong> - Deep extraction cleaning</li>
+</ul>
+
+<p>Serving Newcastle, Gateshead, Jesmond, Gosforth, and all Tyne & Wear areas with the same thorough approach.</p>
+
+</div>
+
+[ts_quote_form city="Newcastle upon Tyne" service="deep-cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+---SUNDERLAND DEEP CLEANING---
+Page Title: Deep Cleaning Services Sunderland | One-Off & Spring Cleaning | Professional Service
+SEO Title: Deep Cleaning Services Sunderland | One-Off & Spring Cleaning | Professional Service
+Meta Description: Professional deep cleaning services in Sunderland. One-off deep cleans, spring cleaning, and intensive cleaning services. Same day availability.
+Slug: deep-cleaning-sunderland
+
+[ts_hero city="Sunderland" service="Deep Cleaning" title="Deep Cleaning Services Sunderland – One-Off & Spring Cleaning" subtitle="Professional deep cleaning services in Sunderland. One-off deep cleans, spring cleaning, and intensive cleaning with same day availability across the area." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="deep-cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Deep Cleaning Services Sunderland</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Transform your Sunderland property with professional deep cleaning.</strong> Our intensive cleaning service covers every detail, from Roker seafront apartments to Washington family homes.</p>
+
+<p>Sunderland deep cleaning services include:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Seasonal deep cleaning</strong> - Spring and autumn intensive cleans</li>
+<li><strong>Pre-party preparation</strong> - Get your home guest-ready</li>
+<li><strong>Post-event cleanup</strong> - Restore your home after celebrations</li>
+<li><strong>Kitchen deep clean</strong> - Ovens, cupboards, and appliances</li>
+<li><strong>Bathroom sanitization</strong> - Deep clean and disinfection</li>
+</ul>
+
+<p>Available throughout <strong>Sunderland, Roker, Seaburn, Washington, Houghton-le-Spring, and Chester-le-Street</strong>.</p>
+
+</div>
+
+[ts_quote_form city="Sunderland" service="deep-cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+==================================================
+COMMERCIAL CLEANING PAGES
+==================================================
+
+---NEWCASTLE COMMERCIAL CLEANING---
+Page Title: Commercial Cleaning Services Newcastle upon Tyne | Office Cleaning | Tyne & Wear
+SEO Title: Commercial Cleaning Services Newcastle upon Tyne | Office Cleaning | Tyne & Wear  
+Meta Description: Professional commercial cleaning services in Newcastle upon Tyne. Office cleaning, retail cleaning, and business premises throughout Tyne & Wear.
+Slug: commercial-cleaning-newcastle-upon-tyne
+
+[ts_hero city="Newcastle upon Tyne" service="Commercial Cleaning" title="Commercial Cleaning Services Newcastle upon Tyne – Professional Office Cleaning" subtitle="Professional commercial cleaning services in Newcastle upon Tyne. Office cleaning, retail spaces, and business premises throughout Tyne & Wear with flexible scheduling." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="commercial"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Commercial Cleaning Newcastle upon Tyne</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Professional commercial cleaning in Newcastle upon Tyne.</strong> From city centre offices to Gateshead business parks, we provide reliable commercial cleaning services throughout Tyne & Wear.</p>
+
+<p>Our Newcastle commercial services:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Daily office cleaning</strong> - Consistent professional service</li>
+<li><strong>Retail space cleaning</strong> - High street and shopping centres</li>
+<li><strong>Medical practice cleaning</strong> - Healthcare facility specialists</li>
+<li><strong>Restaurant cleaning</strong> - Kitchen and dining area experts</li>
+<li><strong>Warehouse cleaning</strong> - Industrial and logistics premises</li>
+</ul>
+
+<p>Serving businesses across <strong>Newcastle city centre, Gateshead, Team Valley, and throughout Tyne & Wear</strong>.</p>
+
+</div>
+
+[ts_quote_form city="Newcastle upon Tyne" service="commercial"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+==================================================
+CARPET CLEANING PAGES
+==================================================
+
+---NEWCASTLE CARPET CLEANING---
+Page Title: Carpet & Upholstery Cleaning Newcastle upon Tyne | Professional Cleaning | Same Day
+SEO Title: Carpet & Upholstery Cleaning Newcastle upon Tyne | Professional Cleaning | Same Day
+Meta Description: Professional carpet and upholstery cleaning in Newcastle upon Tyne. Steam cleaning, stain removal, and fabric protection. Same day service available.
+Slug: carpet-upholstery-cleaning-newcastle-upon-tyne
+
+[ts_hero city="Newcastle upon Tyne" service="Carpet & Upholstery Cleaning" title="Carpet & Upholstery Cleaning Newcastle upon Tyne – Professional Steam Cleaning" subtitle="Professional carpet and upholstery cleaning in Newcastle upon Tyne. Steam cleaning, stain removal, and fabric protection throughout Tyne & Wear." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="carpet"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Carpet & Upholstery Cleaning Newcastle upon Tyne</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Professional carpet and upholstery cleaning in Newcastle upon Tyne.</strong> Using advanced steam cleaning technology, we restore carpets and furniture throughout Tyne & Wear to like-new condition.</p>
+
+<p>Our Newcastle carpet services include:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Steam carpet cleaning</strong> - Deep extraction cleaning</li>
+<li><strong>Upholstery cleaning</strong> - Sofas, chairs, and cushions</li>
+<li><strong>Stain removal</strong> - Pet stains, wine, and tough marks</li>
+<li><strong>Rug cleaning</strong> - Oriental and designer rugs</li>
+<li><strong>Fabric protection</strong> - Scotchgard treatment available</li>
+</ul>
+
+<p>Available throughout <strong>Newcastle upon Tyne, Gateshead, and all Tyne & Wear areas</strong> with same day service.</p>
+
+</div>
+
+[ts_quote_form city="Newcastle upon Tyne" service="carpet-cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+==================================================
+END OF COMPLETE PAGES FILE
+==================================================
+
+NEXT STEPS:
+1. Copy each page section into WordPress
+2. Set the title, meta description, and slug exactly as shown
+3. All shortcodes will work with the TotalSpark plugin
+4. Test quote forms and call tracking on each page
