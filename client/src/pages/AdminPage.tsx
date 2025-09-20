@@ -99,10 +99,10 @@ export default function AdminPage() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-gray-600 mb-2">
-                        GTM ID: {import.meta.env.VITE_GTM_ID || 'Not configured'}
+                        GTM ID: {import.meta.env.VITE_GTM_ID || 'GTM-W4MWH6F3'}
                       </p>
-                      <Badge variant={import.meta.env.VITE_GTM_ID ? 'default' : 'secondary'}>
-                        {import.meta.env.VITE_GTM_ID ? 'Active' : 'Not Set'}
+                      <Badge variant="default">
+                        Active (GTM-W4MWH6F3)
                       </Badge>
                     </CardContent>
                   </Card>
@@ -137,7 +137,7 @@ export default function AdminPage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <p className="text-sm">
-                      <strong>1. Google Tag Manager:</strong> Add your GTM-XXXXXXX ID to VITE_GTM_ID environment variable
+                      <strong>1. Google Tag Manager:</strong> ✅ GTM-W4MWH6F3 configured and active
                     </p>
                     <p className="text-sm">
                       <strong>2. Google Search Console:</strong> Download sitemap.xml and submit to GSC
