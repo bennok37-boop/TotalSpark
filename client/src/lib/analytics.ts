@@ -1,5 +1,5 @@
-// Google Analytics and GTM integration for TotalSpark Solutions
-// GDPR-compliant analytics with consent gating
+// GTM-first analytics for TotalSpark Solutions
+// Centralized measurement with specific GA4 events: form_submit, call_click, whatsapp_click, quote_started, quote_completed, chat_open
 
 declare global {
   interface Window {
@@ -17,30 +17,21 @@ interface QueuedEvent {
 let eventQueue: QueuedEvent[] = [];
 let analyticsInitialized = false;
 
-// Initialize Google Tag Manager and GA4 with consent check
+// GTM-first initialization (non-negotiable)
 export const initAnalytics = (hasConsent: boolean = true) => {
   const gtmId = import.meta.env.VITE_GTM_ID;
-  const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
-  if (!gtmId && !gaId) {
-    console.warn('No analytics IDs found. Add VITE_GTM_ID or VITE_GA_MEASUREMENT_ID to environment variables.');
+  if (!gtmId) {
+    console.error('GTM ID is required. Add VITE_GTM_ID to environment variables.');
     return;
   }
 
   if (!hasConsent) {
-    console.log('Analytics initialization delayed - awaiting user consent');
+    console.log('GTM initialization delayed - awaiting user consent');
     return;
   }
 
-  // Initialize dataLayer
-  window.dataLayer = window.dataLayer || [];
-  
-  if (gtmId) {
-    initGTM(gtmId);
-  } else if (gaId) {
-    initGA4Direct(gaId);
-  }
-
+  initGTM(gtmId);
   analyticsInitialized = true;
 
   // Track initial page view
@@ -155,56 +146,118 @@ export const trackEvent = (
   pushEvent(eventName, parameters);
 };
 
-// Cleaning service specific tracking functions with GA4 recommended events
-export const trackQuoteRequest = (data: {
+// Specific GA4 events as requested: form_submit, call_click, whatsapp_click, quote_started, quote_completed, chat_open
+
+// Quote flow tracking
+export const trackQuoteStarted = (data: {
+  service_type: string;
+  city: string;
+  source?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+}) => {
+  trackEvent('quote_started', {
+    service_type: data.service_type,
+    city: data.city,
+    page_location: window.location.href,
+    source: data.source || 'website',
+    utm_source: data.utm_source,
+    utm_medium: data.utm_medium,
+    utm_campaign: data.utm_campaign
+  });
+};
+
+export const trackQuoteCompleted = (data: {
   service_type: string;
   city: string;
   property_type: string;
   bedrooms?: number;
-  contact_method: string;
-  estimated_price?: number;
+  estimated_value: number;
+  form_id: string;
 }) => {
-  trackEvent('generate_lead', {
+  trackEvent('quote_completed', {
     service_type: data.service_type,
     city: data.city,
     property_type: data.property_type,
     bedrooms: data.bedrooms,
-    contact_method: data.contact_method,
-    value: data.estimated_price,
-    currency: 'GBP'
+    value: data.estimated_value,
+    currency: 'GBP',
+    form_id: data.form_id,
+    page_location: window.location.href
   });
 };
 
-// Fixed parameter signature for context tracking
-export const trackPhoneCall = (phoneNumber: string, context: string, city?: string) => {
-  // Reliable tracking for phone calls with navigation delay
-  const eventCallback = () => {
-    // Let the event fire before navigation
-    setTimeout(() => {
-      window.location.href = `tel:${phoneNumber}`;
-    }, 100);
-  };
-
-  trackEvent('phone_call', {
-    context,
-    city: city || 'unknown',
-    contact_method: 'phone',
-    event_callback: eventCallback
+export const trackFormSubmit = (data: {
+  form_name: string;
+  form_id: string;
+  service_type?: string;
+  city?: string;
+  lead_value?: number;
+}) => {
+  trackEvent('form_submit', {
+    form_name: data.form_name,
+    form_id: data.form_id,
+    service_type: data.service_type,
+    city: data.city,
+    value: data.lead_value,
+    currency: 'GBP',
+    page_location: window.location.href
   });
 };
 
-export const trackWhatsApp = (context: string, city?: string) => {
+// Call tracking with dynamic number insertion support
+export const trackCallClick = (data: {
+  phone_number: string;
+  call_source: string;
+  city?: string;
+  service_type?: string;
+  is_dynamic_number?: boolean;
+}) => {
+  trackEvent('call_click', {
+    phone_number: data.phone_number,
+    call_source: data.call_source,
+    city: data.city || 'unknown',
+    service_type: data.service_type,
+    is_dynamic_number: data.is_dynamic_number || false,
+    page_location: window.location.href
+  });
+};
+
+export const trackWhatsAppClick = (data: {
+  click_source: string;
+  city?: string;
+  service_type?: string;
+}) => {
   trackEvent('whatsapp_click', {
-    context,
-    city: city || 'unknown',
-    contact_method: 'whatsapp'
+    click_source: data.click_source,
+    city: data.city || 'unknown',
+    service_type: data.service_type,
+    page_location: window.location.href
   });
 };
 
-export const trackSocialMedia = (platform: 'facebook' | 'instagram' | 'linkedin') => {
+export const trackChatOpen = (data: {
+  chat_type: 'whatsapp' | 'phone' | 'email';
+  trigger_source: string;
+  city?: string;
+  service_type?: string;
+}) => {
+  trackEvent('chat_open', {
+    chat_type: data.chat_type,
+    trigger_source: data.trigger_source,
+    city: data.city || 'unknown',
+    service_type: data.service_type,
+    page_location: window.location.href
+  });
+};
+
+// Social media tracking
+export const trackSocialClick = (platform: 'facebook' | 'instagram' | 'linkedin') => {
   trackEvent('social_click', {
     platform,
-    location: 'footer'
+    click_location: 'footer',
+    page_location: window.location.href
   });
 };
 
@@ -223,11 +276,60 @@ export const trackCityView = (cityName: string) => {
   });
 };
 
-// Conversion tracking with GA4 recommended events
-export const trackConversion = (conversionType: 'quote_submitted' | 'phone_call' | 'email_sent', value?: number) => {
-  trackEvent('conversion', {
-    conversion_type: conversionType,
-    value: value,
-    currency: 'GBP'
+// UTM parameter extraction for internal tracking
+export const getUTMParameters = (): Record<string, string> => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return {
+    utm_source: urlParams.get('utm_source') || '',
+    utm_medium: urlParams.get('utm_medium') || '',
+    utm_campaign: urlParams.get('utm_campaign') || '',
+    utm_term: urlParams.get('utm_term') || '',
+    utm_content: urlParams.get('utm_content') || ''
+  };
+};
+
+// Lead tracking for weekly review system
+export interface LeadData {
+  date: string;
+  source: string;
+  city_page: string;
+  service: string;
+  value: number;
+  status: 'new' | 'contacted' | 'won' | 'lost';
+  utm_parameters?: Record<string, string>;
+}
+
+export const trackLead = (leadData: LeadData) => {
+  // Store lead in localStorage for weekly review
+  const leads = JSON.parse(localStorage.getItem('totalspark_leads') || '[]');
+  const newLead = {
+    ...leadData,
+    id: Date.now().toString(),
+    timestamp: new Date().toISOString(),
+    utm_parameters: getUTMParameters()
+  };
+  
+  leads.push(newLead);
+  localStorage.setItem('totalspark_leads', JSON.stringify(leads));
+
+  // Also push to GTM for immediate analytics
+  trackEvent('lead_generated', {
+    source: leadData.source,
+    city_page: leadData.city_page,
+    service: leadData.service,
+    value: leadData.value,
+    currency: 'GBP',
+    ...leadData.utm_parameters
   });
+};
+
+// Weekly leads export for review
+export const exportWeeklyLeads = (): LeadData[] => {
+  const leads = JSON.parse(localStorage.getItem('totalspark_leads') || '[]');
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  return leads.filter((lead: LeadData & { timestamp: string }) => 
+    new Date(lead.timestamp) >= oneWeekAgo
+  );
 };

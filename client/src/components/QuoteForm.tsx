@@ -16,7 +16,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { computeQuote, QuoteInput, QuoteResult } from '@/utils/pricingEngine';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
-import { trackQuoteRequest, trackConversion } from '@/lib/analytics';
+import { trackQuoteStarted, trackQuoteCompleted, trackFormSubmit } from '@/lib/analytics';
+import { addLead } from '@/lib/leadTracking';
 
 type FormStep = 1 | 2 | 3 | 4 | 5;
 
@@ -276,16 +277,33 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
         return parseInt(bedrooms) || 0;
       };
       
-      trackQuoteRequest({
+      // Track quote completion with specific GA4 event
+      trackQuoteCompleted({
         service_type: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
         city: extractCityFromAddress(formData.address),
         property_type: formData.propertyType || 'unknown',
         bedrooms: getBedrooms(formData.bedrooms),
-        contact_method: 'website_form',
-        estimated_price: quoteResult?.total || 0
+        estimated_value: quoteResult?.total || 0,
+        form_id: 'quote-form'
       });
       
-      trackConversion('quote_submitted', quoteResult?.total || 0);
+      // Track form submission
+      trackFormSubmit({
+        form_name: 'Quote Request Form',
+        form_id: 'quote-form',
+        service_type: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
+        city: extractCityFromAddress(formData.address),
+        lead_value: quoteResult?.total || 0
+      });
+      
+      // Add to lead tracking system
+      addLead({
+        source: 'website_form',
+        city_page: extractCityFromAddress(formData.address),
+        service: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
+        value: quoteResult?.total || 0,
+        contact_method: 'form'
+      });
       
       setStep(3);
       toast({

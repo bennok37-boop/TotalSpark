@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import { CITIES } from '@shared/schema';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
-import { trackSocialMedia } from '@/lib/analytics';
+import { trackSocialClick } from '@/lib/analytics';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -55,7 +55,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-background/60 hover:text-primary transition-colors"
-                  onClick={() => trackSocialMedia('linkedin')}
+                  onClick={() => trackSocialClick('linkedin')}
                   data-testid="link-linkedin"
                   aria-label="Follow us on LinkedIn"
                 >
@@ -66,7 +66,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-background/60 hover:text-primary transition-colors"
-                  onClick={() => trackSocialMedia('instagram')}
+                  onClick={() => trackSocialClick('instagram')}
                   data-testid="link-instagram"
                   aria-label="Follow us on Instagram"
                 >
@@ -77,7 +77,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-background/60 hover:text-primary transition-colors"
-                  onClick={() => trackSocialMedia('facebook')}
+                  onClick={() => trackSocialClick('facebook')}
                   data-testid="link-facebook"
                   aria-label="Follow us on Facebook"
                 >

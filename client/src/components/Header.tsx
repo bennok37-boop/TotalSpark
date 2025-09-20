@@ -7,7 +7,7 @@ import { REGIONS } from '@shared/locations';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import logoImage from '@assets/4_1757953109291.png';
-import { trackPhoneCall, trackWhatsApp } from '@/lib/analytics';
+import { trackCallClick, trackWhatsAppClick, trackChatOpen } from '@/lib/analytics';
 
 export default function Header() {
   const [location, navigate] = useLocation();
@@ -239,7 +239,17 @@ export default function Header() {
                           href={`https://wa.me/${whatsappNumber}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          onClick={() => trackWhatsApp('header')}
+                          onClick={() => {
+                            trackWhatsAppClick({
+                              click_source: 'header',
+                              city: 'general',
+                              service_type: 'general'
+                            });
+                            trackChatOpen({
+                              chat_type: 'whatsapp',
+                              trigger_source: 'header_whatsapp'
+                            });
+                          }}
                         >
                           <MessageCircle className="w-3 h-3" />
                         </a>
@@ -270,7 +280,20 @@ export default function Header() {
               className="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
               onClick={(e) => {
                 e.preventDefault();
-                trackPhoneCall(phoneNumber, 'header');
+                trackCallClick({
+                  phone_number: phoneNumber,
+                  call_source: 'header',
+                  city: 'general',
+                  service_type: 'general'
+                });
+                trackChatOpen({
+                  chat_type: 'phone',
+                  trigger_source: 'header_phone'
+                });
+                // Small delay for tracking before navigation
+                setTimeout(() => {
+                  window.location.href = `tel:${phoneNumber.replace(/\s/g, '')}`;
+                }, 100);
               }}
               data-testid="link-phone"
             >
@@ -469,7 +492,17 @@ export default function Header() {
                             href={`https://wa.me/${whatsappNumber}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            onClick={() => trackWhatsApp('mobile')}
+                            onClick={() => {
+                              trackWhatsAppClick({
+                                click_source: 'mobile',
+                                city: 'general',
+                                service_type: 'general'
+                              });
+                              trackChatOpen({
+                                chat_type: 'whatsapp',
+                                trigger_source: 'mobile_whatsapp'
+                              });
+                            }}
                           >
                             <MessageCircle className="w-3 h-3" />
                           </a>
