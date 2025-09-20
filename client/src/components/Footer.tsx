@@ -60,7 +60,7 @@ export default function Footer() {
                   <SiLinkedin className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://www.instagram.com/totalsparksolutions"
+                  href="https://www.instagram.com/totalsparksolutions/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-background/60 hover:text-primary transition-colors"
