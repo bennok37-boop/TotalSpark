@@ -1,17 +1,17 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "vite build --outDir client/dist",
   "outputDirectory": "client/dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "functions": {
-    "server/index.ts": {
+    "api/index.js": {
       "runtime": "nodejs18.x"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/server/index.ts"
+      "destination": "/api/index.js"
     },
     {
       "source": "/(.*)",
