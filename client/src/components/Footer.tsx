@@ -50,7 +50,7 @@ export default function Footer() {
               <p className="text-sm font-medium mb-3">Follow Us</p>
               <div className="flex space-x-4">
                 <a
-                  href="https://www.linkedin.com/company/totalspark-solutions"
+                  href="https://www.linkedin.com/company/106268781"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-background/60 hover:text-primary transition-colors"
