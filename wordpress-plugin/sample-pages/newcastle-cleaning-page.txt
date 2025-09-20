@@ -1,0 +1,78 @@
+NEWCASTLE UPON TYNE CLEANING SERVICES - WORDPRESS PAGE CONTENT
+==============================================================
+
+Page Title: Professional Cleaning Services Newcastle upon Tyne | Regular & One-Off | Tyne & Wear
+SEO Title: Professional Cleaning Services Newcastle upon Tyne | Regular & One-Off | Tyne & Wear
+Meta Description: Professional cleaning services in Newcastle upon Tyne. Regular domestic cleaning & one-off cleans. Serving Gateshead & Tyne & Wear. Book today.
+Slug: cleaning-newcastle-upon-tyne
+
+PAGE CONTENT (Copy and paste into WordPress page editor):
+-----------------------------------------------------------
+
+[ts_hero city="Newcastle upon Tyne" service="Cleaning Services" title="Professional Cleaning Services Newcastle upon Tyne – Regular & One-Off Cleans" subtitle="Trusted cleaning services across Newcastle upon Tyne, Gateshead and surrounding Tyne & Wear areas. Regular domestic cleaning, one-off cleans, and maintenance services." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="cleaning"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">Professional Cleaning Services in Newcastle upon Tyne</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Looking for reliable cleaning services in Newcastle upon Tyne?</strong> TotalSpark Solutions provides professional domestic and commercial cleaning across Newcastle, Gateshead, and the wider Tyne & Wear region.</p>
+
+<p>Our experienced team delivers:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li><strong>Regular domestic cleaning</strong> - Weekly, fortnightly, or monthly schedules</li>
+<li><strong>One-off deep cleans</strong> - Perfect for spring cleaning or special occasions</li>
+<li><strong>End-of-tenancy cleaning</strong> - Deposit back guarantee included</li>
+<li><strong>Post-construction cleanup</strong> - After renovations or building work</li>
+<li><strong>Move-in/move-out cleaning</strong> - Fresh start for your new home</li>
+</ul>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">Why Choose Our Newcastle Cleaning Services?</h3>
+
+<p>Serving Newcastle upon Tyne and surrounding areas including <strong>Gateshead, Jesmond, Gosforth, Byker, Walker, and Benwell</strong>, we understand the unique cleaning needs of Tyne & Wear residents.</p>
+
+<p>All our cleaners are:</p>
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li>✅ <strong>DBS checked and fully vetted</strong></li>
+<li>🛡️ <strong>Covered by £2M public liability insurance</strong></li>
+<li>⭐ <strong>5-star rated by local customers</strong></li>
+<li>🏆 <strong>Trained to professional standards</strong></li>
+</ul>
+
+</div>
+
+[ts_quote_form city="Newcastle upon Tyne" service="cleaning"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+-----------------------------------------------------------
+ADDITIONAL SEO CONTENT TO ADD TO BOTTOM OF PAGE:
+-----------------------------------------------------------
+
+<div style="background: #f8fafc; padding: 2rem; margin: 3rem 0; border-radius: 1rem;">
+<h3 style="color: #1e293b; margin-bottom: 1rem;">Areas We Serve in Newcastle upon Tyne</h3>
+<p style="color: #64748b;">We provide professional cleaning services throughout Newcastle upon Tyne and surrounding areas including: Jesmond, Gosforth, Heaton, Byker, Walker, Fenham, Benwell, Blakelaw, Denton, Kenton, Fawdon, Woolsington, Newburn, Lemington, Throckley, Walbottle, Westerhope, Chapel House, High Heaton, South Gosforth, Forest Hall, Benton, Longbenton, and Killingworth.</p>
+</div>
+
+SCHEMA.ORG STRUCTURED DATA (Add to Yoast/RankMath):
+--------------------------------------------------
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "TotalSpark Solutions - Newcastle Cleaning Services",
+  "description": "Professional cleaning services in Newcastle upon Tyne including regular domestic cleaning, deep cleaning, and end-of-tenancy cleaning.",
+  "url": "https://yourwordpresssite.com/cleaning-newcastle-upon-tyne",
+  "telephone": "03300 435459",
+  "areaServed": {
+    "@type": "City",
+    "name": "Newcastle upon Tyne"
+  },
+  "serviceType": "Cleaning Services",
+  "priceRange": "££",
+  "openingHours": "Mo-Su 08:00-18:00"
+}

@@ -1,0 +1,99 @@
+SUNDERLAND END OF TENANCY CLEANING - WORDPRESS PAGE CONTENT
+============================================================
+
+Page Title: End of Tenancy Cleaning Sunderland | Deposit Back Guarantee | Same Day Service
+SEO Title: End of Tenancy Cleaning Sunderland | Deposit Back Guarantee | Same Day Service
+Meta Description: Professional end of tenancy cleaning in Sunderland. Deposit back guarantee. Same day service available. Fully insured & DBS checked cleaners.
+Slug: end-of-tenancy-cleaning-sunderland
+
+PAGE CONTENT (Copy and paste into WordPress page editor):
+-----------------------------------------------------------
+
+[ts_hero city="Sunderland" service="End of Tenancy Cleaning" title="End of Tenancy Cleaning Sunderland – Deposit Back Guarantee" subtitle="Professional end of tenancy cleaning in Sunderland with 100% deposit back guarantee. Same day service available across Sunderland and surrounding areas." phone="03300 435459"]
+
+[ts_proof_strip]
+
+[ts_features service="end-of-tenancy"]
+
+<h2 style="text-align: center; margin: 3rem 0 2rem 0; font-size: 2.5rem; color: #1e293b;">End of Tenancy Cleaning Sunderland</h2>
+
+<div style="max-width: 800px; margin: 0 auto; padding: 0 1rem; font-size: 1.1rem; line-height: 1.8; color: #374151;">
+
+<p><strong>Moving out of your rental property in Sunderland?</strong> Our professional end of tenancy cleaning service guarantees your deposit back with a thorough, comprehensive clean that meets all landlord and letting agency requirements.</p>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">💰 Deposit Back Guarantee</h3>
+
+<p>We're so confident in our end of tenancy cleaning service that we offer a <strong>100% deposit back guarantee</strong>. If your landlord or letting agent is not satisfied with our work, we'll return to re-clean the affected areas at no extra cost.</p>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">🏠 Complete End of Tenancy Cleaning Checklist</h3>
+
+<p>Our comprehensive end of tenancy clean includes:</p>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 2rem 0;">
+
+<div style="background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-left: 4px solid #3b82f6;">
+<h4 style="color: #1e293b; margin-bottom: 1rem;">🍽️ Kitchen Deep Clean</h4>
+<ul style="color: #64748b; line-height: 1.6;">
+<li>Oven, hob, and extractor fan cleaning</li>
+<li>Fridge and freezer interior/exterior</li>
+<li>Cupboards inside and out</li>
+<li>Worktops and splashbacks</li>
+<li>Sink and taps</li>
+<li>Floor mopping and skirting boards</li>
+</ul>
+</div>
+
+<div style="background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-left: 4px solid #10b981;">
+<h4 style="color: #1e293b; margin-bottom: 1rem;">🛁 Bathroom Sanitization</h4>
+<ul style="color: #64748b; line-height: 1.6;">
+<li>Toilet scrubbing and disinfection</li>
+<li>Bath, shower, and screen cleaning</li>
+<li>Tiles and grout cleaning</li>
+<li>Mirrors and fixtures</li>
+<li>Sink, taps, and surfaces</li>
+<li>Floor cleaning and skirting boards</li>
+</ul>
+</div>
+
+<div style="background: #f8fafc; padding: 1.5rem; border-radius: 1rem; border-left: 4px solid #f59e0b;">
+<h4 style="color: #1e293b; margin-bottom: 1rem;">🛏️ Bedrooms & Living Areas</h4>
+<ul style="color: #64748b; line-height: 1.6;">
+<li>Dusting all surfaces</li>
+<li>Skirting boards and light switches</li>
+<li>Window sills and frames</li>
+<li>Carpet vacuuming or floor mopping</li>
+<li>Radiator cleaning</li>
+<li>Wardrobe interior (if empty)</li>
+</ul>
+</div>
+
+</div>
+
+<h3 style="color: #1e293b; margin: 2rem 0 1rem 0;">⭐ Why Choose Our Sunderland Service?</h3>
+
+<p>Serving <strong>Sunderland, Roker, Seaburn, Houghton-le-Spring, Washington, and Chester-le-Street</strong>, our local team understands the standards expected by Sunderland landlords and letting agencies.</p>
+
+<ul style="margin: 1.5rem 0; padding-left: 2rem;">
+<li>🕒 <strong>Same day service available</strong> - Perfect for urgent move-outs</li>
+<li>📋 <strong>Comprehensive 50-point checklist</strong> - Nothing gets missed</li>
+<li>🔧 <strong>Professional equipment included</strong> - We bring everything needed</li>
+<li>📞 <strong>Direct contact with your cleaner</strong> - No call center hassles</li>
+<li>💳 <strong>Fixed pricing</strong> - No hidden extras or surprises</li>
+</ul>
+
+</div>
+
+[ts_quote_form city="Sunderland" service="end-of-tenancy"]
+
+[ts_faq]
+
+[ts_sticky_call phone="03300 435459"]
+
+-----------------------------------------------------------
+ADDITIONAL SEO CONTENT:
+-----------------------------------------------------------
+
+<div style="background: #f8fafc; padding: 2rem; margin: 3rem 0; border-radius: 1rem;">
+<h3 style="color: #1e293b; margin-bottom: 1rem;">Areas We Cover in Sunderland</h3>
+<p style="color: #64748b;">Professional end of tenancy cleaning throughout Sunderland including: City Centre, East End, Hendon, Millfield, Roker, Seaburn, Southwick, Fulwell, Monkwearmouth, Pallion, Pennywell, Grindon, Thorney Close, Farringdon, Silksworth, Tunstall, Doxford Park, Hastings Hill, Ryhope, Houghton-le-Spring, Washington, Shiney Row, Fence Houses, and Chester-le-Street.</p>
+</div>
