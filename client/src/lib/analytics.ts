@@ -18,10 +18,10 @@ let eventQueue: QueuedEvent[] = [];
 let analyticsInitialized = false;
 
 // GTM-first initialization (non-negotiable)
-export const initAnalytics = (hasConsent: boolean = true) => {
-  const gtmId = import.meta.env.VITE_GTM_ID;
+export const initAnalytics = (hasConsent: boolean = true, gtmId?: string) => {
+  const finalGtmId = gtmId || import.meta.env.VITE_GTM_ID;
 
-  if (!gtmId) {
+  if (!finalGtmId) {
     console.error('GTM ID is required. Add VITE_GTM_ID to environment variables.');
     return;
   }
@@ -31,7 +31,7 @@ export const initAnalytics = (hasConsent: boolean = true) => {
     return;
   }
 
-  initGTM(gtmId);
+  initGTM(finalGtmId);
   analyticsInitialized = true;
 
   // Track initial page view

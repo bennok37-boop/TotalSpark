@@ -68,7 +68,7 @@ function App() {
 
   // Initialize analytics when app loads and user has consented
   useEffect(() => {
-    const gtmId = import.meta.env.VITE_GTM_ID;
+    const gtmId = import.meta.env.VITE_GTM_ID || 'GTM-W4MWH6F3';
     const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
     
     if (!gtmId && !gaId) {
@@ -78,7 +78,7 @@ function App() {
 
     // Only initialize analytics if user has consented to analytics/marketing
     const analyticsConsent = hasConsented && (preferences.analytics || preferences.marketing);
-    initAnalytics(analyticsConsent);
+    initAnalytics(analyticsConsent, gtmId);
   }, [hasConsented, preferences]);
 
   // Initialize dynamic call tracking with city/service-based numbers
