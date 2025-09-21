@@ -79,7 +79,7 @@ Booking ID: ${booking.id}
 Submitted: ${new Date().toLocaleString('en-GB')}
   `.trim();
 
-  const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
+  const targetEmail = process.env.NOTIFICATION_EMAIL || 'bennok37@gmail.com';
   
   // Try Resend first (if configured)
   if (resend) {
