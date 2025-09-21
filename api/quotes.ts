@@ -160,6 +160,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    // Extract estimated price from quoteResult
+    let estimatedPrice: string | null = null;
+    if (data.quoteResult && data.quoteResult.estimateRange) {
+      const { low, high } = data.quoteResult.estimateRange;
+      estimatedPrice = `${low}-${high}`;
+    } else if (data.quoteResult && data.quoteResult.total) {
+      estimatedPrice = Math.round(data.quoteResult.total).toString();
+    }
+
     // Create quote object with unique ID
     const quoteId = `QUOTE-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const quote = {
@@ -174,7 +183,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       bathrooms: data.bathrooms,
       propertyType: data.propertyType,
       additionalDetails: data.additionalDetails,
-      estimatedPrice: data.estimatedPrice,
+      estimatedPrice: estimatedPrice,
+      quoteResult: data.quoteResult, // Include full quote result for reference
       timestamp: new Date().toISOString()
     };
 
