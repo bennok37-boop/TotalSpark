@@ -87,7 +87,7 @@ Submitted: ${new Date().toLocaleString('en-GB')}
       console.log(`📧 Sending booking email via Resend to: ${targetEmail}`);
 
       const result = await resend.emails.send({
-        from: 'bookings@totalsparksolutions.co.uk',
+        from: 'onboarding@resend.dev',
         to: targetEmail,
         replyTo: booking.email,
         subject: emailSubject,

@@ -83,7 +83,7 @@ This lead is ready for follow-up!
       console.log(`📧 Sending quote email via Resend to: ${targetEmail}`);
 
       const result = await resend.emails.send({
-        from: 'quotes@totalsparksolutions.co.uk',
+        from: 'onboarding@resend.dev',
         to: targetEmail,
         replyTo: quote.email,
         subject: emailSubject,
