@@ -27,7 +27,9 @@ export default function Header() {
     const fixHeaderPhoneNumbers = () => {
       const headerPhoneElements = document.querySelectorAll('.header-phone-fixed');
       headerPhoneElements.forEach(element => {
-        element.textContent = headerPhoneNumber;
+        if (element.textContent !== headerPhoneNumber) {
+          element.textContent = headerPhoneNumber;
+        }
       });
     };
     
@@ -35,16 +37,10 @@ export default function Header() {
     fixHeaderPhoneNumbers();
     
     // Re-apply after CallRail might have run (with delays)
-    const timeouts = [100, 500, 1000, 2000];
+    const timeouts = [500, 1500];
     timeouts.forEach(delay => {
       setTimeout(fixHeaderPhoneNumbers, delay);
     });
-    
-    // Also re-apply on any DOM mutations
-    const observer = new MutationObserver(fixHeaderPhoneNumbers);
-    observer.observe(document.body, { childList: true, subtree: true });
-    
-    return () => observer.disconnect();
   }, [headerPhoneNumber]);
 
   // Business contact information
