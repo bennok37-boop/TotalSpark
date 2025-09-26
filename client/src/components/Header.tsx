@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -17,7 +17,35 @@ export default function Header() {
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   // Get CallRail tracking numbers based on current context
-  const { phone: phoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
+  const { phone: trackingPhoneNumber, whatsapp: whatsappNumber } = useTrackingNumbers();
+  
+  // Main company number for header display - always consistent across all pages
+  const headerPhoneNumber = '03300432115';
+  
+  // Ensure header phone numbers are not overridden by CallRail
+  useEffect(() => {
+    const fixHeaderPhoneNumbers = () => {
+      const headerPhoneElements = document.querySelectorAll('.header-phone-fixed');
+      headerPhoneElements.forEach(element => {
+        element.textContent = headerPhoneNumber;
+      });
+    };
+    
+    // Set initial values
+    fixHeaderPhoneNumbers();
+    
+    // Re-apply after CallRail might have run (with delays)
+    const timeouts = [100, 500, 1000, 2000];
+    timeouts.forEach(delay => {
+      setTimeout(fixHeaderPhoneNumbers, delay);
+    });
+    
+    // Also re-apply on any DOM mutations
+    const observer = new MutationObserver(fixHeaderPhoneNumbers);
+    observer.observe(document.body, { childList: true, subtree: true });
+    
+    return () => observer.disconnect();
+  }, [headerPhoneNumber]);
 
   // Business contact information
   const businessEmail = 'hello@totalsparksolutions.co.uk';
@@ -160,14 +188,14 @@ export default function Header() {
                       <Phone className="w-5 h-5 text-primary" />
                       <div>
                         <p className="font-medium">Call Us</p>
-                        <p className="text-sm text-muted-foreground">{phoneNumber}</p>
+                        <p className="text-sm text-muted-foreground">{headerPhoneNumber}</p>
                       </div>
                     </div>
                     <div className="flex space-x-1">
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => copyToClipboard(phoneNumber)}
+                        onClick={() => copyToClipboard(headerPhoneNumber)}
                         data-testid="button-copy-phone"
                       >
                         <Copy className="w-3 h-3" />
@@ -177,7 +205,7 @@ export default function Header() {
                         asChild
                         data-testid="button-call-phone"
                       >
-                        <a href={`tel:${phoneNumber.replace(/\s/g, '')}`}>
+                        <a href={`tel:${headerPhoneNumber.replace(/\s/g, '')}`}>
                           <Phone className="w-3 h-3" />
                         </a>
                       </Button>
@@ -278,7 +306,7 @@ export default function Header() {
           {/* Contact Info */}
           <div className="hidden lg:flex items-center space-x-4">
             <a 
-              href={`tel:${phoneNumber}`} 
+              href={`tel:${headerPhoneNumber}`} 
               className="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors"
               onClick={(e) => {
                 e.preventDefault();
@@ -287,7 +315,7 @@ export default function Header() {
                   callTracker.handlePhoneClick('header');
                 } else {
                   trackCallClick({
-                    phone_number: phoneNumber,
+                    phone_number: trackingPhoneNumber,
                     call_source: 'header',
                     city: 'general',
                     service_type: 'general'
@@ -298,14 +326,14 @@ export default function Header() {
                   });
                   // Small delay for tracking before navigation
                   setTimeout(() => {
-                    window.location.href = `tel:${phoneNumber.replace(/\s/g, '')}`;
+                    window.location.href = `tel:${headerPhoneNumber.replace(/\s/g, '')}`;
                   }, 100);
                 }
               }}
               data-testid="link-phone"
             >
               <Phone className="w-4 h-4" />
-              <span className="font-semibold" data-dynamic-phone>{phoneNumber}</span>
+              <span className="font-semibold header-phone-fixed">{headerPhoneNumber}</span>
             </a>
             <Button 
               onClick={scrollToQuoteForm}
@@ -418,14 +446,14 @@ export default function Header() {
                         <Phone className="w-5 h-5 text-primary" />
                         <div>
                           <p className="font-medium">Call Us</p>
-                          <p className="text-sm text-muted-foreground">{phoneNumber}</p>
+                          <p className="text-sm text-muted-foreground">{headerPhoneNumber}</p>
                         </div>
                       </div>
                       <div className="flex space-x-1">
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => copyToClipboard(phoneNumber)}
+                          onClick={() => copyToClipboard(headerPhoneNumber)}
                           data-testid="button-copy-phone-mobile"
                         >
                           <Copy className="w-3 h-3" />
@@ -435,7 +463,7 @@ export default function Header() {
                           asChild
                           data-testid="button-call-phone-mobile"
                         >
-                          <a href={`tel:${phoneNumber.replace(/\s/g, '')}`}>
+                          <a href={`tel:${headerPhoneNumber.replace(/\s/g, '')}`}>
                             <Phone className="w-3 h-3" />
                           </a>
                         </Button>
@@ -533,12 +561,12 @@ export default function Header() {
               </Popover>
 
               <a 
-                href={`tel:${phoneNumber}`} 
+                href={`tel:${headerPhoneNumber}`} 
                 className="flex items-center space-x-2 text-primary"
                 data-testid="link-phone-mobile"
               >
                 <Phone className="w-4 h-4" />
-                <span className="font-semibold" data-dynamic-phone>{phoneNumber}</span>
+                <span className="font-semibold header-phone-fixed">{headerPhoneNumber}</span>
               </a>
 
               <Button 
