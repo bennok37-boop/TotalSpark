@@ -302,7 +302,7 @@ export default function AreasPage() {
                 </Button>
                 <Button variant="ghost" size="lg" data-testid="button-call-us">
                   <Phone className="w-4 h-4 mr-2" />
-                  0191 123 4567
+                  03300432115
                 </Button>
               </div>
             </div>

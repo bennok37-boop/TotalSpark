@@ -227,7 +227,7 @@ export class WordPressAPI {
         name: 'Newcastle upon Tyne',
         description: 'Professional cleaning services in Newcastle and surrounding areas.',
         citySlug: 'newcastle-upon-tyne',
-        phoneNumber: '0191 123 4567',
+        phoneNumber: '03300432115',
         coverageAreas: ['Newcastle', 'Gateshead', 'South Shields', 'Wallsend'],
         slug: 'newcastle-upon-tyne'
       },
@@ -254,7 +254,7 @@ export class WordPressAPI {
         name: 'Sunderland',
         description: 'Reliable cleaning services in Sunderland and County Durham.',
         citySlug: 'sunderland',
-        phoneNumber: '0191 234 5678',
+        phoneNumber: '03300432115',
         coverageAreas: ['Sunderland', 'Durham', 'Chester-le-Street', 'Washington'],
         slug: 'sunderland'
       },
