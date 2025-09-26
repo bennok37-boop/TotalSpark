@@ -125,7 +125,7 @@ export default function PrivacyPage() {
                         <li>Withdraw consent for marketing communications at any time</li>
                       </ul>
                       <p className="text-sm mt-4">
-                        To exercise these rights, please contact us at info@cleanpro.co.uk or call 0191 349 7777.
+                        To exercise these rights, please contact us at info@cleanpro.co.uk or call 03300432115.
                       </p>
                     </div>
                   </CardContent>
@@ -285,7 +285,7 @@ export default function PrivacyPage() {
                       <div className="space-y-2 text-sm">
                         <p><strong>TotalSpark Solutions</strong></p>
                         <p>Email: hello@totalsparksolutions.co.uk</p>
-                        <p>Phone: 0191 349 7777</p>
+                        <p>Phone: 03300432115</p>
                         <p>Address: North East England, UK</p>
                       </div>
                       <p className="text-sm mt-4">

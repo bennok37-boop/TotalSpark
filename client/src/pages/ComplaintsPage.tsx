@@ -95,7 +95,7 @@ export default function ComplaintsPage() {
                         <Phone className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                         <div>
                           <div className="font-semibold">Phone (Immediate Response)</div>
-                          <p className="text-sm text-muted-foreground">0191 349 7777</p>
+                          <p className="text-sm text-muted-foreground">03300432115</p>
                           <p className="text-xs text-muted-foreground">Mon-Sun: 7am-9pm</p>
                         </div>
                       </div>
@@ -257,7 +257,7 @@ export default function ComplaintsPage() {
                       <h3 className="font-semibold mb-2">Internal Escalation</h3>
                       <p className="text-sm text-muted-foreground">
                         Request escalation to our senior management team by emailing 
-                        manager@cleanpro.co.uk or calling 0191 349 7777 and asking to speak with a manager.
+                        manager@cleanpro.co.uk or calling 03300432115 and asking to speak with a manager.
                       </p>
                     </div>
                     <div>
@@ -290,9 +290,9 @@ export default function ComplaintsPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" data-testid="button-call-complaints">
-                  <a href="tel:01913497777">
+                  <a href="tel:03300432115">
                     <Phone className="w-5 h-5 mr-2" />
-                    Call: 0191 349 7777
+                    Call: 03300432115
                   </a>
                 </Button>
                 <Button asChild variant="outline" size="lg" data-testid="button-email-complaints">

@@ -193,12 +193,12 @@ export default function GuaranteePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a 
-                  href="tel:01913497777" 
+                  href="tel:03300432115" 
                   className="inline-flex items-center justify-center px-8 py-3 bg-background text-foreground hover:bg-background/90 rounded-md font-medium transition-colors"
                   data-testid="button-call-guarantee"
                 >
                   <Phone className="w-5 h-5 mr-2" />
-                  Call Now: 0191 349 7777
+                  Call Now: 03300432115
                 </a>
                 <a 
                   href="/quote" 

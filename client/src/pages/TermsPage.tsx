@@ -231,7 +231,7 @@ export default function TermsPage() {
                       <div className="space-y-2">
                         <p><strong>TotalSpark Solutions</strong></p>
                         <p>Email: hello@totalsparksolutions.co.uk</p>
-                        <p>Phone: 0191 349 7777</p>
+                        <p>Phone: 03300432115</p>
                         <p>Service Areas: North East England (Newcastle, Leeds, York, Durham, Sunderland, Middlesbrough and surrounding areas)</p>
                       </div>
                     </div>
