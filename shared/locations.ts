@@ -25,133 +25,133 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Newcastle upon Tyne",
         slug: "newcastle-upon-tyne",
-        phone: "0191 743 9585", // Regional number - Tyne & Wear
+        phone: "03300432115", // Main company number
         region: "Tyne & Wear",
         nearby: ["Gateshead", "Gosforth", "Jesmond", "Heaton"]
       },
       {
         name: "Sunderland",
         slug: "sunderland",
-        phone: "0191 743 9585", // Regional number - Tyne & Wear  
+        phone: "03300432115", // Main company number  
         region: "Tyne & Wear",
         nearby: ["Washington", "Houghton-le-Spring", "Seaham", "South Shields"]
       },
       {
         name: "Gateshead",
         slug: "gateshead",
-        phone: "0191 345 6789",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Newcastle upon Tyne", "Blaydon-on-Tyne", "Felling", "Birtley"]
       },
       {
         name: "South Shields",
         slug: "south-shields",
-        phone: "0191 456 7890",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["North Shields", "Jarrow", "Hebburn", "Tynemouth"]
       },
       {
         name: "Washington",
         slug: "washington",
-        phone: "0191 567 8901",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Sunderland", "Houghton-le-Spring", "Chester-le-Street", "Birtley"]
       },
       {
         name: "North Shields",
         slug: "north-shields",
-        phone: "0191 678 9012",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Tynemouth", "Whitley Bay", "Wallsend", "South Shields"]
       },
       {
         name: "Tynemouth",
         slug: "tynemouth",
-        phone: "0191 789 0123",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["North Shields", "Whitley Bay", "South Shields", "Wallsend"]
       },
       {
         name: "Whitley Bay",
         slug: "whitley-bay",
-        phone: "0191 890 1234",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Tynemouth", "North Shields", "Blyth", "Cramlington"]
       },
       {
         name: "Wallsend",
         slug: "wallsend",
-        phone: "0191 901 2345",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["North Shields", "Tynemouth", "Longbenton", "Killingworth"]
       },
       {
         name: "Jarrow",
         slug: "jarrow",
-        phone: "0191 012 3456",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["South Shields", "Hebburn", "Gateshead", "Felling"]
       },
       {
         name: "Hebburn",
         slug: "hebburn",
-        phone: "0191 743 9585",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Jarrow", "South Shields", "Gateshead", "Felling"]
       },
       {
         name: "Houghton-le-Spring",
         slug: "houghton-le-spring",
-        phone: "0191 234 5678",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Sunderland", "Washington", "Chester-le-Street", "Seaham"]
       },
       {
         name: "Boldon",
         slug: "boldon",
-        phone: "0191 345 6789",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["South Shields", "Sunderland", "Washington", "Jarrow"]
       },
       {
         name: "Ryhope",
         slug: "ryhope",
-        phone: "0191 456 7890",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Sunderland", "Seaham", "Houghton-le-Spring", "Boldon"]
       },
       {
         name: "Killingworth",
         slug: "killingworth",
-        phone: "0191 567 8901",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Wallsend", "Longbenton", "Cramlington", "Forest Hall"]
       },
       {
         name: "Longbenton",
         slug: "longbenton",
-        phone: "0191 678 9012",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Wallsend", "Killingworth", "Gosforth", "Forest Hall"]
       },
       {
         name: "Blaydon-on-Tyne",
         slug: "blaydon-on-tyne",
-        phone: "0191 789 0123",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Gateshead", "Ryton", "Winlaton", "Prudhoe"]
       },
       {
         name: "Felling",
         slug: "felling",
-        phone: "0191 890 1234",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Gateshead", "Jarrow", "Hebburn", "Birtley"]
       },
       {
         name: "Birtley",
         slug: "birtley",
-        phone: "0191 901 2345",
+        phone: "03300432115",
         region: "Tyne & Wear",
         nearby: ["Gateshead", "Washington", "Chester-le-Street", "Felling"]
       }
@@ -165,14 +165,14 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Durham",
         slug: "durham",
-        phone: "0191 743 9585",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Chester-le-Street", "Bishop Auckland", "Consett", "Seaham"]
       },
       {
         name: "Chester-le-Street",
         slug: "chester-le-street",
-        phone: "0191 234 5678",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Durham", "Washington", "Stanley", "Birtley"]
       },
@@ -193,14 +193,14 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Seaham",
         slug: "seaham",
-        phone: "0191 345 6789",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Sunderland", "Houghton-le-Spring", "Peterlee", "Durham"]
       },
       {
         name: "Peterlee",
         slug: "peterlee",
-        phone: "0191 456 7890",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Seaham", "Hartlepool", "Easington", "Wingate"]
       },
@@ -263,14 +263,14 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Horden",
         slug: "horden",
-        phone: "0191 567 8901",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Peterlee", "Easington", "Blackhall Colliery", "Shotton Colliery"]
       },
       {
         name: "Easington",
         slug: "easington",
-        phone: "0191 678 9012",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Peterlee", "Horden", "Seaham", "Shotton Colliery"]
       },
@@ -284,14 +284,14 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Shotton Colliery",
         slug: "shotton-colliery",
-        phone: "0191 789 0123",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Horden", "Easington", "Peterlee", "Wheatley Hill"]
       },
       {
         name: "Wheatley Hill",
         slug: "wheatley-hill",
-        phone: "0191 890 1234",
+        phone: "03300432115",
         region: "County Durham",
         nearby: ["Shotton Colliery", "Wingate", "Thornley", "Trimdon"]
       }
