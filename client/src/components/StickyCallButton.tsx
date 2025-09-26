@@ -11,9 +11,9 @@ export default function StickyCallButton({
   phoneNumber,
   whatsappNumber
 }: StickyCallButtonProps) {
-  // Use CallRail tracking numbers, with props as override if provided
+  // Use main company number for call buttons, with props as override if provided
   const trackingNumbers = useTrackingNumbers();
-  const effectivePhoneNumber = phoneNumber || trackingNumbers.phone;
+  const effectivePhoneNumber = phoneNumber || '03300432115'; // Always use main company number
   const effectiveWhatsAppNumber = whatsappNumber || trackingNumbers.whatsapp;
   return (
     <>
