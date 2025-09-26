@@ -27,9 +27,9 @@ export default function HeroSection({
 }: HeroSectionProps) {
   const [email, setEmail] = useState('');
   
-  // Get CallRail tracking numbers, with props as override if provided
+  // Use main company number for hero sections, with props as override if provided
   const trackingNumbers = useTrackingNumbers();
-  const effectivePhoneNumber = phoneNumber || trackingNumbers.phone;
+  const effectivePhoneNumber = phoneNumber || '03300432115'; // Always use main company number
   const effectiveWhatsAppNumber = whatsappNumber || trackingNumbers.whatsapp;
 
   const defaultTitle = title || `Professional Cleaning Services in ${city}`;
