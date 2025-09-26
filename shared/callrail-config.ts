@@ -39,12 +39,12 @@ export const ROUTE_RULES: CallRailRule[] = [
   // End of Tenancy pages
   {
     pattern: '/end-of-tenancy-cleaning',
-    numbers: ['0191 743 6925', '0191 743 9620'],
+    numbers: ['0191 743 9585', '0191 743 9620'],
     name: 'End of Tenancy - Main'
   },
   {
     pattern: '/cleaning/newcastle',
-    numbers: ['0191 743 6925'],
+    numbers: ['0191 743 9585'],
     region: 'tyne-and-wear',
     name: 'Newcastle Landing'
   },
@@ -144,12 +144,12 @@ export const TRAFFIC_SOURCE_RULES: TrafficSourceRule[] = [
 // Regional fallback numbers (when no campaign/route rule matches)
 // CallRail tracking ONLY for Tyne & Wear - other regions use actual company numbers
 export const REGIONAL_FALLBACK_NUMBERS: Record<string, string[]> = {
-  'tyne-and-wear': ['0191 743 6925', '0191 743 9620', '0191 743 0019', '0191 743 7676', '0191 743 2098']
+  'tyne-and-wear': ['0191 743 9585', '0191 743 9620', '0191 743 0019', '0191 743 7676', '0191 743 2098']
   // Other regions removed - they will fall back to global fallback (actual company numbers)
 };
 
 // Global fallback number (absolute last resort)
-export const GLOBAL_FALLBACK_NUMBERS: string[] = ['0191 743 6925'];
+export const GLOBAL_FALLBACK_NUMBERS: string[] = ['0191 743 9585'];
 
 // Session storage key for persisting selected tracking number
 export const TRACKING_SESSION_KEY = 'ts_call_number';

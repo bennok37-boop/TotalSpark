@@ -52,6 +52,7 @@ function Router() {
       {/* Service pages */}
       <Route path="/end-of-tenancy-cleaning" component={EndOfTenancyPage} />
       <Route path="/end-of-tenancy-cleaning-newcastle" component={EndOfTenancyNewcastlePage} />
+      <Route path="/end-of-tenancy-newcastle" component={EndOfTenancyNewcastlePage} />
       <Route path="/commercial-cleaning" component={CommercialCleaningPage} />
       <Route path="/deep-cleaning" component={DeepCleaningPage} />
       <Route path="/carpet-upholstery-cleaning" component={CarpetUpholsteryPage} />

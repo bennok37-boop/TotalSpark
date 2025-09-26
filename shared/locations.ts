@@ -25,14 +25,14 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Newcastle upon Tyne",
         slug: "newcastle-upon-tyne",
-        phone: "0191 743 6925", // CallRail tracking - Tyne & Wear pool
+        phone: "0191 743 9585", // Regional number - Tyne & Wear
         region: "Tyne & Wear",
         nearby: ["Gateshead", "Gosforth", "Jesmond", "Heaton"]
       },
       {
         name: "Sunderland",
         slug: "sunderland",
-        phone: "0191 743 6925", // CallRail tracking - Tyne & Wear pool  
+        phone: "0191 743 9585", // Regional number - Tyne & Wear  
         region: "Tyne & Wear",
         nearby: ["Washington", "Houghton-le-Spring", "Seaham", "South Shields"]
       },
@@ -95,7 +95,7 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Hebburn",
         slug: "hebburn",
-        phone: "0191 123 4567",
+        phone: "0191 743 9585",
         region: "Tyne & Wear",
         nearby: ["Jarrow", "South Shields", "Gateshead", "Felling"]
       },
@@ -165,7 +165,7 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Durham",
         slug: "durham",
-        phone: "0191 123 4567",
+        phone: "0191 743 9585",
         region: "County Durham",
         nearby: ["Chester-le-Street", "Bishop Auckland", "Consett", "Seaham"]
       },
@@ -431,7 +431,7 @@ export const REGIONS: Record<string, RegionData> = {
       {
         name: "Middlesbrough",
         slug: "middlesbrough",
-        phone: "01642 123 456",
+        phone: "03300432115",
         region: "Tees Valley",
         nearby: ["Stockton-on-Tees", "Redcar", "Thornaby", "Acklam"]
       },
