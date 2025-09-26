@@ -32,12 +32,12 @@ export function useTrackingNumbers(): TrackingNumbers {
   const [location] = useLocation();
   const { preferences, hasConsented } = useConsent();
   const [trackingData, setTrackingData] = useState<TrackingNumbers>({
-    phone: '0191 743 6925', // Default fallback while loading - updated to new Tyne & Wear number
+    phone: '03300432115', // Main company number as default fallback while loading
     whatsapp: '447380991629',
     location: null,
     region: null,
     trackingMetadata: {
-      selectedNumber: '0191 743 6925',
+      selectedNumber: '03300432115',
       ruleType: 'global',
       timestamp: Date.now()
     },
@@ -49,12 +49,12 @@ export function useTrackingNumbers(): TrackingNumbers {
     if (!hasConsented || !preferences.tracking) {
       // Use fallback company number without tracking
       setTrackingData({
-        phone: '0191 743 6925', // Company fallback number
+        phone: '03300432115', // Main company fallback number
         whatsapp: '447380991629',
         location: null,
         region: null,
         trackingMetadata: {
-          selectedNumber: '0191 743 6925',
+          selectedNumber: '03300432115',
           ruleType: 'global',
           timestamp: Date.now()
         },

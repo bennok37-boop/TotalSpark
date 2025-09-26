@@ -6,13 +6,33 @@ import { scrollToQuoteForm } from '@/utils/scroll';
 import { CITIES } from '@shared/schema';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
 import { trackSocialClick } from '@/lib/analytics';
+import { useLocation } from 'wouter';
+import { getLocationContactDetails } from '@shared/location-utils';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const services = ['End of Tenancy Cleaning', 'Deep Cleaning', 'Commercial Cleaning', 'Carpet & Upholstery Cleaning'];
   
-  // Get CallRail tracking numbers
-  const { phone: phoneNumber } = useTrackingNumbers();
+  // Get current location for regional phone number determination
+  const [location] = useLocation();
+  
+  // Get regional phone number for footer - prioritize fixed regional numbers for specified areas
+  const getFooterPhoneNumber = () => {
+    const contactDetails = getLocationContactDetails(location);
+    
+    // For Tyne and Wear, Durham, and Northumberland areas - always show regional number in footer
+    if (contactDetails.region) {
+      const regionSlug = contactDetails.region.slug;
+      if (['tyne-and-wear', 'county-durham', 'northumberland'].includes(regionSlug)) {
+        return '0191 743 9585';
+      }
+    }
+    
+    // For other areas, use the contact details phone
+    return contactDetails.phone;
+  };
+  
+  const phoneNumber = getFooterPhoneNumber();
 
   return (
     <footer className="bg-foreground text-background" data-testid="footer">

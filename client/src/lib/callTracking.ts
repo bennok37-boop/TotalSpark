@@ -130,6 +130,6 @@ export const trackPhoneClick = (source: string, element?: HTMLElement) => {
     callTracker.handlePhoneClick(source, element);
   } else {
     // Fallback if call tracker not initialized
-    window.location.href = `tel:${document.querySelector('[data-dynamic-phone]')?.textContent || '03300 435459'}`;
+    window.location.href = `tel:${document.querySelector('[data-dynamic-phone]')?.textContent || '03300432115'}`;
   }
 };

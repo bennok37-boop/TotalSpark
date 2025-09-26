@@ -15,12 +15,12 @@ export function findLocationBySlug(slug: string) {
 // Helper function to get region-specific phone number
 export function getRegionPhoneNumber(regionSlug: string): string {
   const phoneMap: Record<string, string> = {
-    'tyne-and-wear': '0191 743 6925',     // CallRail tracking pool - Tyne & Wear ONLY
-    'county-durham': '03300 435459',      // Main company number for County Durham  
-    'northumberland': '03300 435459',     // Main company number for Northumberland
-    'tees-valley': '03300 435459'         // Main company number for Tees Valley
+    'tyne-and-wear': '0191 743 9585',     // Regional number for Tyne & Wear
+    'county-durham': '0191 743 9585',     // Regional number for County Durham  
+    'northumberland': '0191 743 9585',    // Regional number for Northumberland
+    'tees-valley': '03300432115'          // Main company number for Tees Valley
   };
-  return phoneMap[regionSlug] || '03300 435459';
+  return phoneMap[regionSlug] || '03300432115';
 }
 
 // Helper function to get region-specific WhatsApp number
