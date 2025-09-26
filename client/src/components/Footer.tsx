@@ -18,18 +18,21 @@ export default function Footer() {
   
   // Get regional phone number for footer - prioritize fixed regional numbers for specified areas
   const getFooterPhoneNumber = () => {
-    const contactDetails = getLocationContactDetails(location);
+    // Check if we're on a Newcastle/Tyne & Wear, Durham, or Northumberland page
+    const isNewcastleArea = location.includes('newcastle') || location.includes('/cleaning/newcastle-upon-tyne');
+    const isDurhamArea = location.includes('durham') && !location.includes('county-durham'); // Avoid double matching
+    const isNorthumberlandArea = location.includes('northumberland') || 
+                                 location.includes('hexham') || 
+                                 location.includes('alnwick') || 
+                                 location.includes('berwick');
     
-    // For Tyne and Wear, Durham, and Northumberland areas - always show regional number in footer
-    if (contactDetails.region) {
-      const regionSlug = contactDetails.region.slug;
-      if (['tyne-and-wear', 'county-durham', 'northumberland'].includes(regionSlug)) {
-        return '0191 743 9585';
-      }
+    // For these specific areas - always show regional number in footer
+    if (isNewcastleArea || isDurhamArea || isNorthumberlandArea) {
+      return '0191 743 9585';
     }
     
-    // For other areas, use the contact details phone
-    return contactDetails.phone;
+    // For other areas, use main company number
+    return '03300432115';
   };
   
   const phoneNumber = getFooterPhoneNumber();
