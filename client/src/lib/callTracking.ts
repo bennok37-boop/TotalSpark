@@ -109,20 +109,21 @@ export class CallTracker {
 let callTracker: CallTracker | null = null;
 
 export const initializeCallTracking = (config: DynamicNumberConfig) => {
-  callTracker = new CallTracker(config);
-  return callTracker;
+  // CallTracker disabled - using React useTrackingNumbers hook exclusively
+  // This prevents conflicts between DOM manipulation and React state management
+  console.log('CallTracker: Initialization skipped - using React tracking system exclusively');
+  return null;
 };
 
 export const getCallTracker = (): CallTracker | null => {
-  return callTracker;
+  // CallTracker disabled - return null to prevent usage
+  return null;
 };
 
 // Helper function for components
 export const trackPhoneClick = (source: string, element?: HTMLElement) => {
-  if (callTracker) {
-    callTracker.handlePhoneClick(source, element);
-  } else {
-    // Fallback if call tracker not initialized
-    window.location.href = `tel:${document.querySelector('[data-dynamic-phone]')?.textContent || '03300432115'}`;
-  }
+  // CallTracker disabled - use direct fallback to main company number
+  // React components handle tracking via useTrackingNumbers hook
+  console.log('CallTracker: Phone click tracking disabled - using React system');
+  window.location.href = `tel:03300432115`;
 };
