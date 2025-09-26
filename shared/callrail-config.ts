@@ -39,12 +39,12 @@ export const ROUTE_RULES: CallRailRule[] = [
   // End of Tenancy pages
   {
     pattern: '/end-of-tenancy-cleaning',
-    numbers: ['0191 743 9585', '0191 743 9620'],
+    numbers: ['03300432115'],
     name: 'End of Tenancy - Main'
   },
   {
     pattern: '/cleaning/newcastle',
-    numbers: ['0191 743 9585'],
+    numbers: ['03300432115'],
     region: 'tyne-and-wear',
     name: 'Newcastle Landing'
   },
@@ -52,21 +52,21 @@ export const ROUTE_RULES: CallRailRule[] = [
   // Commercial cleaning
   {
     pattern: '/commercial-cleaning',
-    numbers: ['0191 822 5678', '0191 822 5679'],
+    numbers: ['03300432115'],
     name: 'Commercial - Main'
   },
   
   // Deep cleaning
   {
     pattern: '/deep-cleaning',
-    numbers: ['0191 823 9012', '0191 823 9013'],
+    numbers: ['03300432115'],
     name: 'Deep Cleaning - Main'
   },
   
   // Carpet cleaning
   {
     pattern: '/carpet-upholstery-cleaning',
-    numbers: ['01642 824 3456', '01642 824 3457'],
+    numbers: ['03300432115'],
     name: 'Carpet Cleaning - Main'
   }
 ];
@@ -76,29 +76,29 @@ export const CAMPAIGN_RULES: CampaignRule[] = [
   // Google Ads campaigns
   {
     campaign: 'google_ads_end_tenancy',
-    numbers: ['0191 825 1001', '0191 825 1002'],
+    numbers: ['03300432115'],
     name: 'Google Ads - End of Tenancy'
   },
   {
     campaign: 'google_ads_commercial',
-    numbers: ['0191 825 2001', '0191 825 2002'],
+    numbers: ['03300432115'],
     name: 'Google Ads - Commercial'
   },
   {
     campaign: 'google_ads_deep_clean',
-    numbers: ['0191 825 3001', '0191 825 3002'],
+    numbers: ['03300432115'],
     name: 'Google Ads - Deep Clean'
   },
   
   // Facebook campaigns
   {
     campaign: 'facebook_end_tenancy',
-    numbers: ['0191 826 1001', '0191 826 1002'],
+    numbers: ['03300432115'],
     name: 'Facebook - End of Tenancy'
   },
   {
     campaign: 'facebook_commercial',
-    numbers: ['0191 826 2001', '0191 826 2002'],
+    numbers: ['03300432115'],
     name: 'Facebook - Commercial'
   }
 ];
@@ -108,35 +108,35 @@ export const TRAFFIC_SOURCE_RULES: TrafficSourceRule[] = [
   // Google Ads (via gclid parameter)
   {
     source: 'google_ads',
-    numbers: ['0191 830 1000', '0191 830 1001', '0191 830 1002'],
+    numbers: ['03300432115'],
     name: 'Google Ads - General'
   },
   
   // Facebook Ads (via fbclid parameter)
   {
     source: 'facebook_ads',
-    numbers: ['0191 831 1000', '0191 831 1001', '0191 831 1002'],
+    numbers: ['03300432115'],
     name: 'Facebook Ads - General'
   },
   
   // Bing Ads (via msclkid parameter)
   {
     source: 'bing_ads',
-    numbers: ['0191 832 1000', '0191 832 1001'],
+    numbers: ['03300432115'],
     name: 'Bing Ads - General'
   },
   
   // Organic search (UTM source = organic)
   {
     source: 'organic',
-    numbers: ['0191 833 1000', '0191 833 1001'],
+    numbers: ['03300432115'],
     name: 'Organic Search'
   },
   
   // Direct traffic
   {
     source: 'direct',
-    numbers: ['0191 834 1000'],
+    numbers: ['03300432115'],
     name: 'Direct Traffic'
   }
 ];
@@ -144,15 +144,16 @@ export const TRAFFIC_SOURCE_RULES: TrafficSourceRule[] = [
 // Regional fallback numbers (when no campaign/route rule matches)
 // CallRail tracking ONLY for Tyne & Wear - other regions use actual company numbers
 export const REGIONAL_FALLBACK_NUMBERS: Record<string, string[]> = {
-  'tyne-and-wear': ['0191 743 9585', '0191 743 9620', '0191 743 0019', '0191 743 7676', '0191 743 2098']
+  'tyne-and-wear': ['03300432115']
   // Other regions removed - they will fall back to global fallback (actual company numbers)
 };
 
 // Global fallback number (absolute last resort)
-export const GLOBAL_FALLBACK_NUMBERS: string[] = ['0191 743 9585'];
+export const GLOBAL_FALLBACK_NUMBERS: string[] = ['03300432115'];
 
 // Session storage key for persisting selected tracking number
 export const TRACKING_SESSION_KEY = 'ts_call_number';
+export const CACHE_VERSION = '2.0'; // Increment to invalidate old cached data
 
 // Tracking metadata for analytics
 export interface TrackingMetadata {
@@ -161,4 +162,5 @@ export interface TrackingMetadata {
   ruleType: 'route' | 'campaign' | 'source' | 'region' | 'global';
   timestamp: number;
   sessionId?: string;
+  cacheVersion?: string;
 }

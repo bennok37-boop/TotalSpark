@@ -15,9 +15,9 @@ export function findLocationBySlug(slug: string) {
 // Helper function to get region-specific phone number
 export function getRegionPhoneNumber(regionSlug: string): string {
   const phoneMap: Record<string, string> = {
-    'tyne-and-wear': '0191 743 9585',     // Regional number for Tyne & Wear
-    'county-durham': '0191 743 9585',     // Regional number for County Durham  
-    'northumberland': '0191 743 9585',    // Regional number for Northumberland
+    'tyne-and-wear': '03300432115',       // Main company number for all regions
+    'county-durham': '03300432115',       // Main company number for all regions  
+    'northumberland': '03300432115',      // Main company number for all regions
     'tees-valley': '03300432115'          // Main company number for Tees Valley
   };
   return phoneMap[regionSlug] || '03300432115';

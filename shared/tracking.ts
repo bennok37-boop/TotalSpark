@@ -8,6 +8,7 @@ import {
   REGIONAL_FALLBACK_NUMBERS,
   GLOBAL_FALLBACK_NUMBERS,
   TRACKING_SESSION_KEY,
+  CACHE_VERSION,
   TrackingMetadata
 } from './callrail-config';
 
@@ -94,16 +95,28 @@ function getCachedTrackingResult(): TrackingResult | null {
     const cached = sessionStorage.getItem(TRACKING_SESSION_KEY);
     if (cached) {
       const result = JSON.parse(cached) as TrackingResult;
+      
+      // Check cache version - invalidate if mismatched
+      if (!result.metadata.cacheVersion || result.metadata.cacheVersion !== CACHE_VERSION) {
+        sessionStorage.removeItem(TRACKING_SESSION_KEY);
+        return null;
+      }
+      
       // Check if cached result is still valid (within 1 hour)
       const hourAgo = Date.now() - (60 * 60 * 1000);
       if (result.metadata.timestamp > hourAgo) {
-        return result;
+        // Ensure cached phone number is valid (must be main company number per new policy)
+        if (result.phone === '03300432115') {
+          return result;
+        }
       }
     }
   } catch (error) {
     console.warn('Failed to parse cached tracking result:', error);
   }
   
+  // Clear invalid cache
+  sessionStorage.removeItem(TRACKING_SESSION_KEY);
   return null;
 }
 
@@ -153,7 +166,8 @@ export function resolveTrackingPhone(context: TrackingContext): TrackingResult {
           ruleName,
           ruleType,
           timestamp: Date.now(),
-          sessionId
+          sessionId,
+          cacheVersion: CACHE_VERSION
         }
       };
       
@@ -180,7 +194,8 @@ export function resolveTrackingPhone(context: TrackingContext): TrackingResult {
           ruleName,
           ruleType,
           timestamp: Date.now(),
-          sessionId
+          sessionId,
+          cacheVersion: CACHE_VERSION
         }
       };
       
@@ -259,7 +274,8 @@ export function resolveTrackingPhone(context: TrackingContext): TrackingResult {
       ruleName,
       ruleType,
       timestamp: Date.now(),
-      sessionId
+      sessionId,
+      cacheVersion: CACHE_VERSION
     }
   };
   

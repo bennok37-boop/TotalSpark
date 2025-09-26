@@ -92,21 +92,21 @@ function App() {
     const callTrackingConfig = {
       fallbackNumber: '03300432115',
       trackingNumbers: {
-        'newcastle-upon-tyne_end-of-tenancy': '0191 743 9585',
-        'newcastle-upon-tyne_deep': '0191 743 9585', 
-        'newcastle-upon-tyne_commercial': '0191 743 9585',
-        'newcastle-upon-tyne_carpet': '0191 743 9585',
-        'sunderland_end-of-tenancy': '0191 743 9585',
-        'sunderland_deep': '0191 743 9585',
+        'newcastle-upon-tyne_end-of-tenancy': '03300432115',
+        'newcastle-upon-tyne_deep': '03300432115', 
+        'newcastle-upon-tyne_commercial': '03300432115',
+        'newcastle-upon-tyne_carpet': '03300432115',
+        'sunderland_end-of-tenancy': '03300432115',
+        'sunderland_deep': '03300432115',
         'middlesbrough_end-of-tenancy': '03300432115',
-        'durham_end-of-tenancy': '0191 743 9585',
-        'gateshead_end-of-tenancy': '0191 743 9585',
+        'durham_end-of-tenancy': '03300432115',
+        'gateshead_end-of-tenancy': '03300432115',
         // City-level defaults
-        'newcastle-upon-tyne': '0191 743 9585',
-        'sunderland': '0191 743 9585',
+        'newcastle-upon-tyne': '03300432115',
+        'sunderland': '03300432115',
         'middlesbrough': '03300432115',
-        'durham': '0191 743 9585',
-        'gateshead': '0191 743 9585',
+        'durham': '03300432115',
+        'gateshead': '03300432115',
         'default': '03300432115'
       }
     };

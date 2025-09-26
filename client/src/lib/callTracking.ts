@@ -64,16 +64,9 @@ export class CallTracker {
   }
 
   private updatePhoneNumbers() {
-    // Update all phone number displays
-    const phoneElements = document.querySelectorAll('[data-dynamic-phone]');
-    phoneElements.forEach(element => {
-      if (element.textContent) {
-        element.textContent = this.currentTrackingNumber;
-      }
-      if (element instanceof HTMLAnchorElement && element.href.startsWith('tel:')) {
-        element.href = `tel:${this.currentTrackingNumber.replace(/\s/g, '')}`;
-      }
-    });
+    // DOM manipulation disabled - React components handle phone numbers via useTrackingNumbers hook
+    // This prevents conflicts between DOM mutation and React state management
+    console.log('CallTracker: DOM phone number updates disabled - using React tracking system');
   }
 
   getCurrentNumber(): string {
