@@ -22,26 +22,30 @@ export default function Header() {
   // Main company number for header display - always consistent across all pages
   const headerPhoneNumber = '03300432115';
   
-  // Ensure header phone numbers are not overridden by CallRail
+  // Allow CallRail to swap phone numbers on Newcastle pages
   useEffect(() => {
-    const fixHeaderPhoneNumbers = () => {
-      const headerPhoneElements = document.querySelectorAll('.header-phone-fixed');
-      headerPhoneElements.forEach(element => {
-        if (element.textContent !== headerPhoneNumber) {
-          element.textContent = headerPhoneNumber;
-        }
+    const isNewcastlePage = location.toLowerCase().includes('newcastle');
+    if (!isNewcastlePage) {
+      // Only fix phone numbers on non-Newcastle pages
+      const fixHeaderPhoneNumbers = () => {
+        const headerPhoneElements = document.querySelectorAll('.header-phone-fixed');
+        headerPhoneElements.forEach(element => {
+          if (element.textContent !== headerPhoneNumber) {
+            element.textContent = headerPhoneNumber;
+          }
+        });
+      };
+      
+      // Set initial values
+      fixHeaderPhoneNumbers();
+      
+      // Re-apply after any changes
+      const timeouts = [500, 1500];
+      timeouts.forEach(delay => {
+        setTimeout(fixHeaderPhoneNumbers, delay);
       });
-    };
-    
-    // Set initial values
-    fixHeaderPhoneNumbers();
-    
-    // Re-apply after CallRail might have run (with delays)
-    const timeouts = [500, 1500];
-    timeouts.forEach(delay => {
-      setTimeout(fixHeaderPhoneNumbers, delay);
-    });
-  }, [headerPhoneNumber]);
+    }
+  }, [headerPhoneNumber, location]);
 
   // Business contact information
   const businessEmail = 'hello@totalsparksolutions.co.uk';

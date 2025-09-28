@@ -8,9 +8,13 @@ export function ConditionalScripts() {
     // Check if current page is a Newcastle page
     const isNewcastlePage = location.toLowerCase().includes('newcastle');
     
+    console.log('ConditionalScripts: Checking page:', location, 'isNewcastle:', isNewcastlePage);
+    
     if (isNewcastlePage) {
       // Only add CallRail script to Newcastle pages
       const existingScript = document.querySelector('script[src*="callrail.com"]');
+      
+      console.log('ConditionalScripts: Existing CallRail script found:', !!existingScript);
       
       if (!existingScript) {
         const script = document.createElement('script');
@@ -22,6 +26,13 @@ export function ConditionalScripts() {
         document.body.appendChild(script);
         
         console.log('CallRail dynamic number insertion loaded for Newcastle page:', location);
+      }
+    } else {
+      // Remove CallRail script if not on Newcastle page
+      const existingScript = document.querySelector('script[src*="callrail.com"]');
+      if (existingScript) {
+        existingScript.remove();
+        console.log('CallRail script removed for non-Newcastle page:', location);
       }
     }
   }, [location]);
