@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 import { Resend } from 'resend';
 import { storage } from "./storage";
+import { ghlService } from "./services/ghl";
 import { insertQuoteRequestSchema, insertBookingRequestSchema, CITY_SLUGS, SERVICE_TYPES } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
@@ -806,12 +807,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn('Email notification failed (quote still saved):', emailError);
       }
       
-      // Send to GoHighLevel webhook (for automation platforms like Zapier/Make.com)
+      // Send to GoHighLevel API directly and webhook (for automation platforms like Zapier/Make.com)
       try {
+        // Direct GHL API integration
+        const ghlResult = await ghlService.processQuoteRequest({
+          email: quote.email,
+          phone: quote.phone,
+          name: quote.name,
+          city: quote.city,
+          service: quote.service,
+          propertyType: quote.propertyType,
+          bedrooms: quote.bedrooms?.toString(),
+          estimatedPrice: quote.quoteResult?.totalInclVAT || quote.quoteResult?.totalExclVAT,
+          message: quote.additionalDetails,
+          source: 'website-quote-form'
+        });
+
+        if (ghlResult.success) {
+          console.log('Quote lead created in GHL:', ghlResult.contactId);
+        } else {
+          console.warn('GHL lead creation failed:', ghlResult.error);
+        }
+
+        // Also send to webhook for additional automation
         await sendToGHLWebhook(quote);
       } catch (webhookError) {
-        console.warn('Webhook delivery failed (quote still saved):', webhookError);
-        // Don't fail the main request if webhook fails
+        console.warn('GHL integration failed (quote still saved):', webhookError);
+        // Don't fail the main request if GHL fails
       }
       
       res.status(201).json(quote);
