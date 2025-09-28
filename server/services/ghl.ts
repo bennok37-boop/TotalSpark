@@ -78,7 +78,9 @@ class GoHighLevelService {
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json',
-          'Version': '2021-07-28'
+          'Version': '2021-07-28',
+          'Accept': 'application/json',
+          'LocationId': this.locationId
         },
         body: JSON.stringify(ghlContact)
       });
@@ -120,7 +122,7 @@ class GoHighLevelService {
         formDataObj.append('formId', formId);
       }
 
-      console.log('Submitting form to GHL:', { locationId: this.locationId, formId });
+      console.log('Submitting form to GHL:', { formId });
 
       const response = await fetch(this.formSubmissionUrl, {
         method: 'POST',
@@ -156,6 +158,27 @@ class GoHighLevelService {
     message?: string;
     source?: string;
   }): Promise<{ success: boolean; contactId?: string; error?: string }> {
+    
+    // Try form submission first (often more reliable)
+    const formData = {
+      email: quoteData.email,
+      phone: quoteData.phone || '',
+      name: quoteData.name || 'Website Lead',
+      service: quoteData.service || '',
+      city: quoteData.city || '',
+      property_type: quoteData.propertyType || '',
+      bedrooms: quoteData.bedrooms || '',
+      estimated_price: quoteData.estimatedPrice?.toString() || '',
+      message: quoteData.message || '',
+      source: quoteData.source || 'website-quote-form'
+    };
+
+    // Skip form submission for now (requires form ID and CAPTCHA configuration)
+    // console.log('Trying GHL form submission first...');
+    // const formResult = await this.submitForm(formData);
+    
+    // Direct contact creation
+    console.log('Creating GHL contact via API...');
     
     // Extract first and last name
     const nameParts = quoteData.name?.split(' ') || [];
