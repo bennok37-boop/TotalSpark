@@ -814,12 +814,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: quote.email,
           phone: quote.phone,
           name: quote.name,
-          city: quote.city,
+          city: quote.address, // Using address as city information
           service: quote.service,
-          propertyType: quote.propertyType,
-          bedrooms: quote.bedrooms?.toString(),
-          estimatedPrice: quote.quoteResult?.totalInclVAT || quote.quoteResult?.totalExclVAT,
-          message: quote.additionalDetails,
+          propertyType: quote.bedrooms ? `${quote.bedrooms} bedroom property` : 'residential',
+          bedrooms: quote.bedrooms || undefined,
+          estimatedPrice: undefined, // Quote result not available at this stage
+          message: quote.additionalDetails || undefined,
           source: 'website-quote-form'
         });
 
