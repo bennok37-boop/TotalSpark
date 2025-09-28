@@ -28,6 +28,7 @@ import CommercialCleaningPage from "@/pages/CommercialCleaningPage";
 import DeepCleaningPage from "@/pages/DeepCleaningPage";
 import CarpetUpholsteryPage from "@/pages/CarpetUpholsteryPage";
 import { ServiceLocationRouter } from "@/routes/ServiceLocationRouter";
+import { ConditionalScripts } from "@/components/ConditionalScripts";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -120,6 +121,7 @@ function App() {
         <ConsentProvider>
           <Toaster />
           <Router />
+          <ConditionalScripts />
           <CookieConsentBanner />
         </ConsentProvider>
       </TooltipProvider>
