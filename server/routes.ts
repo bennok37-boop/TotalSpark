@@ -4,7 +4,6 @@ import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 import { Resend } from 'resend';
 import { storage } from "./storage";
-import { ghlService } from "./services/ghl";
 import { insertQuoteRequestSchema, insertBookingRequestSchema, CITY_SLUGS, SERVICE_TYPES } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
 import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage.js";
@@ -807,33 +806,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn('Email notification failed (quote still saved):', emailError);
       }
       
-      // Send to GoHighLevel API directly and webhook (for automation platforms like Zapier/Make.com)
+      // Send to GoHighLevel webhook (for automation platforms like Zapier/Make.com)
       try {
-        // Direct GHL API integration
-        const ghlResult = await ghlService.processQuoteRequest({
-          email: quote.email,
-          phone: quote.phone,
-          name: quote.name,
-          city: quote.address, // Using address as city information
-          service: quote.service,
-          propertyType: quote.bedrooms ? `${quote.bedrooms} bedroom property` : 'residential',
-          bedrooms: quote.bedrooms || undefined,
-          estimatedPrice: undefined, // Quote result not available at this stage
-          message: quote.additionalDetails || undefined,
-          source: 'website-quote-form'
-        });
-
-        if (ghlResult.success) {
-          console.log('Quote lead created in GHL:', ghlResult.contactId);
-        } else {
-          console.warn('GHL lead creation failed:', ghlResult.error);
-        }
-
-        // Also send to webhook for additional automation
         await sendToGHLWebhook(quote);
       } catch (webhookError) {
-        console.warn('GHL integration failed (quote still saved):', webhookError);
-        // Don't fail the main request if GHL fails
+        console.warn('Webhook delivery failed (quote still saved):', webhookError);
+        // Don't fail the main request if webhook fails
       }
       
       res.status(201).json(quote);
@@ -1246,92 +1224,6 @@ Allow: /carpet-upholstery-cleaning/`;
     } catch (error) {
       console.error('❌ Robots.txt generation error:', error);
       res.status(500).send('Robots.txt generation failed');
-    }
-  });
-
-  // GoHighLevel Webhook Endpoint - Secure Implementation
-  app.post("/api/webhook/ghl", async (req, res) => {
-    try {
-      // Verify webhook secret for security
-      const ghlSecret = process.env.GHL_WEBHOOK_SECRET;
-      const providedSecret = req.headers['x-ghl-secret'] || req.headers['authorization'];
-      
-      if (!ghlSecret || providedSecret !== ghlSecret) {
-        console.warn('🚫 Unauthorized GHL webhook attempt');
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-      
-      const webhookData = req.body;
-      
-      // Log non-PII webhook info only
-      console.log('🔗 Received authenticated GHL webhook:', {
-        hasContact: !!webhookData.contact,
-        service: webhookData.service,
-        source: 'ghl-webhook'
-      });
-      
-      // Map GHL service names to internal service types
-      const serviceMap: Record<string, string> = {
-        'endOfTenancy': 'endOfTenancy',
-        'end-of-tenancy': 'endOfTenancy',
-        'end_of_tenancy': 'endOfTenancy',
-        'commercialCleaning': 'commercial',
-        'commercial-cleaning': 'commercial',
-        'commercial_cleaning': 'commercial',
-        'deepCleaning': 'deep',
-        'deep-cleaning': 'deep',
-        'deep_cleaning': 'deep',
-        'carpetCleaning': 'carpets',
-        'carpet-cleaning': 'carpets',
-        'carpet_cleaning': 'carpets',
-        'regularCleaning': 'cleaning',
-        'regular-cleaning': 'cleaning',
-        'regular_cleaning': 'cleaning'
-      };
-      
-      // Extract and validate lead data from GHL webhook
-      const rawLeadData = {
-        name: webhookData.contact?.firstName 
-          ? `${webhookData.contact.firstName} ${webhookData.contact.lastName || ''}`.trim()
-          : webhookData.name || 'GHL Lead',
-        email: webhookData.contact?.email || webhookData.email,
-        phone: webhookData.contact?.phone || webhookData.phone,
-        address: (webhookData.contact?.address1 || webhookData.address || '').trim(),
-        postcode: (webhookData.contact?.postalCode || webhookData.postcode || '').trim() || null,
-        service: serviceMap[webhookData.service] || 'cleaning',
-        bedrooms: webhookData.bedrooms ? String(webhookData.bedrooms) : null,
-        additionalDetails: (webhookData.message || webhookData.notes || 'Lead from GoHighLevel').trim() || null,
-        jobImages: []
-      };
-
-      // Validate using schema
-      const validationResult = insertQuoteRequestSchema.safeParse(rawLeadData);
-      if (!validationResult.success) {
-        console.warn('🚫 Invalid GHL webhook data format');
-        return res.status(400).json({ 
-          error: 'Invalid data format',
-          details: fromZodError(validationResult.error).toString()
-        });
-      }
-
-      // Save the validated lead to storage
-      const savedLead = await storage.createQuoteRequest(validationResult.data);
-      
-      // Send email notification
-      await sendEmailNotification(savedLead);
-      
-      console.log('✅ GHL webhook processed successfully');
-      res.status(200).json({ 
-        success: true, 
-        message: 'Webhook processed successfully',
-        leadId: savedLead.id 
-      });
-      
-    } catch (error) {
-      console.error('❌ GHL webhook processing failed:', error);
-      res.status(500).json({ 
-        error: 'Failed to process webhook'
-      });
     }
   });
 
