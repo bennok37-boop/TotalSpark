@@ -226,7 +226,8 @@ async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1
     if (error instanceof Error && error.name === 'AbortError') {
       // Log timeout without exposing sensitive query parameters
       try {
-        const urlToLog = typeof validatedUrl !== 'undefined' ? validatedUrl : imageUrl;\n        const logUrl = new URL(urlToLog);
+        const urlToLog = typeof validatedUrl !== 'undefined' ? validatedUrl : imageUrl;
+        const logUrl = new URL(urlToLog);
         console.warn(`⏰ Image fetch timeout for ${logUrl.hostname}${logUrl.pathname}`);
       } catch {
         console.warn(`⏰ Image fetch timeout for request`);
