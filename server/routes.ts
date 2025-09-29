@@ -73,7 +73,7 @@ async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1
         validatedUrl = signedUrls;
         console.log(`🔗 Generated signed URL for local object from ${signedUrlParsed.hostname}`);
       } catch (localError) {
-        console.warn(`🚫 Failed to handle local object path: ${localError.message}`);
+        console.warn(`🚫 Failed to handle local object path: ${localError instanceof Error ? localError.message : String(localError)}`);
         return null;
       }
     } else {
@@ -223,16 +223,16 @@ async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1
     }
     
   } catch (error) {
-    if (error.name === 'AbortError') {
+    if (error instanceof Error && error.name === 'AbortError') {
       // Log timeout without exposing sensitive query parameters
       try {
-        const logUrl = new URL(validatedUrl || imageUrl);
+        const urlToLog = typeof validatedUrl !== 'undefined' ? validatedUrl : imageUrl;\n        const logUrl = new URL(urlToLog);
         console.warn(`⏰ Image fetch timeout for ${logUrl.hostname}${logUrl.pathname}`);
       } catch {
         console.warn(`⏰ Image fetch timeout for request`);
       }
     } else {
-      console.warn(`🚫 Image fetch error: ${error.message}`);
+      console.warn(`🚫 Image fetch error: ${error instanceof Error ? error.message : String(error)}`);
     }
     return null;
   }
@@ -242,7 +242,7 @@ async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1
 async function fetchImagesSecurely(imageUrls: string[]): Promise<Array<{filename: string; content: Buffer; contentType?: string}>> {
   const maxConcurrency = 3;
   const maxTotalSize = 15 * 1024 * 1024; // 15MB total limit
-  const attachments = [];
+  const attachments: Array<{filename: string; content: Buffer; contentType?: string}> = [];
   let totalSize = 0;
   
   console.log(`🔒 Fetching ${imageUrls.length} images with security controls`);
@@ -350,7 +350,7 @@ This lead is ready to copy-paste into GoHighLevel!
   const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
   
   // Prepare attachments from job images using secure fetching
-  let attachments = [];
+  let attachments: Array<{filename: string; content: Buffer; contentType?: string}> = [];
   if (quote.jobImages && quote.jobImages.length > 0) {
     try {
       attachments = await fetchImagesSecurely(quote.jobImages);
@@ -492,7 +492,7 @@ Submitted: ${new Date().toLocaleString('en-GB')}
   const targetEmail = process.env.NOTIFICATION_EMAIL || 'leads@totalsparksolutions.co.uk';
   
   // Prepare attachments from job images using secure fetching
-  let attachments = [];
+  let attachments: Array<{filename: string; content: Buffer; contentType?: string}> = [];
   if (booking.jobImages && booking.jobImages.length > 0) {
     try {
       attachments = await fetchImagesSecurely(booking.jobImages);
