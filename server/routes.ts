@@ -1083,7 +1083,26 @@ ${urlEntries}
       console.log(`📸 Generating upload URL for file: ${filename}, type: ${contentType}`);
       
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
-      res.json({ uploadURL });
+      
+      // Extract object key from the upload URL to provide stable path
+      let objectKey = '';
+      let stablePath = '';
+      try {
+        const url = new URL(uploadURL);
+        const pathMatch = url.pathname.match(/\/replit-objstore-[^/]+\/(.+)$/);
+        if (pathMatch) {
+          objectKey = pathMatch[1];
+          stablePath = `/objects/${objectKey}`;
+        }
+      } catch (e) {
+        console.warn('Failed to extract object key from upload URL:', uploadURL);
+      }
+      
+      res.json({ 
+        uploadURL,
+        objectKey,
+        stablePath 
+      });
     } catch (error) {
       console.error("Error getting upload URL:", error);
       res.status(500).json({ error: "Internal server error" });

@@ -354,21 +354,10 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
 
   const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
     if (result.successful && result.successful.length > 0) {
-      // Convert presigned URLs to stable object paths that won't expire
+      // Use stable object paths provided by backend instead of parsing URLs
       const newImageUrls = result.successful.map(file => {
-        if (file.uploadURL) {
-          // Extract object path from presigned URL and convert to stable proxy path
-          try {
-            const url = new URL(file.uploadURL);
-            const pathMatch = url.pathname.match(/\/replit-objstore-[^/]+\/(.+)$/);
-            if (pathMatch) {
-              return `/objects/${pathMatch[1]}`;
-            }
-          } catch (e) {
-            console.warn('Failed to parse upload URL:', file.uploadURL);
-          }
-        }
-        return file.uploadURL || '';
+        // Use stablePath if available (from backend response), fallback to uploadURL parsing
+        return (file as any).stablePath || file.uploadURL || '';
       }).filter(Boolean);
       
       setUploadedImages(prev => [...prev, ...newImageUrls]);
