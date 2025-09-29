@@ -84,6 +84,12 @@ export function ObjectUploader({
         const dashboardPlugin = uppy.getPlugin('dashboard') as any;
         dashboardPlugin?.closeModal?.();
       })
+      .on("error", (error) => {
+        console.error('Uppy upload error:', error);
+      })
+      .on("upload-error", (file, error, response) => {
+        console.error('Uppy upload-error:', { file: file?.name, error, response });
+      })
   );
 
   return (
