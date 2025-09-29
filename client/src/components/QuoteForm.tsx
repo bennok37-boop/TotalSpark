@@ -326,12 +326,16 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
   };
 
   // Image upload handlers
-  const handleGetUploadParameters = async () => {
+  const handleGetUploadParameters = async (file: any) => {
     const response = await fetch('/api/objects/upload', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        contentType: file.type || 'image/jpeg',
+        filename: file.name || 'image.jpg'
+      })
     });
     
     if (!response.ok) {
@@ -342,12 +346,31 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     return {
       method: 'PUT' as const,
       url: uploadURL,
+      headers: {
+        'Content-Type': file.type || 'image/jpeg'
+      }
     };
   };
 
   const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
     if (result.successful && result.successful.length > 0) {
-      const newImageUrls = result.successful.map(file => file.uploadURL || '').filter(Boolean);
+      // Convert presigned URLs to stable object paths that won't expire
+      const newImageUrls = result.successful.map(file => {
+        if (file.uploadURL) {
+          // Extract object path from presigned URL and convert to stable proxy path
+          try {
+            const url = new URL(file.uploadURL);
+            const pathMatch = url.pathname.match(/\/replit-objstore-[^/]+\/(.+)$/);
+            if (pathMatch) {
+              return `/objects/${pathMatch[1]}`;
+            }
+          } catch (e) {
+            console.warn('Failed to parse upload URL:', file.uploadURL);
+          }
+        }
+        return file.uploadURL || '';
+      }).filter(Boolean);
+      
       setUploadedImages(prev => [...prev, ...newImageUrls]);
       setFormData(prev => ({ 
         ...prev, 
@@ -357,6 +380,19 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
       toast({
         title: "Images uploaded successfully!",
         description: `${newImageUrls.length} image(s) added to your quote request.`
+      });
+    }
+    
+    // Handle errors
+    if (result.failed && result.failed.length > 0) {
+      const errorMessages = result.failed.map(file => 
+        `${file.name}: ${file.error?.message || 'Upload failed'}`
+      ).join(', ');
+      
+      toast({
+        title: "Upload failed",
+        description: errorMessages,
+        variant: "destructive"
       });
     }
   };

@@ -1077,6 +1077,11 @@ ${urlEntries}
   app.post("/api/objects/upload", async (req, res) => {
     const objectStorageService = new ObjectStorageService();
     try {
+      // Extract content-type and filename from request body for logging
+      const { contentType = 'image/jpeg', filename = 'image.jpg' } = req.body;
+      
+      console.log(`📸 Generating upload URL for file: ${filename}, type: ${contentType}`);
+      
       const uploadURL = await objectStorageService.getObjectEntityUploadURL();
       res.json({ uploadURL });
     } catch (error) {
