@@ -10,6 +10,7 @@ import StickyCallButton from '@/components/StickyCallButton';
 import QuoteForm from '@/components/QuoteForm';
 import { scrollToQuoteForm } from '@/utils/scroll';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
+import { useHashScroll } from '@/hooks/useHashScroll';
 
 // Import gallery images
 // import livingRoomImage from '@assets/stock_images/clean_modern_living__9562ecd9.jpg';
@@ -20,6 +21,9 @@ const kitchenImage = '/attached_assets/stock_images/professional_kitchen_2ae5ee2
 const carpetImage = '/attached_assets/stock_images/professional_carpet__d09de93c.jpg';
 
 export default function EndOfTenancyPage() {
+  // Enable hash-based navigation to sections
+  useHashScroll();
+  
   // Get tracking numbers for call buttons
   const trackingNumbers = useTrackingNumbers();
   // Phone numbers now handled by useTrackingNumbers hook in components

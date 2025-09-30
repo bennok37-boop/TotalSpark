@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
+import { useHashScroll } from '@/hooks/useHashScroll';
 
 // Import gallery images
 // import livingRoomImage from '@assets/stock_images/professional_house_c_9c27b829.jpg';
@@ -18,6 +19,9 @@ const kitchenImage = '/attached_assets/stock_images/professional_house_c_62a1095
 const carpetImage = '/attached_assets/stock_images/professional_bathroo_944593f2.jpg';
 
 export default function DeepCleaningPage() {
+  // Enable hash-based navigation to sections
+  useHashScroll();
+  
   // Get tracking numbers from CallRail system
   const trackingNumbers = useTrackingNumbers();
   const phoneNumber = trackingNumbers.phone;

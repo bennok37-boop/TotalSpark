@@ -48,10 +48,39 @@ The application employs React Query (TanStack Query) for server state management
 - **Form State**: React Hook Form integration for complex multi-step quote forms
 
 ### Routing Strategy
-The routing system is designed around SEO-friendly URL structure:
+The routing system is designed around SEO-friendly URL structure with deep linking support:
 - **City-Based Pages**: Dynamic routing for location-specific landing pages (/cleaning-{city})
 - **Service Pages**: Dedicated routes for each service type
 - **Homepage**: Central hub showcasing all services and locations
+- **Deep Linking**: URL hash fragments enable direct navigation to page sections
+
+### Direct URL Structure
+The application supports deep linking to specific sections using URL hash fragments. This enables marketing campaigns, Google Ads, and social media to direct users to relevant content:
+
+**Homepage Deep Links:**
+- `/#quote` - Direct link to quote/booking form
+- `/#services` - Direct link to services section
+- `/#pricing` - Direct link to pricing information (alias for services)
+- `/#areas` - Direct link to areas covered section
+- `/#faq` - Direct link to frequently asked questions
+
+**City Page Deep Links:**
+- `/cleaning/{city}#quote` - City-specific quote form
+- `/cleaning/{city}#services` - City-specific services
+- `/cleaning/{city}#pricing` - City-specific pricing
+- `/cleaning/{city}#faq` - City-specific FAQs
+
+**Service Page Deep Links:**
+- `/end-of-tenancy-cleaning#quote` - End of tenancy booking
+- `/commercial-cleaning#quote` - Commercial cleaning booking
+- `/deep-cleaning#quote` - Deep cleaning booking
+- `/carpet-upholstery-cleaning#quote` - Carpet cleaning booking
+
+**Technical Implementation:**
+- Custom `useHashScroll` hook handles hash detection and smooth scrolling
+- All sections have unique IDs and `scroll-mt-20` class for proper header offset
+- Smooth scroll behavior with 100ms delay for full page render
+- Works consistently across all page types (home, city, service)
 
 ## External Dependencies
 

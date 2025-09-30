@@ -46,10 +46,10 @@ const services = [
 
 export default function ServiceCards() {
   return (
-    <section id="services" className="py-16 scroll-mt-20" data-testid="section-service-cards">
+    <section id="services" className="py-16 scroll-mt-20 relative" data-testid="section-service-cards">
       <div className="container mx-auto px-4">
         {/* Pricing anchor alias since pricing is shown in services */}
-        <div id="pricing" className="absolute -mt-20"></div>
+        <div id="pricing" className="scroll-mt-20"></div>
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Cleaning Services</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

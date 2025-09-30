@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import StickyCallButton from '@/components/StickyCallButton';
 import { useTrackingNumbers } from '@/hooks/useTrackingNumbers';
+import { useHashScroll } from '@/hooks/useHashScroll';
 
 // Import gallery images
 // import livingRoomImage from '@assets/stock_images/clean_modern_living__f0d3e4c8.jpg';
@@ -18,6 +19,9 @@ const kitchenImage = '/attached_assets/stock_images/professional_kitchen_3d7b311
 const carpetImage = '/attached_assets/stock_images/professional_carpet__0a1e5eba.jpg';
 
 export default function CarpetUpholsteryPage() {
+  // Enable hash-based navigation to sections
+  useHashScroll();
+  
   // Get tracking numbers from CallRail system
   const trackingNumbers = useTrackingNumbers();
   const phoneNumber = trackingNumbers.phone;
