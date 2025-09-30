@@ -203,7 +203,7 @@ export default function DeepCleaningPage() {
         </section>
 
         {/* Pricing */}
-        <section className="py-16 bg-background" data-testid="pricing">
+        <section id="pricing" className="py-16 bg-background scroll-mt-20" data-testid="pricing">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">Pricing Snapshot</h2>
@@ -366,7 +366,7 @@ export default function DeepCleaningPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 bg-primary text-primary-foreground" data-testid="final-cta">
+        <section id="quote" className="py-16 bg-primary text-primary-foreground scroll-mt-20" data-testid="final-cta">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready for a Complete Transformation?</h2>
             <p className="text-xl mb-8 opacity-90">Book your deep clean today</p>
