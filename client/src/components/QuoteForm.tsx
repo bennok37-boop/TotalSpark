@@ -374,9 +374,10 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     
     // Handle errors
     if (result.failed && result.failed.length > 0) {
-      const errorMessages = result.failed.map(file => 
-        `${file.name}: ${file.error?.message || 'Upload failed'}`
-      ).join(', ');
+      const errorMessages = result.failed.map(file => {
+        const errorMsg = typeof file.error === 'string' ? file.error : (file.error as any)?.message || 'Upload failed';
+        return `${file.name}: ${errorMsg}`;
+      }).join(', ');
       
       toast({
         title: "Upload failed",
