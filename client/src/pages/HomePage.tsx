@@ -22,12 +22,16 @@ import {
   generateKeywords, 
   createCanonicalUrl 
 } from '@/utils/seo';
+import { useHashScroll } from '@/hooks/useHashScroll';
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<LocationData[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [heroEmail, setHeroEmail] = useState('');
+  
+  // Enable hash-based navigation to sections
+  useHashScroll();
   
   const handleHeroQuoteRequest = (email: string) => {
     setHeroEmail(email);
@@ -98,7 +102,7 @@ export default function HomePage() {
         <ServiceCards />
         
         {/* North East Locations Section */}
-        <section className="py-16 bg-muted" data-testid="section-locations">
+        <section id="areas" className="py-16 bg-muted" data-testid="section-locations">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">We Cover the North East</h2>

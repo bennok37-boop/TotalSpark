@@ -49,7 +49,7 @@ export default function FAQSection({ city = "Newcastle", faqs }: FAQSectionProps
   const faqsToDisplay = faqs || defaultFaqs;
 
   return (
-    <section className="py-16 bg-muted" data-testid="section-faq">
+    <section id="faq" className="py-16 bg-muted" data-testid="section-faq">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
