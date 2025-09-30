@@ -17,7 +17,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { MapPin, Clock, Users, Shield, Award, CheckCircle, Phone } from 'lucide-react';
 import { REGIONS } from '@shared/locations';
 import { findLocationBySlug, getRegionPhoneNumber, getRegionWhatsAppNumber, getNearbyLocations } from '@shared/location-utils';
-
+import { useHashScroll } from '@/hooks/useHashScroll';
 import { LocationData } from '@shared/locations';
 
 
@@ -66,6 +66,9 @@ function generateCityPageContent(location: LocationData, region: typeof REGIONS[
 export default function CityPage() {
   const params = useParams();
   const citySlug = params.city;
+  
+  // Enable hash-based navigation to sections
+  useHashScroll();
   
   if (!citySlug) {
     return <div>City not found</div>;

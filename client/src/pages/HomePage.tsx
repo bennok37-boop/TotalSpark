@@ -102,7 +102,7 @@ export default function HomePage() {
         <ServiceCards />
         
         {/* North East Locations Section */}
-        <section id="areas" className="py-16 bg-muted" data-testid="section-locations">
+        <section id="areas" className="py-16 bg-muted scroll-mt-20" data-testid="section-locations">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">We Cover the North East</h2>
