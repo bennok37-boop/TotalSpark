@@ -4,7 +4,6 @@ import Uppy from "@uppy/core";
 import Dashboard from "@uppy/dashboard";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
-import AwsS3 from "@uppy/aws-s3";
 import type { UploadResult } from "@uppy/core";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +20,110 @@ interface ObjectUploaderProps {
   ) => void;
   buttonClassName?: string;
   children: ReactNode;
+}
+
+class DirectUploadPlugin {
+  private uppy: any;
+  private getUploadParameters: any;
+
+  constructor(uppy: any, opts: any) {
+    this.uppy = uppy;
+    this.getUploadParameters = opts.getUploadParameters;
+    this.id = 'DirectUpload';
+    this.type = 'uploader';
+  }
+
+  id: string;
+  type: string;
+
+  install() {
+    this.uppy.addUploader(this.handleUpload.bind(this));
+  }
+
+  uninstall() {}
+
+  async handleUpload(fileIDs: string[]) {
+    console.log('🚀 Starting direct GCS upload for', fileIDs.length, 'file(s)');
+    
+    const promises = fileIDs.map((fileID) => this.uploadFile(fileID));
+    const results = await Promise.allSettled(promises);
+    
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        console.error('❌ Upload rejected:', { fileID: fileIDs[index], error: result.reason });
+      }
+    });
+  }
+
+  async uploadFile(fileID: string) {
+    const file = this.uppy.getFile(fileID);
+    
+    try {
+      this.uppy.emit('upload-started', file);
+      console.log('📤 Getting upload parameters for:', file.name);
+      
+      // Get presigned URL from backend
+      const params = await this.getUploadParameters(file);
+      console.log('✅ Got presigned URL');
+      
+      // Upload directly to GCS, merging any required headers from the presigned URL
+      console.log('📤 Uploading to GCS...');
+      const response = await fetch(params.url, {
+        method: 'PUT',
+        body: file.data,
+        headers: {
+          'Content-Type': file.type || 'image/jpeg',
+          ...(params.headers || {}),
+        },
+      });
+
+      console.log('📥 GCS response:', { status: response.status, ok: response.ok });
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        const errorResponse = { status: response.status, body: errorText };
+        console.error('❌ GCS upload failed:', errorResponse);
+        
+        // Emit error with response details
+        this.uppy.emit('upload-error', file, new Error(`Upload failed: ${response.status}`), errorResponse);
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+
+      console.log('✅ Upload successful!');
+
+      // Extract clean URL without query parameters
+      const uploadURL = params.url.split('?')[0];
+
+      // Set the uploadURL in Uppy's file state so it's available in complete results
+      this.uppy.setFileState(fileID, {
+        uploadURL,
+        response: {
+          status: response.status,
+          uploadURL,
+        },
+      });
+
+      // Emit success with response details
+      this.uppy.emit('upload-success', file, {
+        status: response.status,
+        uploadURL,
+      });
+
+      return {
+        successful: [{ ...file, uploadURL }],
+        failed: [],
+      };
+    } catch (error) {
+      console.error('❌ Upload error:', { fileName: file.name, error });
+      
+      // If we haven't already emitted upload-error (from the !response.ok block), emit it now
+      if ((error as any).message && !(error as any).message.includes('Upload failed:')) {
+        this.uppy.emit('upload-error', file, error);
+      }
+      
+      throw error;
+    }
+  }
 }
 
 /**
@@ -43,7 +146,7 @@ interface ObjectUploaderProps {
  *   (default: 1)
  * @param props.maxFileSize - Maximum file size in bytes (default: 10MB)
  * @param props.onGetUploadParameters - Function to get upload parameters (method and URL).
- *   Typically used to fetch a presigned URL from the backend server for direct-to-S3
+ *   Typically used to fetch a presigned URL from the backend server for direct-to-GCS
  *   uploads.
  * @param props.onComplete - Callback function called when upload is complete. Typically
  *   used to make post-upload API calls to update server state and set object ACL
@@ -75,25 +178,14 @@ export function ObjectUploader({
         closeAfterFinish: true,
         proudlyDisplayPoweredByUppy: false,
       })
-      .use(AwsS3, {
-        shouldUseMultipart: false,
-        getUploadParameters: async (file) => {
-          console.log('📤 Uppy requesting upload parameters for:', file.name);
-          try {
-            const params = await onGetUploadParameters(file);
-            console.log('✅ Got upload params:', { url: params.url ? 'present' : 'missing', method: params.method });
-            return params;
-          } catch (error) {
-            console.error('❌ Error getting upload parameters:', error);
-            throw error;
-          }
-        },
+      .use(DirectUploadPlugin as any, {
+        getUploadParameters: onGetUploadParameters,
       })
       .on("upload", (data) => {
         console.log('📤 Starting upload of', (data as any)?.fileIDs?.length || 0, 'file(s)');
       })
       .on("upload-success", (file, response) => {
-        console.log('✅ Upload success:', { fileName: file?.name, status: response.status });
+        console.log('✅ Upload success:', { fileName: file?.name, status: response?.status });
       })
       .on("complete", (result) => {
         console.log('✅ Upload complete:', { 
