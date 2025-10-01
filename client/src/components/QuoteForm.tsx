@@ -364,11 +364,39 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
   };
 
   const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
+    console.log('📊 Upload complete result:', { 
+      successful: result.successful?.length, 
+      failed: result.failed?.length,
+      successfulFiles: result.successful?.map(f => f.name),
+      failedFiles: result.failed?.map(f => ({ name: f.name, error: (f as any).error }))
+    });
+    
     if (result.successful && result.successful.length > 0) {
-      // Use stable object paths provided by backend instead of parsing URLs
+      // Extract stable paths from the upload response
       const newImageUrls = result.successful.map(file => {
-        // Use stablePath if available (from backend response), fallback to uploadURL parsing
-        return (file as any).stablePath || file.uploadURL || '';
+        console.log('📁 Processing successful upload:', { 
+          name: file.name, 
+          uploadURL: file.uploadURL,
+          response: (file as any).response 
+        });
+        
+        // Try to extract the object path from the uploadURL
+        const uploadURL = file.uploadURL || '';
+        if (uploadURL.includes('storage.googleapis.com')) {
+          try {
+            const url = new URL(uploadURL);
+            // Extract path like: /replit-objstore-.../...
+            const pathMatch = url.pathname.match(/\/(replit-objstore-[^/]+\/.+)$/);
+            if (pathMatch) {
+              const objectPath = `/objects/${pathMatch[1].split('/').slice(1).join('/')}`;
+              console.log('✅ Extracted object path:', objectPath);
+              return objectPath;
+            }
+          } catch (e) {
+            console.warn('Failed to parse upload URL:', uploadURL);
+          }
+        }
+        return uploadURL;
       }).filter(Boolean);
       
       setUploadedImages(prev => [...prev, ...newImageUrls]);
@@ -387,6 +415,7 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     if (result.failed && result.failed.length > 0) {
       const errorMessages = result.failed.map(file => {
         const errorMsg = typeof file.error === 'string' ? file.error : (file.error as any)?.message || 'Upload failed';
+        console.error('❌ Upload failed for file:', { name: file.name, error: file.error });
         return `${file.name}: ${errorMsg}`;
       }).join(', ');
       
