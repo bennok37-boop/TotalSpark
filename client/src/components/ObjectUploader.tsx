@@ -77,18 +77,43 @@ export function ObjectUploader({
       })
       .use(AwsS3, {
         shouldUseMultipart: false,
-        getUploadParameters: onGetUploadParameters,
+        getUploadParameters: async (file) => {
+          console.log('📤 Uppy requesting upload parameters for:', file.name);
+          try {
+            const params = await onGetUploadParameters(file);
+            console.log('✅ Got upload params:', { url: params.url ? 'present' : 'missing', method: params.method });
+            return params;
+          } catch (error) {
+            console.error('❌ Error getting upload parameters:', error);
+            throw error;
+          }
+        },
+      })
+      .on("upload", (data) => {
+        console.log('📤 Starting upload of', (data as any)?.fileIDs?.length || 0, 'file(s)');
+      })
+      .on("upload-success", (file, response) => {
+        console.log('✅ Upload success:', { fileName: file?.name, status: response.status });
       })
       .on("complete", (result) => {
+        console.log('✅ Upload complete:', { 
+          successful: result.successful?.length || 0, 
+          failed: result.failed?.length || 0 
+        });
         onComplete?.(result);
         const dashboardPlugin = uppy.getPlugin('dashboard') as any;
         dashboardPlugin?.closeModal?.();
       })
       .on("error", (error) => {
-        console.error('Uppy upload error:', error);
+        console.error('❌ Uppy error:', error);
       })
       .on("upload-error", (file, error, response) => {
-        console.error('Uppy upload-error:', { file: file?.name, error, response });
+        console.error('❌ Uppy upload-error:', { 
+          fileName: file?.name, 
+          error: error?.message || error, 
+          status: response?.status,
+          body: response?.body
+        });
       })
   );
 

@@ -36,9 +36,12 @@ async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1
     console.warn(`🚫 Too many redirects (${redirectDepth})`);
     return null;
   }
+  
+  // Declare validatedUrl at function scope so error handlers can access it
+  let validatedUrl: string | undefined;
+  
   try {
     // Validate URL format and allowed domains
-    let validatedUrl: string;
     
     if (imageUrl.startsWith('/objects/')) {
       // Handle local object storage paths - convert to signed URL
@@ -226,7 +229,7 @@ async function fetchImageSecurely(imageUrl: string, maxSizeBytes: number = 5 * 1
     if (error instanceof Error && error.name === 'AbortError') {
       // Log timeout without exposing sensitive query parameters
       try {
-        const urlToLog = typeof validatedUrl !== 'undefined' ? validatedUrl : imageUrl;
+        const urlToLog = validatedUrl || imageUrl;
         const logUrl = new URL(urlToLog);
         console.warn(`⏰ Image fetch timeout for ${logUrl.hostname}${logUrl.pathname}`);
       } catch {

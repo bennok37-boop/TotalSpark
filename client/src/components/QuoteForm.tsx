@@ -327,29 +327,40 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
 
   // Image upload handlers
   const handleGetUploadParameters = async (file: any) => {
-    const response = await fetch('/api/objects/upload', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contentType: file.type || 'image/jpeg',
-        filename: file.name || 'image.jpg'
-      })
-    });
+    console.log('🔍 Getting upload parameters for file:', { name: file.name, type: file.type, size: file.size });
     
-    if (!response.ok) {
-      throw new Error('Failed to get upload URL');
-    }
-    
-    const { uploadURL } = await response.json();
-    return {
-      method: 'PUT' as const,
-      url: uploadURL,
-      headers: {
-        'Content-Type': file.type || 'image/jpeg'
+    try {
+      const response = await fetch('/api/objects/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contentType: file.type || 'image/jpeg',
+          filename: file.name || 'image.jpg'
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Failed to get upload URL:', { status: response.status, error: errorText });
+        throw new Error(`Failed to get upload URL: ${response.status} - ${errorText}`);
       }
-    };
+      
+      const data = await response.json();
+      console.log('✅ Got upload parameters:', { uploadURL: data.uploadURL ? 'present' : 'missing', stablePath: data.stablePath });
+      
+      return {
+        method: 'PUT' as const,
+        url: data.uploadURL,
+        headers: {
+          'Content-Type': file.type || 'image/jpeg'
+        }
+      };
+    } catch (error) {
+      console.error('❌ Error in handleGetUploadParameters:', error);
+      throw error;
+    }
   };
 
   const handleImageUploadComplete = (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
