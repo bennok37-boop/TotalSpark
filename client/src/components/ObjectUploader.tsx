@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import Uppy from "@uppy/core";
 import Dashboard from "@uppy/dashboard";
@@ -72,7 +72,7 @@ class DirectUploadPlugin {
         method: 'PUT',
         body: file.data,
         headers: {
-          'Content-Type': file.type || 'image/jpeg',
+          'Content-Type': file.type || 'application/octet-stream',
           ...(params.headers || {}),
         },
       });
@@ -208,6 +208,13 @@ export function ObjectUploader({
         });
       })
   );
+
+  // Cleanup Uppy instance on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      uppy.close();
+    };
+  }, [uppy]);
 
   return (
     <div>
