@@ -114,4 +114,55 @@ The application supports deep linking to specific sections using URL hash fragme
 - **Connect PG Simple**: PostgreSQL session store for Express sessions
 - **Express Session**: Session middleware for user authentication
 
+### File Upload Integration
+- **Uppy Core & Dashboard**: Modern file uploader with modal interface
+- **Google Cloud Storage**: Direct upload to GCS using presigned URLs
+- **Custom DirectUploadPlugin**: Direct-to-cloud upload implementation for job photos
+
 The application architecture prioritizes performance, SEO optimization, and conversion rate optimization while maintaining clean separation of concerns and type safety throughout the stack.
+
+## Recent Changes (October 2, 2025)
+
+### Quote Form Validation Improvements
+Fixed critical form validation issues that were preventing users from progressing through the multi-step quote form:
+
+**Problems Solved:**
+1. **Native HTML5 Validation Conflict**: Native browser validation was interfering with React's controlled inputs, causing the form to block progression even with valid data
+2. **Overly Restrictive Postcode Validation**: Previous regex pattern rejected valid UK postcodes including BFPO codes and special cases
+3. **ObjectUploader Runtime Error**: Uppy cleanup function was calling non-existent `close()` method, causing runtime errors
+
+**Solutions Implemented:**
+1. **Custom Validation System**:
+   - Added `noValidate` attribute to form element to disable native HTML5 validation
+   - Implemented comprehensive custom validation in `handleStep1Submit` function
+   - All fields validated with trimming and proper error messages via toast notifications
+   
+2. **Comprehensive UK Postcode Validation**:
+   - Implemented GOV.UK canonical postcode pattern
+   - Supports all valid UK postcode formats:
+     - Standard postcodes (NE1 1AA, SW1A 1AA, M1 1AA, etc.)
+     - Special case (GIR 0AA - Girobank)
+     - BFPO codes (BFPO 1, BFPO 1234, BF1 3AA, etc.)
+     - Overseas territories (ASCN 1ZZ, STHL 1ZZ, TDCU 1ZZ, etc.)
+   - Normalizes input (trim + uppercase) before validation
+   - Accepts postcodes with or without spaces
+   - Pattern: `/^(GIR ?0AA|((ASCN|STHL|TDCU|BBND|BIQQ|FIQQ|GX11|PCRN|SIQQ|TKCA) ?1ZZ)|(BFPO ?\d{1,4})|([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}))$/i`
+
+3. **ObjectUploader Cleanup Fix**:
+   - Replaced `uppy.close()` with proper cleanup sequence:
+     - `uppy.cancelAll()` - Cancel any ongoing uploads
+     - `uppy.clear()` - Clear all files from queue
+     - Close dashboard modal if open
+   - Prevents runtime errors during component unmount
+   - Maintains proper cleanup without destroying Uppy instance prematurely
+
+**Files Modified:**
+- `client/src/components/QuoteForm.tsx`: Form validation logic and noValidate attribute
+- `client/src/components/ObjectUploader.tsx`: Uppy cleanup implementation
+
+**Testing Status:**
+Automated testing confirmed that:
+- Step 1 validation works correctly with all field types
+- Form successfully progresses from Step 1 to Step 2
+- All validation error messages display properly
+- No runtime errors during normal usage
