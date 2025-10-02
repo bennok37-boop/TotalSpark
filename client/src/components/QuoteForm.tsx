@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -93,6 +93,8 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
   const [step, setStep] = useState<FormStep>(1);
   const [isLookingUpPostcode, setIsLookingUpPostcode] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  // Use ref for synchronous storage - state updates are async and won't be available immediately
+  const uploadUrlToStablePathMap = useRef<Map<string, string>>(new Map());
   const [bookingData, setBookingData] = useState({
     preferredDate: '',
     preferredTimeSlot: 'morning',
@@ -360,12 +362,19 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
       const data = await response.json();
       console.log('✅ Got upload parameters:', { uploadURL: data.uploadURL ? 'present' : 'missing', stablePath: data.stablePath });
       
+      // Store the mapping of uploadURL to stablePath for use after upload completes
+      if (data.uploadURL && data.stablePath) {
+        // Extract clean URL without query params as the key
+        const cleanUploadUrl = data.uploadURL.split('?')[0];
+        uploadUrlToStablePathMap.current.set(cleanUploadUrl, data.stablePath);
+        console.log('📝 Stored stablePath mapping:', { cleanUploadUrl, stablePath: data.stablePath });
+      }
+      
       return {
         method: 'PUT' as const,
         url: data.uploadURL,
-        headers: {
-          'Content-Type': file.type || 'image/jpeg'
-        }
+        // Don't send headers - GCS presigned URLs have strict signature validation
+        headers: {}
       };
     } catch (error) {
       console.error('❌ Error in handleGetUploadParameters:', error);
@@ -382,7 +391,7 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     });
     
     if (result.successful && result.successful.length > 0) {
-      // Extract stable paths from the upload response
+      // Use the stored stablePath mapping to get the correct object URLs
       const newImageUrls = result.successful.map(file => {
         console.log('📁 Processing successful upload:', { 
           name: file.name, 
@@ -390,24 +399,19 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
           response: (file as any).response 
         });
         
-        // Try to extract the object path from the uploadURL
+        // Get the stable path from our mapping using the clean uploadURL
         const uploadURL = file.uploadURL || '';
-        if (uploadURL.includes('storage.googleapis.com')) {
-          try {
-            const url = new URL(uploadURL);
-            // Extract path like: /replit-objstore-.../...
-            const pathMatch = url.pathname.match(/\/(replit-objstore-[^/]+\/.+)$/);
-            if (pathMatch) {
-              const objectPath = `/objects/${pathMatch[1].split('/').slice(1).join('/')}`;
-              console.log('✅ Extracted object path:', objectPath);
-              return objectPath;
-            }
-          } catch (e) {
-            console.warn('Failed to parse upload URL:', uploadURL);
-          }
+        const cleanUploadUrl = uploadURL.split('?')[0];
+        const stablePath = uploadUrlToStablePathMap.current.get(cleanUploadUrl);
+        
+        if (stablePath) {
+          console.log('✅ Found stablePath from mapping:', stablePath);
+          return stablePath;
+        } else {
+          console.warn('⚠️ No stablePath found in mapping for:', cleanUploadUrl);
+          return null;
         }
-        return uploadURL;
-      }).filter(Boolean);
+      }).filter(Boolean) as string[];
       
       setUploadedImages(prev => [...prev, ...newImageUrls]);
       setFormData(prev => ({ 

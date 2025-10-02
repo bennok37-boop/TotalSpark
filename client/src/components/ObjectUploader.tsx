@@ -72,15 +72,15 @@ class DirectUploadPlugin {
       const params = await this.getUploadParameters(file);
       console.log('✅ Got presigned URL');
       
-      // Upload directly to GCS, merging any required headers from the presigned URL
+      // Upload directly to GCS
+      // IMPORTANT: Do NOT set Content-Type header - GCS presigned URLs have strict signature validation
+      // and adding headers not included in the signature will cause the upload to fail
       console.log('📤 Uploading to GCS...');
       const response = await fetch(params.url, {
         method: 'PUT',
         body: file.data,
-        headers: {
-          'Content-Type': file.type || 'application/octet-stream',
-          ...(params.headers || {}),
-        },
+        // Only include headers that were explicitly provided by the presigned URL
+        headers: params.headers || {},
       });
 
       console.log('📥 GCS response:', { status: response.status, ok: response.ok });
