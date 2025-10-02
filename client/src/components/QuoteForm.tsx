@@ -773,7 +773,7 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
   ];
 
   return (
-    <section id="quote" className="py-16 bg-muted scroll-mt-20" data-testid="section-quote-form">
+    <section id="quote-form" className="py-16 bg-muted scroll-mt-20" data-testid="section-quote-form">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <Card>
