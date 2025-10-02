@@ -589,18 +589,65 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Enhanced validation for address and postcode
-    if (formData.address && !formData.postcode) {
+    // Validate required fields
+    if (!formData.name?.trim()) {
+      toast({
+        title: "Name Required",
+        description: "Please enter your full name",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!formData.phone?.trim()) {
+      toast({
+        title: "Phone Required",
+        description: "Please enter your phone number",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!formData.email?.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!formData.address?.trim()) {
+      toast({
+        title: "Address Required",
+        description: "Please enter your address",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!formData.postcode?.trim()) {
       toast({
         title: "Postcode Required",
-        description: "Please provide a postcode with your address for accurate service delivery",
+        description: "Please provide a postcode for accurate service delivery",
         variant: "destructive"
       });
       return;
     }
     
     // Validate postcode format (basic UK postcode pattern)
-    if (formData.postcode && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(formData.postcode.replace(/\s/g, ''))) {
+    if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(formData.postcode.replace(/\s/g, ''))) {
       toast({
         title: "Invalid Postcode",
         description: "Please enter a valid UK postcode (e.g. NE1 1AA)",
@@ -701,7 +748,7 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
 
             <CardContent>
               {step === 1 ? (
-                <form onSubmit={handleStep1Submit} className="space-y-6">
+                <form onSubmit={handleStep1Submit} className="space-y-6" noValidate>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="name">Full Name *</Label>
