@@ -212,7 +212,15 @@ export function ObjectUploader({
   // Cleanup Uppy instance on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
-      uppy.close();
+      // Cancel any ongoing uploads and clear all files
+      uppy.cancelAll();
+      uppy.clear();
+      
+      // Close the dashboard if it's open
+      const dashboardPlugin = uppy.getPlugin('dashboard') as any;
+      if (dashboardPlugin?.isModalOpen?.()) {
+        dashboardPlugin.closeModal();
+      }
     };
   }, [uppy]);
 

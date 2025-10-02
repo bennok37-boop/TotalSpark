@@ -646,8 +646,18 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
       return;
     }
     
-    // Validate postcode format (basic UK postcode pattern)
-    if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(formData.postcode.replace(/\s/g, ''))) {
+    // Validate postcode format using GOV.UK canonical pattern
+    // Normalize: trim and uppercase for validation
+    const normalizedPostcode = formData.postcode.trim().toUpperCase();
+    
+    // Comprehensive UK postcode pattern covering:
+    // - GIR 0AA (Girobank)
+    // - Overseas territories (ASCN 1ZZ, STHL 1ZZ, etc.)
+    // - BFPO codes (BFPO 1, BFPO 1234, etc.)
+    // - Standard UK postcodes (NE1 1AA, SW1A 1AA, etc.)
+    const postcodePattern = /^(GIR ?0AA|((ASCN|STHL|TDCU|BBND|BIQQ|FIQQ|GX11|PCRN|SIQQ|TKCA) ?1ZZ)|(BFPO ?\d{1,4})|([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}))$/i;
+    
+    if (!postcodePattern.test(normalizedPostcode)) {
       toast({
         title: "Invalid Postcode",
         description: "Please enter a valid UK postcode (e.g. NE1 1AA)",
