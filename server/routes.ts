@@ -791,6 +791,65 @@ function generateGHLTags(quote: any): string[] {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Quote calculation endpoint - returns instant pricing without creating a quote request
+  app.post('/api/quotes/calculate', async (req, res) => {
+    try {
+      const { service, bedrooms, bathrooms, propertyType, condition } = req.body;
+      
+      // Base pricing by service type
+      const basePrices: Record<string, number> = {
+        'tenancy': 120,
+        'deep': 150,
+        'commercial': 200,
+        'carpets': 80
+      };
+      
+      const basePrice = basePrices[service as string] || 120;
+      
+      // Property size multiplier based on bedrooms
+      const bedroomMultiplier = 1 + ((bedrooms || 1) - 1) * 0.3;
+      
+      // Property type multiplier
+      const propertyMultipliers: Record<string, number> = {
+        'flat': 1.0,
+        'terraced': 1.2,
+        'semi': 1.3,
+        'detached': 1.5,
+        'maisonette': 1.25,
+        'townhouse': 1.35
+      };
+      const propertyMultiplier = propertyMultipliers[propertyType as string] || 1.0;
+      
+      // Condition multiplier
+      const conditionMultipliers: Record<string, number> = {
+        'light': 0.9,
+        'standard': 1.0,
+        'heavy': 1.3,
+        'veryheavy': 1.6
+      };
+      const conditionMultiplier = conditionMultipliers[condition as string] || 1.0;
+      
+      // Calculate total
+      const total = Math.round(basePrice * bedroomMultiplier * propertyMultiplier * conditionMultiplier);
+      
+      // Return quote result
+      res.json({
+        basePrice,
+        total,
+        breakdown: {
+          base: basePrice,
+          bedrooms: bedrooms || 1,
+          bathrooms: bathrooms || 1,
+          propertyType: propertyType || 'flat',
+          condition: condition || 'standard'
+        }
+      });
+    } catch (error) {
+      console.error('Error calculating quote:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   // Quote requests endpoints
   app.post('/api/quotes', async (req, res) => {
     try {

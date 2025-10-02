@@ -41,6 +41,12 @@ class DirectUploadPlugin {
   }
 
   uninstall() {}
+  
+  update(opts: any) {
+    if (opts.getUploadParameters) {
+      this.getUploadParameters = opts.getUploadParameters;
+    }
+  }
 
   async handleUpload(fileIDs: string[]) {
     console.log('🚀 Starting direct GCS upload for', fileIDs.length, 'file(s)');

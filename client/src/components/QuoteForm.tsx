@@ -670,6 +670,44 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     setStep(2);
   };
 
+  const calculateQuoteMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const response = await apiRequest('POST', '/api/quotes/calculate', {
+        service: data.service,
+        bedrooms: data.bedrooms,
+        bathrooms: data.bathrooms,
+        propertyType: data.propertyType,
+        condition: data.condition
+      });
+      return response as { total: number; basePrice: number; breakdown: any };
+    },
+    onSuccess: (data) => {
+      setQuoteResult({
+        total: data.total,
+        estimateRange: {
+          low: Math.round(data.total * 0.9),
+          high: Math.round(data.total * 1.1)
+        }
+      });
+      toast({
+        title: "Quote Calculated!",
+        description: `Estimated price: £${data.total}`,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to calculate quote. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleCalculateQuote = (e: React.MouseEvent) => {
+    e.preventDefault();
+    calculateQuoteMutation.mutate(formData);
+  };
+
   const handleStep2Submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (quoteResult) {
@@ -1456,6 +1494,24 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
                     </p>
                   </div>
 
+                  {/* Quote Result Display */}
+                  {quoteResult && (
+                    <div className="bg-primary/5 border border-primary/10 rounded-lg p-6 space-y-4">
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground mb-2">Your Estimated Quote</p>
+                        <p className="text-4xl font-bold text-primary" data-testid="text-quote-price">
+                          £{quoteResult.total}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Price range: £{quoteResult.estimateRange.low} - £{quoteResult.estimateRange.high}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Final price confirmed after property assessment
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex space-x-3">
                     <Button
                       type="button"
@@ -1467,14 +1523,27 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
                       <ArrowLeft className="w-4 h-4 mr-2" />
                       Back
                     </Button>
-                    <Button 
-                      type="submit" 
-                      className="flex-1" 
-                      data-testid="button-get-quote"
-                      disabled={submitQuoteMutation.isPending || !quoteResult}
-                    >
-                      {submitQuoteMutation.isPending ? 'Submitting...' : 'Get Quote'}
-                    </Button>
+                    
+                    {!quoteResult ? (
+                      <Button 
+                        type="button" 
+                        className="flex-1" 
+                        data-testid="button-get-quote"
+                        onClick={handleCalculateQuote}
+                        disabled={calculateQuoteMutation.isPending || !formData.service}
+                      >
+                        {calculateQuoteMutation.isPending ? 'Calculating...' : 'Get Quote'}
+                      </Button>
+                    ) : (
+                      <Button 
+                        type="submit" 
+                        className="flex-1" 
+                        data-testid="button-book"
+                        disabled={submitQuoteMutation.isPending}
+                      >
+                        {submitQuoteMutation.isPending ? 'Submitting...' : 'Book This Service'}
+                      </Button>
+                    )}
                   </div>
                 </form>
               ) : step === 3 ? (
