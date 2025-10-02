@@ -158,6 +158,16 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
   const [quoteResult, setQuoteResult] = useState<QuoteResult | null>(null);
   const { toast } = useToast();
 
+  // Update form data when initialData changes (e.g., from hero email capture)
+  useEffect(() => {
+    if (initialData?.email && initialData.email !== formData.email) {
+      setFormData(prev => ({
+        ...prev,
+        email: initialData.email || ''
+      }));
+    }
+  }, [initialData?.email]);
+
   // Handle auto-scroll when page loads with #quote-form hash
   useEffect(() => {
     if (window.location.hash === '#quote-form') {
