@@ -123,6 +123,35 @@ The application architecture prioritizes performance, SEO optimization, and conv
 
 ## Recent Changes (October 3, 2025)
 
+### Enhanced Pricing Engine with Toilets and Living Rooms Scaling
+Extended the domestic pricing calculation to include toilets and living rooms as scaling factors:
+
+**Pricing Additions:**
+1. **Toilet Scaling**: Extra toilets beyond 1 add 3% per toilet (capped at 15% for 5+ extra toilets)
+2. **Living Room Scaling**: Extra living rooms beyond 1 add 4% per room (capped at 15% for 4+ extra rooms)
+
+**Calculation Logic:**
+- Baseline: 1 toilet and 1 living room are included (no extra charge)
+- Extra toilets: `price *= (1 + min(0.15, extraToilets * 0.03))`
+- Extra living rooms: `price *= (1 + min(0.15, extraLivingRooms * 0.04))`
+- Applied in `applyDomesticScaling()` function alongside bathrooms and other property factors
+- Multipliers combine multiplicatively with all other scaling factors
+
+**Example Calculations:**
+- 2-bed flat End of Tenancy baseline: £160
+- With 2 toilets (1 extra): £160 × 1.03 = £164.80
+- With 2 living rooms (1 extra): £160 × 1.04 = £166.40
+- With both 2 toilets + 2 living rooms: £160 × 1.03 × 1.04 = £171.39
+
+**Files Modified:**
+- `client/src/utils/pricingEngine.ts`: Added toilet and living room scaling with caps in `applyDomesticScaling()` function
+- `client/src/components/QuoteForm.tsx`: Already passing `toilets` and `livingRooms` to pricing engine
+
+**Testing Status:**
+- Architect review confirmed logic is correct
+- Console logging added for visibility (`💧 Extra toilets` and `🛋️ Extra living rooms`)
+- Real-time price updates when form values change
+
 ### Multi-Stage Lead Capture System
 Implemented comprehensive lead tracking at three critical stages of the quote funnel to capture drop-offs and enable follow-up at every conversion point:
 
