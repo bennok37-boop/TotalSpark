@@ -42,7 +42,11 @@ const PRICING = {
   },
   domesticExtras: { 
     extraBathroomPct: 0.05, 
-    extraBathroomCapPct: 0.20, 
+    extraBathroomCapPct: 0.20,
+    extraToiletPct: 0.03,
+    extraToiletCapPct: 0.15,
+    extraLivingRoomPct: 0.04,
+    extraLivingRoomCapPct: 0.15,
     secondKitchenPct: 0.10, 
     internalStairsPct: 0.05, 
     furnishedPct: 0.05, 
@@ -183,6 +187,20 @@ export function computeQuote(input: QuoteInput): QuoteResult {
     const extraBaths = Math.max(0, baths - 1);
     const bathPct = Math.min(cfg.domesticExtras.extraBathroomCapPct, extraBaths * cfg.domesticExtras.extraBathroomPct);
     pct *= (1 + bathPct);
+
+    // Toilets scaling (extra toilets beyond 1)
+    const toilets = Math.max(1, Number(input.toilets || 1));
+    const extraToilets = Math.max(0, toilets - 1);
+    const toiletPct = Math.min(cfg.domesticExtras.extraToiletCapPct, extraToilets * cfg.domesticExtras.extraToiletPct);
+    pct *= (1 + toiletPct);
+    if (extraToilets > 0) console.log(`💧 Extra toilets: ${extraToilets}, adding ${(toiletPct * 100).toFixed(1)}%`);
+
+    // Living rooms scaling (extra living rooms beyond 1)
+    const livingRooms = Math.max(1, Number(input.livingRooms || 1));
+    const extraLivingRooms = Math.max(0, livingRooms - 1);
+    const livingRoomPct = Math.min(cfg.domesticExtras.extraLivingRoomCapPct, extraLivingRooms * cfg.domesticExtras.extraLivingRoomPct);
+    pct *= (1 + livingRoomPct);
+    if (extraLivingRooms > 0) console.log(`🛋️ Extra living rooms: ${extraLivingRooms}, adding ${(livingRoomPct * 100).toFixed(1)}%`);
 
     // Additional property factors
     if (input.secondKitchen) pct *= (1 + cfg.domesticExtras.secondKitchenPct);
