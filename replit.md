@@ -121,6 +121,59 @@ The application supports deep linking to specific sections using URL hash fragme
 
 The application architecture prioritizes performance, SEO optimization, and conversion rate optimization while maintaining clean separation of concerns and type safety throughout the stack.
 
+## Recent Changes (October 3, 2025)
+
+### Multi-Stage Lead Capture System
+Implemented comprehensive lead tracking at three critical stages of the quote funnel to capture drop-offs and enable follow-up at every conversion point:
+
+**Lead Capture Points:**
+1. **Stage 1 - Personal Details Entry (Step 1)**:
+   - Triggers immediately after Step 1 form validation passes
+   - Captures: name, phone, email, address, postcode
+   - Lead data: `{source: 'website_form_step1', service: 'Not selected yet', value: 0, notes: personal details}`
+   - GTM event: `quote_step1_completed`
+   - **Purpose**: Track early drop-offs for follow-up before service selection
+
+2. **Stage 2 - Quote Estimate Shown (Step 2)**:
+   - Triggers after quote calculation and Step 2 submission  
+   - Captures: service type, estimated value, property details
+   - Lead data: `{source: 'website_form', service: actual service, value: estimated total, notes: quote details}`
+   - GTM events: `quote_completed`, `form_submit`, `lead_added`
+   - **Purpose**: Track users who viewed quote estimate but didn't proceed to booking
+
+3. **Stage 3 - Booking Confirmed (Step 4)**:
+   - Triggers after successful booking submission
+   - Captures: all quote details plus booking date, time slot, and notes
+   - Lead data: `{source: 'website_booking_confirmed', service: actual service, value: quote total, notes: booking details}`
+   - GTM event: `booking_confirmed`
+   - **Purpose**: Track confirmed bookings with complete appointment details
+
+**Technical Implementation:**
+- All leads stored in localStorage key: `totalspark_leads_tracker`
+- GTM events pushed to `window.dataLayer` for analytics integration
+- Shared helper functions (`extractCityFromAddress`, `serviceLabels`, `getBedrooms`) consolidated for consistency
+- Lead tracking uses singleton pattern via `getLeadTracker()` function
+- Each lead includes UTM parameters, timestamp, and status tracking
+
+**Benefits:**
+- Enables follow-up with users who drop off at any stage
+- Provides visibility into funnel conversion metrics
+- Captures contact details early before users abandon the flow
+- Tracks booking confirmations with full appointment context
+- All leads exportable to CSV for weekly review
+
+**Files Modified:**
+- `client/src/components/QuoteForm.tsx`: Added lead capture at Steps 1, 2, and 4 with GTM events
+- `client/src/lib/leadTracking.ts`: Lead storage and tracking infrastructure (already existed)
+
+**Testing Status:**
+Automated testing confirmed:
+- All three lead capture stages fire correctly
+- Leads stored in localStorage with proper source attribution
+- GTM events pushed to dataLayer with complete metadata
+- No duplicate leads on form re-entry
+- Booking confirmation shows all three leads with distinct sources
+
 ## Recent Changes (October 2, 2025)
 
 ### Quote Form Validation Improvements

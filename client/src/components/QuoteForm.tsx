@@ -88,6 +88,30 @@ interface QuoteFormProps {
   initialData?: Partial<QuoteFormData>;
 }
 
+// Shared helper to extract city from address
+const extractCityFromAddress = (address: string): string => {
+  const commonCities = ['Newcastle', 'Sunderland', 'Middlesbrough', 'Durham', 'Gateshead', 'Leeds', 'York'];
+  const foundCity = commonCities.find(city => 
+    address.toLowerCase().includes(city.toLowerCase())
+  );
+  return foundCity || 'unknown';
+};
+
+// Shared service labels mapping
+const serviceLabels = {
+  endOfTenancy: 'End of Tenancy',
+  deep: 'Deep Cleaning', 
+  commercial: 'Commercial',
+  carpets: 'Carpet & Upholstery'
+};
+
+// Get numeric bedrooms value
+const getBedrooms = (bedrooms: string): number => {
+  if (bedrooms === 'studio') return 0;
+  if (bedrooms === '5plus') return 5;
+  return parseInt(bedrooms) || 0;
+};
+
 export default function QuoteForm(props: QuoteFormProps = {}) {
   const { initialData } = props;
   const [step, setStep] = useState<FormStep>(1);
@@ -266,29 +290,6 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     },
     onSuccess: () => {
       // Track quote request conversion
-      const serviceLabels = {
-        endOfTenancy: 'End of Tenancy',
-        deep: 'Deep Cleaning', 
-        commercial: 'Commercial',
-        carpets: 'Carpet & Upholstery'
-      };
-      
-      // Extract city from address (basic extraction)
-      const extractCityFromAddress = (address: string): string => {
-        const commonCities = ['Newcastle', 'Sunderland', 'Middlesbrough', 'Durham', 'Gateshead'];
-        const foundCity = commonCities.find(city => 
-          address.toLowerCase().includes(city.toLowerCase())
-        );
-        return foundCity || 'unknown';
-      };
-
-      // Get numeric bedrooms value
-      const getBedrooms = (bedrooms: string): number => {
-        if (bedrooms === 'studio') return 0;
-        if (bedrooms === '5plus') return 5;
-        return parseInt(bedrooms) || 0;
-      };
-      
       // Track quote completion with specific GA4 event
       trackQuoteCompleted({
         service_type: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
@@ -681,6 +682,30 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
     }
     
     console.log('Step 1 completed:', { name: formData.name, email: formData.email, phone: formData.phone, address: formData.address, postcode: formData.postcode });
+    
+    // Capture lead at Step 1 to track potential drop-offs
+    // Track early lead - personal details entered
+    addLead({
+      source: 'website_form_step1',
+      city_page: extractCityFromAddress(formData.address),
+      service: 'Not selected yet',
+      value: 0,
+      contact_method: 'form',
+      notes: `Personal details entered - Name: ${formData.name}, Phone: ${formData.phone}, Email: ${formData.email}`
+    });
+    
+    // Track analytics event for step 1 completion
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'quote_step1_completed',
+        user_name: formData.name,
+        user_email: formData.email,
+        user_phone: formData.phone,
+        city: extractCityFromAddress(formData.address),
+        postcode: formData.postcode
+      });
+    }
+    
     setStep(2);
   };
 
@@ -735,6 +760,30 @@ export default function QuoteForm(props: QuoteFormProps = {}) {
       return apiRequest('POST', '/api/bookings', bookingRequestData);
     },
     onSuccess: () => {
+      // Track final booking confirmation lead
+      // Capture final booking confirmation lead
+      addLead({
+        source: 'website_booking_confirmed',
+        city_page: extractCityFromAddress(formData.address),
+        service: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
+        value: quoteResult?.total || 0,
+        contact_method: 'form',
+        notes: `Booking confirmed - Date: ${bookingData.preferredDate}, Time: ${bookingData.preferredTimeSlot}, Notes: ${bookingData.additionalNotes || 'None'}`
+      });
+      
+      // Track booking confirmation analytics
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'booking_confirmed',
+          service_type: serviceLabels[formData.service as keyof typeof serviceLabels] || formData.service,
+          city: extractCityFromAddress(formData.address),
+          booking_value: quoteResult?.total || 0,
+          preferred_date: bookingData.preferredDate,
+          time_slot: bookingData.preferredTimeSlot,
+          has_notes: !!bookingData.additionalNotes
+        });
+      }
+      
       setStep(5);
       toast({
         title: "Booking Request Submitted!",
